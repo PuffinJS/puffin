@@ -43,7 +43,7 @@ function getProps(currentComponent) {
   }
   return props;
 }
-function executeProps(importedComponentProps,currentComponentProps,node) {
+function executeProps(importedComponentProps, currentComponentProps, node) {
   importedComponentProps.map(bd => {
     switch (bd.type) {
       case "text":
@@ -62,7 +62,7 @@ function loopThrough({ arr, parent, methods, components = {} }) {
   for (let i = 0; i < arr.length; i++) {
     const currentComponent = arr[i];
     const currentComponentProps = getProps(currentComponent);
-    let  importedComponentProps = [];
+    let importedComponentProps = [];
     if (currentComponent.type === "element") {
       if (isComponentImported(components, currentComponent)) {
         var node = components[currentComponent.name].node.cloneNode(true);
@@ -92,7 +92,7 @@ function loopThrough({ arr, parent, methods, components = {} }) {
       }
     }
 
-    executeProps(importedComponentProps,currentComponentProps,node);
+    executeProps(importedComponentProps, currentComponentProps, node);
 
     if (currentComponent.type === "text") {
       parent.innerText = currentComponent.text;
