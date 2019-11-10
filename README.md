@@ -14,17 +14,25 @@ This is still on testing, not made for production usage.
 
 You can find some samples on the /test directory.
 
-You can test them with parcel:
+### Testing :
 
-```shell
-npx parcel  test/index.html
-```
+Requisites:
+
+* Python
+* NodeJS
+
+Install Parcel:
+> npm install parcel -g
+
+Run a local server:
+> npx parcel  test/index.html
 
 ## Examples
 
 A simple component:
 
 ```javascript
+
 const App = puffin.element(
   `
      <div>
