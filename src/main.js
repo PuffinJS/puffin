@@ -2,8 +2,7 @@ const parser = require("xml-js");
 const puffin = {
   element: function(content, options = { methods: [] }) {
     const output = JSON.parse(parser.xml2json(content));
-    output.elements[0].first = true;
-    //console.log(output)
+    output.elements[0].first = true; //Defines the parent element on the component
     const currentComponent = loopThrough({
       arr: output.elements,
       parent: null,
@@ -75,18 +74,17 @@ function loopThrough({ arr, parent, methods, components = {} }) {
       }
       if (currentComponent.attributes !== undefined) {
         Object.keys(currentComponent.attributes).map(attr => {
-          switch (attr) {
-            case "onClick":
-              methods.map(val => {
-                if (
-                  val.name === currentComponent.attributes[attr].split("$")[1]
-                ) {
-                  node.onclick = val;
-                }
-              });
-              break;
-            default:
-              node.setAttribute(attr, currentComponent.attributes[attr]);
+          const reference = currentComponent.attributes[attr].split("$");
+          if(reference[1]!=undefined){
+            methods.map(func => {
+              if (
+                func.name === reference[1]
+              ) {
+                node.addEventListener(attr,func,false)
+              }
+            });
+          }else{
+            node.setAttribute(attr,reference[0])
           }
         });
       }

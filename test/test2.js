@@ -4,7 +4,6 @@ const { puffin } = require("../src/main.js");
  * @desc This is a very basic TODO app
  */
 
-
 const list = [];
 
 const Todo = puffin.element(
@@ -36,7 +35,7 @@ function App() {
         <h2>Todo Demo </h2>
         <input class="input_title" placeHolder="A title" >Title</input>
         <input class="input_description" placeHolder="A description"> Description</input>
-        <button onClick="$addTodo">Add</button>
+        <button click="$addTodo" >Add</button>
           ${(function() {
             let content = "";
             list.map(task => {
