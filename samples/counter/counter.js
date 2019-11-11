@@ -1,12 +1,13 @@
 
-const { puffin } = require("../src/main.js")
-
+const { puffin } = require("../../src/main.js")
+ // not working
+ 
 const componentTest = puffin.element(
-    `<button onClick="$test">Component test!</button>`,
+    `<button click="$test">Component test!</button>`,
     {
       methods: [
         function test() {
-          alert("Test!");
+          alert("Executed from the component test");
         }
       ]
     }

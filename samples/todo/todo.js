@@ -1,4 +1,4 @@
-const { puffin } = require("../src/main.js");
+const { puffin } = require("../../src/main.js");
 
 /**
  * @desc This is a very basic TODO app
@@ -24,6 +24,12 @@ const Todo = puffin.element(
         class: "task_description",
         type: "text",
         value: "$description"
+      },
+      {
+        class: "task_description",
+        type: "attribute",
+        attribute:"data",
+        value: "$data"
       }
     ]
   }
@@ -39,7 +45,7 @@ function App() {
           ${(function() {
             let content = "";
             list.map(task => {
-              content += `<Todo title="${task.title}" description="${task.description}"></Todo>`;
+              content += `<Todo data="test" title="${task.title}" description="${task.description}"></Todo>`;
             });
             return content;
           })()}

@@ -9,10 +9,11 @@ Puffin can be used easier than other libraries since it doesn't need to be compi
 ## 🔬 Status
 
 This is still on testing, not made for production usage.
+It's not released on NPM registry yet.
 
 ## ⚽ Samples
 
-You can find some samples on the /test directory.
+You can find some samples on the /samples directory.
 
 ### Testing :
 
@@ -25,7 +26,7 @@ Install Parcel:
 > npm install parcel -g
 
 Run a local server:
-> npx parcel  test/index.html
+> npx parcel  samples/counter/todo.html
 
 ## Examples
 

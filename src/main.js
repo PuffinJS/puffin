@@ -42,6 +42,7 @@ function getProps(currentComponent) {
   }
   return props;
 }
+
 function executeProps(importedComponentProps, currentComponentProps, node) {
   importedComponentProps.map(bd => {
     switch (bd.type) {
@@ -53,20 +54,36 @@ function executeProps(importedComponentProps, currentComponentProps, node) {
             }
           });
         }
-        break;
+      break;
+      case "attribute":
+      for (let ch of node.getElementsByClassName(bd.class)) {
+        currentComponentProps.map(bs => {
+          if (bs[bd.value.split("$")[1]] !== undefined) {
+            ch.setAttribute(bd.attribute,bs[bd.value.split("$")[1]])
+          }
+        });
+      }
+      break;
     }
   });
 }
+
 function loopThrough({ arr, parent, methods, components = {} }) {
   for (let i = 0; i < arr.length; i++) {
     const currentComponent = arr[i];
     const currentComponentProps = getProps(currentComponent);
-    let importedComponentProps = [];
+    let importedComponentProps = []
     if (currentComponent.type === "element") {
       if (isComponentImported(components, currentComponent)) {
-        var node = components[currentComponent.name].node.cloneNode(true);
-        importedComponentProps =
-          components[currentComponent.name].options.props;
+        console.log(components)
+        var node = Object.assign(components[currentComponent.name].node)
+        if( components[currentComponent.name].options){
+          const  importedComportentConf =components[currentComponent.name].options;
+          if(importedComportentConf && importedComportentConf.props){
+            importedComponentProps =
+            components[currentComponent.name].options.props;
+          }
+        }
         isImported = true;
       } else {
         var node = document.createElement(currentComponent.name);
@@ -80,7 +97,7 @@ function loopThrough({ arr, parent, methods, components = {} }) {
               if (
                 func.name === reference[1]
               ) {
-                node.addEventListener(attr,func,false)
+                node.addEventListener(attr,func)
               }
             });
           }else{
@@ -89,13 +106,11 @@ function loopThrough({ arr, parent, methods, components = {} }) {
         });
       }
     }
-
     executeProps(importedComponentProps, currentComponentProps, node);
-
     if (currentComponent.type === "text") {
       parent.innerText = currentComponent.text;
     }
-
+    if(node!=undefined)console.log(node)
     if (currentComponent.type !== "text" && isImported == false) {
       if (parent != null) {
         const result = parent.appendChild(node);
@@ -105,7 +120,7 @@ function loopThrough({ arr, parent, methods, components = {} }) {
           methods: methods,
           components: components,
           props: currentComponent.binds
-        });
+        })
       } else {
         loopThrough({
           arr: currentComponent.elements,
@@ -113,14 +128,15 @@ function loopThrough({ arr, parent, methods, components = {} }) {
           methods: methods,
           components: components,
           props: currentComponent.binds
-        });
+        })
       }
     } else {
       if (isImported) {
-        parent.appendChild(node);
+         parent.appendChild(node);
       }
     }
-    if (currentComponent.first != undefined) {
+
+    if (currentComponent.first != undefined) { //Parent element
       if (parent != null) {
         return {
           element: parent
@@ -130,6 +146,7 @@ function loopThrough({ arr, parent, methods, components = {} }) {
           element: node
         };
       }
+      
     }
   }
 }
