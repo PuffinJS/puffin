@@ -26,7 +26,7 @@ Install Parcel:
 > npm install parcel -g
 
 Run a local server:
-> npx parcel  samples/counter/todo.html
+> npx parcel  samples/counter/index.html
 
 ## Examples
 
