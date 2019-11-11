@@ -18,7 +18,7 @@ const componentTest = puffin.element(
         <div>
            <componentTest></componentTest>
         </div>
-        <button onClick="$increase" value="0">Count:0</button>
+        <button click="$increase" value="0">Count:0</button>
      </div>
   `,
     {

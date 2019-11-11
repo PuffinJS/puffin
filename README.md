@@ -36,7 +36,7 @@ A simple component:
 const App = puffin.element(
   `
      <div>
-        <button onClick="$increase" value="0">Count: 0</button>
+        <button click="$increase" value="0">Count: 0</button>
      </div>
   `,
   {
