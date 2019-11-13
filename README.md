@@ -11,7 +11,10 @@ Puffin can be used easier than other libraries since it doesn't need to be compi
 This is still on testing, not made for production usage.
 It's not released on NPM registry yet.
 
-## ⚽ Samples
+## ⚽ Usage
+
+Requiring on your project:
+> const puffin = require("@mkenzo_8/puffin")
 
 You can find some samples on the /samples directory.
 

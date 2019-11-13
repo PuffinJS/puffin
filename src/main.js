@@ -42,6 +42,20 @@ function getProps(currentComponent) {
   }
   return props;
 }
+function setMethods(node,methods){
+  methods.map((method)=>{
+    if(node !== undefined){
+      node[method.name] = method;
+    }
+  })
+}
+function throwWarn(message){
+  console.warn("puffin warn -->",message)
+}
+
+function throwError(message){
+  console.error("puffin error -->",message)
+}
 
 function executeProps(importedComponentProps, currentComponentProps, node) {
   importedComponentProps.map(bd => {
@@ -68,14 +82,13 @@ function executeProps(importedComponentProps, currentComponentProps, node) {
   });
 }
 
-function loopThrough({ arr, parent, methods, components = {} }) {
+function loopThrough({ arr = [], parent, methods, components = {} }) {
   for (let i = 0; i < arr.length; i++) {
     const currentComponent = arr[i];
     const currentComponentProps = getProps(currentComponent);
     let importedComponentProps = []
     if (currentComponent.type === "element") {
       if (isComponentImported(components, currentComponent)) {
-        console.log(components)
         var node = Object.assign(components[currentComponent.name].node)
         if( components[currentComponent.name].options){
           const  importedComportentConf =components[currentComponent.name].options;
@@ -88,6 +101,9 @@ function loopThrough({ arr, parent, methods, components = {} }) {
       } else {
         var node = document.createElement(currentComponent.name);
         isImported = false;
+      }
+      if(currentComponent.elements == undefined && !isImported ){
+        throwWarn(`Element <${currentComponent.name}> is empty.`)
       }
       if (currentComponent.attributes !== undefined) {
         Object.keys(currentComponent.attributes).map(attr => {
@@ -107,10 +123,10 @@ function loopThrough({ arr, parent, methods, components = {} }) {
       }
     }
     executeProps(importedComponentProps, currentComponentProps, node);
+    setMethods(node,methods )
     if (currentComponent.type === "text") {
       parent.innerText = currentComponent.text;
     }
-    if(node!=undefined)console.log(node)
     if (currentComponent.type !== "text" && isImported == false) {
       if (parent != null) {
         const result = parent.appendChild(node);
@@ -135,7 +151,6 @@ function loopThrough({ arr, parent, methods, components = {} }) {
          parent.appendChild(node);
       }
     }
-
     if (currentComponent.first != undefined) { //Parent element
       if (parent != null) {
         return {
