@@ -14,7 +14,7 @@ It's not released on NPM registry yet.
 ## ⚽ Usage
 
 Requiring on your project:
-> const puffin = require("@mkenzo_8/puffin")
+> const { puffin } = require("@mkenzo_8/puffin")
 
 You can find some samples on the /samples directory.
 

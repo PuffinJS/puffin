@@ -9,8 +9,8 @@ const list = [];
 const Todo = puffin.element(
   `
       <div class="todo">
-        <h3 class="task_title">Default Title</h3>
-        <p class="task_description">Default description</p>
+        <h3 class="task_title"></h3>
+        <p class="task_description"></p>
       </div>
     `,
   {
@@ -39,14 +39,17 @@ function App() {
     `
        <div>
         <h2>Todo Demo </h2>
-        <input class="input_title" placeHolder="A title" >Title</input>
-        <input class="input_description" placeHolder="A description"> Description</input>
+        <input class="input_title" placeHolder="A title" ></input>
+        <input class="input_description" placeHolder="A description"></input>
+        <div></div>
+        <p></p>
         <button click="$addTodo" >Add</button>
           ${(function() {
             let content = "";
             list.map(task => {
               content += `<Todo data="test" title="${task.title}" description="${task.description}"></Todo>`;
             });
+            console.log(content)
             return content;
           })()}
        </div>

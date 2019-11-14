@@ -49,6 +49,12 @@ function setMethods(node,methods){
     }
   })
 }
+function isContainer(nodeName){
+  switch(nodeName){
+    case "DIV":
+      return true
+  }
+}
 function throwWarn(message){
   console.warn("puffin warn -->",message)
 }
@@ -64,7 +70,7 @@ function executeProps(importedComponentProps, currentComponentProps, node) {
         for (let ch of node.getElementsByClassName(bd.class)) {
           currentComponentProps.map(bs => {
             if (bs[bd.value.split("$")[1]] !== undefined) {
-              ch.textContent = bs[bd.value.split("$")[1]];
+              ch.textContent += bs[bd.value.split("$")[1]];
             }
           });
         }
@@ -82,7 +88,7 @@ function executeProps(importedComponentProps, currentComponentProps, node) {
   });
 }
 
-function loopThrough({ arr = [], parent, methods, components = {} }) {
+function loopThrough({ arr = [], parent, methods = [], components = {} }) {
   for (let i = 0; i < arr.length; i++) {
     const currentComponent = arr[i];
     const currentComponentProps = getProps(currentComponent);
@@ -102,7 +108,7 @@ function loopThrough({ arr = [], parent, methods, components = {} }) {
         var node = document.createElement(currentComponent.name);
         isImported = false;
       }
-      if(currentComponent.elements == undefined && !isImported ){
+      if(currentComponent.elements == undefined && !isImported && isContainer(node.nodeName) ){
         throwWarn(`Element <${currentComponent.name}> is empty.`)
       }
       if (currentComponent.attributes !== undefined) {
