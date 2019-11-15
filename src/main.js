@@ -129,7 +129,11 @@ function loopThrough({
           const reference = currentComponent.attributes[attr].split("$");
           if (reference[1] == undefined) {
             if (attr == "class") {
-              node.classList.add(reference[0]);
+              const classArray = reference[0].split(" ").filter(Boolean);
+              classArray.map((className)=>{
+                node.classList.add(className);
+              })
+              
             } else {
               node.setAttribute(attr, reference[0]);
             }
