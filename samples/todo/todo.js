@@ -8,7 +8,7 @@ const list = [];
 
 const Todo = puffin.element(
   `
-      <div class="todo">
+      <div click="$test" class="todo">
         <h3 class="task_title"></h3>
         <p class="task_description"></p>
       </div>
@@ -31,9 +31,16 @@ const Todo = puffin.element(
         attribute:"data",
         value: "$data"
       }
+    ],
+    methods:[
+      function test(){
+        console.log("TEST")
+      }
     ]
   }
 );
+
+
 function App() {
   const Todolist = puffin.element(
     `

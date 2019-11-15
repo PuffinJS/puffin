@@ -12,7 +12,8 @@ const puffin = {
     return {
       content: content,
       options: options,
-      node: currentComponent.element
+      node: currentComponent.element,
+      methods: currentComponent.usedMethods
     };
   },
   render: (parent, node) => {
@@ -42,25 +43,21 @@ function getProps(currentComponent) {
   }
   return props;
 }
-function setMethods(node,methods){
-  methods.map((method)=>{
-    if(node !== undefined){
-      node[method.name] = method;
-    }
-  })
+function setMethods(currentComponent, node, methods) {
+  //console.log(currentComponent)
 }
-function isContainer(nodeName){
-  switch(nodeName){
+function isContainer(nodeName) {
+  switch (nodeName) {
     case "DIV":
-      return true
+      return true;
   }
 }
-function throwWarn(message){
-  console.warn("puffin warn -->",message)
+function throwWarn(message) {
+  console.warn("puffin warn -->", message);
 }
 
-function throwError(message){
-  console.error("puffin error -->",message)
+function throwError(message) {
+  console.error("puffin error -->", message);
 }
 
 function executeProps(importedComponentProps, currentComponentProps, node) {
@@ -74,62 +71,90 @@ function executeProps(importedComponentProps, currentComponentProps, node) {
             }
           });
         }
-      break;
+        break;
       case "attribute":
-      for (let ch of node.getElementsByClassName(bd.class)) {
-        currentComponentProps.map(bs => {
-          if (bs[bd.value.split("$")[1]] !== undefined) {
-            ch.setAttribute(bd.attribute,bs[bd.value.split("$")[1]])
-          }
-        });
-      }
-      break;
+        for (let ch of node.getElementsByClassName(bd.class)) {
+          currentComponentProps.map(bs => {
+            if (bs[bd.value.split("$")[1]] !== undefined) {
+              ch.setAttribute(bd.attribute, bs[bd.value.split("$")[1]]);
+            }
+          });
+        }
+        break;
     }
   });
 }
 
-function loopThrough({ arr = [], parent, methods = [], components = {} }) {
+function loopThrough({
+  arr = [],
+  parent,
+  methods = [],
+  components = {},
+  usedMethods = []
+}) {
   for (let i = 0; i < arr.length; i++) {
     const currentComponent = arr[i];
     const currentComponentProps = getProps(currentComponent);
-    let importedComponentProps = []
+    let importedComponent = {
+      options: {
+        props: []
+      }
+    };
     if (currentComponent.type === "element") {
       if (isComponentImported(components, currentComponent)) {
-        var node = Object.assign(components[currentComponent.name].node)
-        if( components[currentComponent.name].options){
-          const  importedComportentConf =components[currentComponent.name].options;
-          if(importedComportentConf && importedComportentConf.props){
-            importedComponentProps =
-            components[currentComponent.name].options.props;
-          }
-        }
+        var node = components[currentComponent.name].node.cloneNode(true);
+        importedComponent = components[currentComponent.name];
         isImported = true;
       } else {
         var node = document.createElement(currentComponent.name);
         isImported = false;
       }
-      if(currentComponent.elements == undefined && !isImported && isContainer(node.nodeName) ){
-        throwWarn(`Element <${currentComponent.name}> is empty.`)
+      if (
+        currentComponent.elements == undefined &&
+        !isImported &&
+        isContainer(node.nodeName)
+      ) {
+        throwWarn(`Element <${currentComponent.name}> is empty.`);
+      }
+      if (importedComponent.methods != undefined && isImported) {
+        importedComponent.methods.map(met => {
+          const element = node.classList.contains(met.classIdentifier)
+            ? node
+            : node.getElementsByClassName(met.classIdentifier)[0];
+          element.addEventListener(met.event.name, met.event.func);
+        });
       }
       if (currentComponent.attributes !== undefined) {
         Object.keys(currentComponent.attributes).map(attr => {
           const reference = currentComponent.attributes[attr].split("$");
-          if(reference[1]!=undefined){
+          if (reference[1] == undefined) {
+            if (attr == "class") {
+              node.classList.add(reference[0]);
+            } else {
+              node.setAttribute(attr, reference[0]);
+            }
+          } else {
             methods.map(func => {
-              if (
-                func.name === reference[1]
-              ) {
-                node.addEventListener(attr,func)
+              if (func.name === reference[1]) {
+                node.addEventListener(attr, func);
+                const classIdentifier = `puffin${Math.random() +
+                  Math.random()}`;
+                node.classList.add(classIdentifier);
+                usedMethods.push({
+                  classIdentifier: classIdentifier,
+                  event: {
+                    name: attr,
+                    func: func
+                  }
+                });
               }
             });
-          }else{
-            node.setAttribute(attr,reference[0])
           }
         });
       }
     }
-    executeProps(importedComponentProps, currentComponentProps, node);
-    setMethods(node,methods )
+    executeProps(importedComponent.options.props, currentComponentProps, node);
+    setMethods(currentComponent, methods);
     if (currentComponent.type === "text") {
       parent.innerText = currentComponent.text;
     }
@@ -142,7 +167,7 @@ function loopThrough({ arr = [], parent, methods = [], components = {} }) {
           methods: methods,
           components: components,
           props: currentComponent.binds
-        })
+        });
       } else {
         loopThrough({
           arr: currentComponent.elements,
@@ -150,24 +175,26 @@ function loopThrough({ arr = [], parent, methods = [], components = {} }) {
           methods: methods,
           components: components,
           props: currentComponent.binds
-        })
+        });
       }
     } else {
       if (isImported) {
-         parent.appendChild(node);
+        parent.appendChild(node);
       }
     }
-    if (currentComponent.first != undefined) { //Parent element
+    if (currentComponent.first != undefined) {
+      //Parent element
       if (parent != null) {
         return {
-          element: parent
+          element: parent,
+          usedMethods: usedMethods
         };
       } else {
         return {
-          element: node
+          element: node,
+          usedMethods: usedMethods
         };
       }
-      
     }
   }
 }
