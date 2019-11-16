@@ -155,7 +155,6 @@ function loopThrough({
       }
     }
     executeProps(importedComponent.options.props, currentComponentProps, node);
-    setMethods(currentComponent, methods);
     if (currentComponent.type === "text") {
       parent.innerText = currentComponent.text;
     }
