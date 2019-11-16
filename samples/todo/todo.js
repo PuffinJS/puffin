@@ -42,6 +42,7 @@ const Todo = puffin.element(
 
 
 function App() {
+  document.getElementById("app").innerHTML = "";
   const Todolist = puffin.element(
     `
        <div>

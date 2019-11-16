@@ -16,9 +16,8 @@ const puffin = {
       methods: currentComponent.usedMethods
     };
   },
-  render: (parent, node) => {
-    node.innerHTML = "";
-    node.appendChild(parent.node);
+  render: (element, parent) => {
+    parent.appendChild(element.node);
   }
 };
 function isComponentImported(componentsArray, currentComponent) {
@@ -43,9 +42,7 @@ function getProps(currentComponent) {
   }
   return props;
 }
-function setMethods(currentComponent, node, methods) {
-  //console.log(currentComponent)
-}
+
 function isContainer(nodeName) {
   switch (nodeName) {
     case "DIV":
