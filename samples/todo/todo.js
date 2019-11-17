@@ -26,20 +26,19 @@ const Todo = puffin.element(
         value: "$description"
       },
       {
-        class: "task_description",
+        class: "todo",
         type: "attribute",
-        attribute:"data",
-        value: "$data"
+        attribute:"title",
+        value: "$title"
       }
     ],
     methods:[
       function test(){
-        console.log("TEST")
+        alert(`Title:${this.getAttribute("title")}`)
       }
     ]
   }
 );
-
 
 function App() {
   document.getElementById("app").innerHTML = "";
@@ -49,13 +48,11 @@ function App() {
         <h2>Todo Demo </h2>
         <input class="input_title" placeHolder="A title" ></input>
         <input class="input_description" placeHolder="A description"></input>
-        <div></div>
-        <p></p>
         <button click="$addTodo" >Add</button>
           ${(function() {
             let content = "";
             list.map(task => {
-              content += `<Todo data="test" title="${task.title}" description="${task.description}"></Todo>`;
+              content += `<Todo title="${task.title}" description="${task.description}"></Todo>`;
             });
             console.log(content)
             return content;

@@ -49,6 +49,7 @@ function isContainer(nodeName) {
       return true;
   }
 }
+
 function throwWarn(message) {
   console.warn("puffin warn -->", message);
 }
@@ -106,13 +107,6 @@ function loopThrough({
         var node = document.createElement(currentComponent.name);
         isImported = false;
       }
-      if (
-        currentComponent.elements == undefined &&
-        !isImported &&
-        isContainer(node.nodeName)
-      ) {
-        throwWarn(`Element <${currentComponent.name}> is empty.`);
-      }
       if (importedComponent.methods != undefined && isImported) {
         importedComponent.methods.map(met => {
           const element = node.classList.contains(met.classIdentifier)
@@ -154,7 +148,9 @@ function loopThrough({
         });
       }
     }
-    executeProps(importedComponent.options.props, currentComponentProps, node);
+    if(importedComponent && importedComponent.options && importedComponent.options.props){
+      executeProps(importedComponent.options.props, currentComponentProps, node);
+    }
     if (currentComponent.type === "text") {
       parent.innerText = currentComponent.text;
     }
@@ -183,7 +179,6 @@ function loopThrough({
       }
     }
     if (currentComponent.first != undefined) {
-      //Parent element
       if (parent != null) {
         return {
           element: parent,
