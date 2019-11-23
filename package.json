@@ -1,6 +1,6 @@
 {
   "name": "@mkenzo_8/puffin",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "A components library ready for web.",
   "main": "src/main.js",
   "scripts": {},

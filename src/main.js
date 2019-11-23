@@ -216,4 +216,4 @@ function loopThrough({
   }
 }
 
-module.exports = puffin,{ puffin };
+module.exports = { puffin };
