@@ -82,7 +82,29 @@ function executeProps(importedComponentProps, currentComponentProps, node) {
     }
   });
 }
-
+function createElement(Node){
+    if(Node.attributes && Node.attributes.isSVG == "true"){ 
+      return document.createElementNS("http://www.w3.org/2000/svg",Node.name);
+    }
+  switch(Node.name){
+    case "defs":
+    case "stop":
+    case "linearGradient":
+    case "feColorMatrix":
+    case "feBlend":
+    case "filter":
+    case "path":
+    case "group":
+    case "polyline":
+    case "line":
+    case "rect":
+    case "circle":
+    case "svg":
+      return document.createElementNS("http://www.w3.org/2000/svg",Node.name);
+    default:
+      return document.createElement(Node.name)
+  }
+}
 function loopThrough({
   arr = [],
   parent,
@@ -104,7 +126,7 @@ function loopThrough({
         importedComponent = components[currentComponent.name];
         isImported = true;
       } else {
-        var node = document.createElement(currentComponent.name);
+        var node = createElement(currentComponent);
         isImported = false;
       }
       if (importedComponent.methods != undefined && isImported) {
@@ -194,4 +216,4 @@ function loopThrough({
   }
 }
 
-module.exports = { puffin };
+module.exports = puffin,{ puffin };
