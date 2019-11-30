@@ -5,12 +5,22 @@ const { puffin } = require("../../src/main.js");
  */
 
 const list = [];
+const testButton = puffin.element(`
+  <button click="$test2">aa</button>
+`,{
+  methods:[
+    function test2(){
+      console.log("test 2!!")
+    }
+  ]
+})
 
 const Todo = puffin.element(
   `
       <div click="$test" class="todo">
         <h3 class="task_title"></h3>
         <p class="task_description"></p>
+        <testButton/>
       </div>
     `,
   {
@@ -36,7 +46,10 @@ const Todo = puffin.element(
       function test(){
         alert(`Title:${this.getAttribute("title")}`)
       }
-    ]
+    ],
+    components:{
+      testButton
+    }
   }
 );
 
