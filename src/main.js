@@ -84,7 +84,7 @@ function executeProps(importedComponentProps, currentComponentProps, node) {
 }
 function getComponentsMethods(usedMethods=[],components){
   Object.keys(components).map(function(component){
-    if(components[component].methods != undefined){
+    if(components[component] != null){
       usedMethods = usedMethods.concat(components[component].methods)
     }
   })
