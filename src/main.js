@@ -1,14 +1,13 @@
 const parser = require("xml-js");
 const puffin = {
-  element: function(content, options = { methods: [] }, methods) {
+  element: function(content, options = { methods: [] }) {
     const output = JSON.parse(parser.xml2json(content));
     output.elements[0].first = true; //Defines the parent element on the component
     const currentComponent = loopThrough({
       arr: output.elements,
       parent: null,
       methods: options.methods,
-      components: options.components,
-      usedMethods:methods
+      components: options.components
     });
     return {
       content: content,
@@ -83,6 +82,13 @@ function executeProps(importedComponentProps, currentComponentProps, node) {
     }
   });
 }
+function getComponentsMethods(usedMethods=[],components){
+  Object.keys(components).map(function(component){
+    usedMethods = usedMethods.concat(components[component].methods)
+  })
+  return usedMethods;
+}
+
 function createElement(Node){
     if(Node.attributes && Node.attributes.isSVG == "true"){ 
       return document.createElementNS("http://www.w3.org/2000/svg",Node.name);
@@ -112,11 +118,9 @@ function loopThrough({
   parent,
   methods = [],
   components = {},
-  usedMethods = [],
-  test = ""
+  usedMethods = []
 }) {
   for (let i = 0; i < arr.length; i++) {
-    test += "%% --- "
     const currentComponent = arr[i];
     const currentComponentProps = getProps(currentComponent);
     let importedComponent = {
@@ -134,7 +138,6 @@ function loopThrough({
         isImported = false;
       }
       if (importedComponent.methods != undefined && isImported) {
-        usedMethods = usedMethods.concat(importedComponent.methods)
         importedComponent.methods.map(met => {
           const element = node.classList.contains(met.classIdentifier)
             ? node
@@ -151,6 +154,7 @@ function loopThrough({
               classArray.map((className)=>{
                 node.classList.add(className);
               })
+              
             } else {
               node.setAttribute(attr, reference[0]);
             }
@@ -183,25 +187,21 @@ function loopThrough({
     if (currentComponent.type !== "text" && isImported == false) {
       if (parent != null) {
         const result = parent.appendChild(node);
-        const child = loopThrough({
+        loopThrough({
           arr: currentComponent.elements,
           parent: result,
           methods: methods,
           components: components,
-          props: currentComponent.binds,
-          usedMethods:usedMethods
+          props: currentComponent.binds
         });
-        if(child != undefined) usedMethods = child.usedMethods
       } else {
-        const child = loopThrough({
+        loopThrough({
           arr: currentComponent.elements,
           parent: node,
           methods: methods,
           components: components,
-          props: currentComponent.binds,
-          usedMethods:usedMethods
+          props: currentComponent.binds
         });
-        if(child != undefined) usedMethods = child.usedMethods
       }
     } else {
       if (isImported) {
@@ -209,6 +209,7 @@ function loopThrough({
       }
     }
     if (currentComponent.first != undefined) {
+      usedMethods = getComponentsMethods(usedMethods,components)
       if (parent != null) {
         return {
           element: parent,
@@ -220,12 +221,6 @@ function loopThrough({
           usedMethods: usedMethods
         };
       }
-    }else{
-      if(isImported){
-        return {
-          usedMethods:usedMethods
-        }
-      } 
     }
   }
 }

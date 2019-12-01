@@ -67,7 +67,6 @@ function App() {
             list.map(task => {
               content += `<Todo title="${task.title}" description="${task.description}"></Todo>`;
             });
-            console.log(content)
             return content;
           })()}
        </div>
