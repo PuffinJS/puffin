@@ -139,10 +139,12 @@ function loopThrough({
       }
       if (importedComponent.methods != undefined && isImported) {
         importedComponent.methods.map(met => {
-          const element = node.classList.contains(met.classIdentifier)
-            ? node
-            : node.getElementsByClassName(met.classIdentifier)[0];
-          element.addEventListener(met.event.name, met.event.func);
+          const elements = node.classList.contains(met.classIdentifier)
+            ? [node]
+            : node.getElementsByClassName(met.classIdentifier);
+            for(let element of elements){
+              element.addEventListener(met.event.name, met.event.func);
+            }
         });
       }
       if (currentComponent.attributes !== undefined) {
