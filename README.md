@@ -62,6 +62,6 @@ puffin.render(App, document.body);
 
 MIT License
 
-Copyright (c) Marc Espin Sanz
+Copyright (c) Marc Espín Sanz
 
 [Full license](LICENSE.md)

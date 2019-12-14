@@ -1,19 +1,28 @@
-const parser = require("xml-js");
+/*
+
+MIT License
+
+Copyright (c) Marc Espin Sanz
+
+*/
 const puffin = {
   element: function(content, options = { methods: [] }) {
+    const parser = require("xml-js");
     const output = JSON.parse(parser.xml2json(content));
     output.elements[0].first = true; //Defines the parent element on the component
     const currentComponent = loopThrough({
       arr: output.elements,
       parent: null,
       methods: options.methods,
-      components: options.components
+      components: options.components,
+      propsConfigured:options.props
     });
     return {
       content: content,
       options: options,
       node: currentComponent.element,
-      methods: currentComponent.usedMethods
+      methods: currentComponent.usedMethods,
+      props:currentComponent.usedProps
     };
   },
   render: (element, parent) => {
@@ -40,6 +49,15 @@ function getProps(currentComponent) {
       });
     });
   }
+  if (currentComponent.elements != undefined) {
+    currentComponent.elements.map((element, index) => {
+      if(element.type == "text"){
+        props.push({
+          "__text": element.text
+        });
+      }
+    });
+  }
   return props;
 }
 
@@ -58,30 +76,38 @@ function throwError(message) {
   console.error("puffin error -->", message);
 }
 
-function executeProps(importedComponentProps, currentComponentProps, node) {
-  importedComponentProps.map(bd => {
-    switch (bd.type) {
-      case "text":
-        for (let ch of node.getElementsByClassName(bd.class)) {
-          currentComponentProps.map(bs => {
-            if (bs[bd.value.split("$")[1]] !== undefined) {
-              ch.textContent += bs[bd.value.split("$")[1]];
-            }
-          });
+function appendProps(PropsObjectes,PropsValues,options,node) {
+  if(PropsObjectes != undefined && node != undefined){
+    PropsObjectes.map((prop)=>{
+      const element = node.getElementsByClassName(prop.class)[0]
+      if(prop.attribute != "__text"){
+        element.setAttribute(prop.attribute,prop.value.replace(`{{${prop.name}}}`,options[prop.name]))
+      }else{
+        element.textContent = prop.value.replace(`{{${prop.name}}}`,options[prop.name])
+      }
+    })
+  }
+}
+
+function detectProps(ExportedProps, PropsValues, node,totalList) {
+  ExportedProps.map(prop => {
+    PropsValues.map(attribute => {
+      Object.keys(attribute).map(function(name){
+        if(attribute[name].match(`{{${prop}}}`)){
+          const classIdentifier = `puffin${Math.random() + Math.random()}`;
+          totalList.push({
+            class:classIdentifier,
+            attribute:name,
+            value:attribute[name],
+            name:prop
+          })
+          node.classList.add(classIdentifier)
         }
-        break;
-      case "attribute":
-        for (let ch of node.getElementsByClassName(bd.class)) {
-          currentComponentProps.map(bs => {
-            if (bs[bd.value.split("$")[1]] !== undefined) {
-              ch.setAttribute(bd.attribute, bs[bd.value.split("$")[1]]);
-            }
-          });
-        }
-        break;
-    }
+      })
+    });
   });
 }
+
 function getComponentsMethods(usedMethods=[],components){
   Object.keys(components).map(function(component){
     if(components[component] != null){
@@ -92,7 +118,7 @@ function getComponentsMethods(usedMethods=[],components){
 }
 
 function createElement(Node){
-    if(Node.attributes && Node.attributes.isSVG == "true"){ 
+    if(Node.attributes && Node.attributes.isSVG == "true"){
       return document.createElementNS("http://www.w3.org/2000/svg",Node.name);
     }
   switch(Node.name){
@@ -120,7 +146,9 @@ function loopThrough({
   parent,
   methods = [],
   components = {},
-  usedMethods = []
+  usedMethods = [],
+  usedProps = [],
+  propsConfigured = []
 }) {
   for (let i = 0; i < arr.length; i++) {
     const currentComponent = arr[i];
@@ -158,7 +186,7 @@ function loopThrough({
               classArray.map((className)=>{
                 node.classList.add(className);
               })
-              
+
             } else {
               node.setAttribute(attr, reference[0]);
             }
@@ -182,8 +210,9 @@ function loopThrough({
         });
       }
     }
-    if(importedComponent && importedComponent.options && importedComponent.options.props){
-      executeProps(importedComponent.options.props, currentComponentProps, node);
+    detectProps(propsConfigured, currentComponentProps, node,usedProps)
+    if(isComponentImported(components, currentComponent)){
+      appendProps(importedComponent.props,currentComponentProps, currentComponent.attributes,node);
     }
     if (currentComponent.type === "text") {
       parent.innerText = currentComponent.text;
@@ -191,21 +220,23 @@ function loopThrough({
     if (currentComponent.type !== "text" && isImported == false) {
       if (parent != null) {
         const result = parent.appendChild(node);
-        loopThrough({
-          arr: currentComponent.elements,
-          parent: result,
-          methods: methods,
-          components: components,
-          props: currentComponent.binds
-        });
+          loopThrough({
+            arr: currentComponent.elements,
+            parent: result,
+            methods: methods,
+            components: components,
+            usedProps: usedProps,
+            propsConfigured:propsConfigured
+          });
       } else {
-        loopThrough({
-          arr: currentComponent.elements,
-          parent: node,
-          methods: methods,
-          components: components,
-          props: currentComponent.binds
-        });
+          loopThrough({
+            arr: currentComponent.elements,
+            parent: node,
+            methods: methods,
+            components: components,
+            usedProps: usedProps,
+            propsConfigured:propsConfigured
+          });
       }
     } else {
       if (isImported) {
@@ -217,12 +248,16 @@ function loopThrough({
       if (parent != null) {
         return {
           element: parent,
-          usedMethods: usedMethods
+          usedMethods: usedMethods,
+          propsConfigured:propsConfigured,
+          usedProps:usedProps
         };
       } else {
         return {
           element: node,
-          usedMethods: usedMethods
+          usedMethods: usedMethods,
+          propsConfigured:propsConfigured,
+          usedProps:usedProps
         };
       }
     }

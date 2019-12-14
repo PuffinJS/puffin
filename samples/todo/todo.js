@@ -18,38 +18,17 @@ const testButton = puffin.element(`
 const Todo = puffin.element(
   `
       <div click="$test" class="todo">
-        <h3 class="task_title"></h3>
-        <p class="task_description"></p>
-        <testButton/>
+        <h3 class="task_title" >{{title}}</h3>
+        <p class="task_description">{{description}}</p>
       </div>
     `,
   {
-    props: [
-      {
-        class: "task_title",
-        type: "text",
-        value: "$title"
-      },
-      {
-        class: "task_description",
-        type: "text",
-        value: "$description"
-      },
-      {
-        class: "todo",
-        type: "attribute",
-        attribute:"title",
-        value: "$title"
-      }
-    ],
+    props: ["title","description"],
     methods:[
       function test(){
         alert(`Title:${this.getAttribute("title")}`)
       }
-    ],
-    components:{
-      testButton
-    }
+    ]
   }
 );
 
