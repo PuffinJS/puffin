@@ -1,11 +1,11 @@
 {
   "name": "@mkenzo_8/puffin",
-  "version": "0.1.0",
+  "version": "0.1.01",
   "description": "A components library ready for web.",
   "main": "src/main.js",
   "scripts": {},
   "repository": "https://github.com/PuffinJS/puffin",
-  "author": "Marc Espin Sanz <mespinsanz@gmail.com>",
+  "author": "Marc Espín Sanz <mespinsanz@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "xml-js": "^1.6.11"

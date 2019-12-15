@@ -17,9 +17,10 @@ const testButton = puffin.element(`
 
 const Todo = puffin.element(
   `
-      <div click="$test" class="todo">
+      <div  class="todo">
         <h3 class="task_title" >{{title}}</h3>
         <p class="task_description">{{description}}</p>
+        <testButton/>
       </div>
     `,
   {
@@ -28,7 +29,10 @@ const Todo = puffin.element(
       function test(){
         alert(`Title:${this.getAttribute("title")}`)
       }
-    ]
+    ],
+    components:{
+      testButton
+    }
   }
 );
 
@@ -65,7 +69,12 @@ function App() {
           });
           App();
         }
-      ]
+      ],
+      events:{
+        mounted(target){
+          console.log("I have been mounted")
+        }
+      }
     }
   );
   puffin.render(Todolist, document.getElementById("app"));

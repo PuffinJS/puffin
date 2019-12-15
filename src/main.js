@@ -6,7 +6,7 @@ Copyright (c) Marc Espin Sanz
 
 */
 const puffin = {
-  element: function(content, options = { methods: [] }) {
+  element: function(content, options = { methods: [],events:{} }) {
     const parser = require("xml-js");
     const output = JSON.parse(parser.xml2json(content));
     output.elements[0].first = true; //Defines the parent element on the component
@@ -27,6 +27,9 @@ const puffin = {
   },
   render: (element, parent) => {
     parent.appendChild(element.node);
+    if(element.options.events && element.options.events.mounted){
+      element.options.events.mounted(element.node)
+    }
   }
 };
 function isComponentImported(componentsArray, currentComponent) {
