@@ -1,13 +1,17 @@
 const { puffin } = require("../../src/main.js");
 
 const positionComponent = puffin.element(
-  `<div mousemove="$scrolling">Component test!</div>`,
+  `<p mousemove="$moving" message="Random number: {{count}} , but attribute">
+    {{count}}
+  </p>`,
   {
     methods: [
-      function scrolling(e) {
-        this.style = "cursor:pointer";
-        this.textContent = `X: ${e.clientX} Y:${e.clientY}`
+      function moving(e) {
+        this.props.count = Math.random()
       }
+    ],
+    props:[
+      "count"
     ]
   }
 );
@@ -26,7 +30,7 @@ const componentTest = puffin.element(
 const App = puffin.element(
   `
      <div>
-        <positionComponent></positionComponent>
+        <positionComponent count="0"></positionComponent>
         <componentTest></componentTest>
         <button click="$increase" value="0">Count:0</button>
      </div>

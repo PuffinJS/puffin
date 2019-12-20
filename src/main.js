@@ -79,17 +79,51 @@ function throwError(message) {
   console.error("puffin error -->", message);
 }
 
-function appendProps(PropsObjectes,PropsValues,options,node) {
-  if(PropsObjectes != undefined && node != undefined){
-    PropsObjectes.map((prop)=>{
-      const element = node.getElementsByClassName(prop.class)[0]
-      if(prop.attribute != "__text"){
-        element.setAttribute(prop.attribute,prop.value.replace(`{{${prop.name}}}`,options[prop.name]))
-      }else{
-        element.textContent = prop.value.replace(`{{${prop.name}}}`,options[prop.name])
-      }
+function appendProps(PropsObjects,options,node,propsList) {
+  if(PropsObjects != undefined && node != undefined){
+    PropsObjects.map((prop)=>{
+      const element = node.getElementsByClassName(prop.class)[0] || node
+      setProp({
+        object:prop,
+        options:options,
+        node:element
+      })
     })
   }
+  if(node.props == undefined) node.props = new ObjectObserver(options,node,PropsObjects)
+}
+
+function ObjectObserver(optionalOptions,node,PropsObjects){
+  const observer = {
+    set: function(object, propName, propValue) {
+        PropsObjects.map((prop)=>{
+          const element = node.getElementsByClassName(prop.class)[0] || node
+          setProp({
+            object:prop,
+            options:optionalOptions,
+            node:element,
+            directValue:propValue
+          })
+        })
+      object[propName] = propValue;
+      return true;
+    }
+  };
+  return new Proxy({}, observer);
+}
+
+function setProp({object,options,node,directValue = null}){
+  if(object.type === "visible"){
+    if(object.attribute === "__text"){
+      node.textContent = object.value.replace(`{{${object.name}}}`,directValue!= null? directValue:options[object.name])
+    }else{
+      node.setAttribute(object.attribute,object.value.replace(`{{${object.name}}}`,directValue!= null? directValue:options[object.name]))
+    }
+  }
+}
+
+function generateClass(){
+  return `pfn_${(Math.random() + Math.random()).toString().slice(12)}`
 }
 
 function detectProps(ExportedProps, PropsValues, node,totalList) {
@@ -97,17 +131,27 @@ function detectProps(ExportedProps, PropsValues, node,totalList) {
     PropsValues.map(attribute => {
       Object.keys(attribute).map(function(name){
         if(attribute[name].match(`{{${prop}}}`)){
-          const classIdentifier = `puffin${Math.random() + Math.random()}`;
+          const classIdentifier = generateClass()
           totalList.push({
             class:classIdentifier,
             attribute:name,
             value:attribute[name],
+            type:"visible",
             name:prop
           })
           node.classList.add(classIdentifier)
         }
       })
     });
+    const classIdentifier = generateClass()
+    totalList.push({
+      class:classIdentifier,
+      attribute:name,
+      value:null,
+      type:"hidden",
+      name:prop
+    })
+   if(node!=undefined) node.classList.add(classIdentifier)
   });
 }
 
@@ -197,8 +241,7 @@ function loopThrough({
             methods.map(func => {
               if (func.name === reference[1]) {
                 node.addEventListener(attr, func);
-                const classIdentifier = `puffin${Math.random() +
-                  Math.random()}`;
+                const classIdentifier = generateClass()
                 node.classList.add(classIdentifier);
                 usedMethods.push({
                   classIdentifier: classIdentifier,
@@ -215,7 +258,7 @@ function loopThrough({
     }
     detectProps(propsConfigured, currentComponentProps, node,usedProps)
     if(isComponentImported(components, currentComponent)){
-      appendProps(importedComponent.props,currentComponentProps, currentComponent.attributes,node);
+      appendProps(importedComponent.props, currentComponent.attributes, node,importedComponent.options.props);
     }
     if (currentComponent.type === "text") {
       parent.innerText = currentComponent.text;
