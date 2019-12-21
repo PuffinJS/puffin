@@ -84,6 +84,7 @@ function appendProps(PropsObjects,options,node) {
   if(PropsObjects != undefined && node != undefined){
     PropsObjects.map((prop)=>{
       const element = node.getElementsByClassName(prop.class)[0] || node
+      if(element.props == undefined) element.props = new ObjectObserver(options,element,PropsObjects)
       setProp({
         object:prop,
         options:options,
@@ -121,7 +122,7 @@ function setProp({object,options,node,directValue = null}){
       node.setAttribute(object.attribute,object.value.replace(`{{${object.name}}}`,directValue!= null? directValue:options[object.name]))
     }
   }else{
-    Object.defineProperty(node.props,[object.name],{
+    Object.defineProperty(node.props,object.name,{
       value: directValue!= null? directValue:object.value,
       writable:true
     })
