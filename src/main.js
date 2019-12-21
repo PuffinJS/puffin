@@ -79,7 +79,8 @@ function throwError(message) {
   console.error("puffin error -->", message);
 }
 
-function appendProps(PropsObjects,options,node,propsList) {
+function appendProps(PropsObjects,options,node) {
+  if(node.props == undefined) node.props = new ObjectObserver(options,node,PropsObjects)
   if(PropsObjects != undefined && node != undefined){
     PropsObjects.map((prop)=>{
       const element = node.getElementsByClassName(prop.class)[0] || node
@@ -90,7 +91,7 @@ function appendProps(PropsObjects,options,node,propsList) {
       })
     })
   }
-  if(node.props == undefined) node.props = new ObjectObserver(options,node,PropsObjects)
+  
 }
 
 function ObjectObserver(optionalOptions,node,PropsObjects){
@@ -119,6 +120,11 @@ function setProp({object,options,node,directValue = null}){
     }else{
       node.setAttribute(object.attribute,object.value.replace(`{{${object.name}}}`,directValue!= null? directValue:options[object.name]))
     }
+  }else{
+    Object.defineProperty(node.props,[object.name],{
+      value: directValue!= null? directValue:object.value,
+      writable:true
+    })
   }
 }
 
@@ -258,7 +264,9 @@ function loopThrough({
     }
     detectProps(propsConfigured, currentComponentProps, node,usedProps)
     if(isComponentImported(components, currentComponent)){
-      appendProps(importedComponent.props, currentComponent.attributes, node,importedComponent.options.props);
+      appendProps(importedComponent.props, currentComponent.attributes, node);
+    }else{
+      if(node != undefined)  appendProps(usedProps,currentComponent.attributes,node)
     }
     if (currentComponent.type === "text") {
       parent.innerText = currentComponent.text;

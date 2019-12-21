@@ -27,25 +27,35 @@ const componentTest = puffin.element(
   }
 );
 
+const increaseMe = puffin.element(`
+  <button click="$increment" count="{{count}}">Count: {{count}}</button>
+`,{
+  methods:[
+    function increment(){
+      this.props.count++   
+    }
+  ],
+  props:["count"]
+})
+
 const App = puffin.element(
   `
      <div>
-        <positionComponent count="0"></positionComponent>
-        <componentTest></componentTest>
-        <button click="$increase" value="0">Count:0</button>
+        <button click="$increase">Count: {{count}}</button>
      </div>
   `,
   {
-    components: {
-      componentTest,
-      positionComponent
+    events:{
+      mounted(target){
+        target.props.count = 0 //Initial value
+      }
     },
     methods: [
       function increase() {
-        this.setAttribute("value", Number(this.getAttribute("value")) + 1);
-        this.innerText = `Count: ${this.getAttribute("value")}`;
+        this.props.count++;  //Increase the count by one on clicking
       }
-    ]
+    ],
+    props:["count"]
   }
 );
 

@@ -4,11 +4,11 @@ Puffin is a JavaScript library for creating reusable components ready for the we
 
 ## 🤔 Motivation
 
-Puffin can be used easier than other libraries since it doesn't need to be compiled. It's ready to be used always.
+Puffin is a reactive components UI library made for the web.
 
 ## 🔬 Status
 
-This is still on testing, not made for production usage.
+Probably have bugs so I don't recommend to use it on production. As you wish.
 
 ## ⚽ Usage
 
@@ -42,16 +42,21 @@ A simple component:
 const App = puffin.element(
   `
      <div>
-        <button click="$increase" value="0">Count: 0</button>
+        <button click="$increase">Count: {{count}}</button>
      </div>
   `,
   {
+    events:{
+      mounted(target){
+        target.props.count = 0 //Initial value
+      }
+    },
     methods: [
       function increase() {
-        this.setAttribute("value", Number(this.getAttribute("value")) + 1);
-        this.innerText = `Count: ${this.getAttribute("value")}`;
+        this.props.count++;  //Increase the count by one on clicking
       }
-    ]
+    ],
+    props:["count"]
   }
 );
 
