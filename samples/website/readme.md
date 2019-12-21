@@ -1,1 +1,0 @@
-This is a very basic web made on PuffinJS, it's still on work.

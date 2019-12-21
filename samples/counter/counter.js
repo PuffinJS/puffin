@@ -38,23 +38,31 @@ const increaseMe = puffin.element(`
   props:["count"]
 })
 
+
+
 const App = puffin.element(
   `
      <div>
+        <positionComponent count="0"></positionComponent>
+        <componentTest></componentTest>
         <button click="$increase">Count: {{count}}</button>
      </div>
   `,
   {
-    events:{
-      mounted(target){
-        target.props.count = 0 //Initial value
-      }
+    components: {
+      componentTest,
+      positionComponent
     },
     methods: [
       function increase() {
         this.props.count++;  //Increase the count by one on clicking
       }
     ],
+    events:{
+      mounted(target){
+        target.props.count = 0 //Initial value
+      }
+    },
     props:["count"]
   }
 );
