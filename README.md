@@ -1,10 +1,8 @@
 # PuffinJS
 
+## 🤔 About
+
 Puffin is a JavaScript library for creating reusable components ready for the web. It doesn't need any transpiling.
-
-## 🤔 Motivation
-
-Puffin is a reactive components UI library made for the web.
 
 ## 🔬 Status
 
