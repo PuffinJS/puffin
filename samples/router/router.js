@@ -1,6 +1,5 @@
 const { puffin , puffinRouter } = require("../../src/main.js");
 
-
 const Home = puffin.element(
   `
     <div>
@@ -25,8 +24,6 @@ const router = new puffin.router([
     component:Contact
   }
 ])
-
-
 
 const App = puffin.element(
   `

@@ -119,7 +119,7 @@ function ObjectObserver(optionalOptions, node, PropsObjects) {
   return new Proxy({}, observer);
 }
 
-function setProp({ object, options, node, directValue = null }) {
+function setProp({ object, options = {}, node, directValue = null }) {
   if (object.type === "visible") {
     if (object.attribute === "__text") {
       node.textContent = object.value.replace(
