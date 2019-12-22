@@ -6,7 +6,14 @@ Puffin is a JavaScript library for creating reusable components ready for the we
 
 ## 🔬 Status
 
-Probably have bugs so I don't recommend to use it on production. As you wish.
+Pretty stable but, be careful when using on production. (WIP)
+
+What does it have?
+* Reusable components
+  * Reactive Props
+  * Methods
+  * Events
+* Basic router 
 
 ## ⚽ Usage
 

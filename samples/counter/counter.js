@@ -27,19 +27,6 @@ const componentTest = puffin.element(
   }
 );
 
-const increaseMe = puffin.element(`
-  <button click="$increment" count="{{count}}">Count: {{count}}</button>
-`,{
-  methods:[
-    function increment(){
-      this.props.count++   
-    }
-  ],
-  props:["count"]
-})
-
-
-
 const App = puffin.element(
   `
      <div>
