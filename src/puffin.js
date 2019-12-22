@@ -292,10 +292,14 @@ function loopThrough({
         appendProps(usedProps, currentComponent.attributes, node);
     }
     if (currentComponent.type === "text") {
+      
       parent.innerText = currentComponent.text;
     }
-    if (currentComponent.type !== "text" && isImported == false) {
-      if (parent != null) {
+    if(currentComponent.type === "element" &&  currentComponent.name == "div"){
+      node.innerText = ""
+    }
+    if (currentComponent.type !== "text" && isImported == false ) {
+      if (parent != null ) {
         const result = parent.appendChild(node);
         loopThrough({
           arr: currentComponent.elements,

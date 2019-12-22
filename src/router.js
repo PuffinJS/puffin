@@ -1,4 +1,4 @@
-import puffin from './puffin'
+const puffin = require("./puffin")
 
 function parseURL(url){
     const parsedURL = url.toString().split(/(\/)|(#)/g).filter(x => Boolean(x))
