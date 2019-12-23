@@ -123,14 +123,14 @@ function setProp({ object, options = {}, node, directValue = null }) {
   if (object.type === "visible") {
     if (object.attribute === "__text") {
       node.textContent = object.value.replace(
-        `{{${object.name}}}`,
+        new RegExp(`{{${object.name}}}`,'g'),
         directValue != null ? directValue : options[object.name]
       );
     } else {
       node.setAttribute(
         object.attribute,
         object.value.replace(
-          `{{${object.name}}}`,
+          new RegExp(`{{${object.name}}}`,'g'),
           directValue != null ? directValue : options[object.name]
         )
       );
@@ -298,7 +298,7 @@ function loopThrough({
     if(currentComponent.type === "element" &&  currentComponent.name == "div"){
       node.innerText = ""
     }
-    if (currentComponent.type !== "text" && isImported == false ) {
+    if (currentComponent.type !== "text"  ) {
       if (parent != null ) {
         const result = parent.appendChild(node);
         loopThrough({
