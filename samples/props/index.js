@@ -16,9 +16,8 @@ const firstComponent = puffin.element(
   `,
   {
     events:{
-      mounted(target){
+      imported(target){
         target.props.count = myState.data.count
-        
         myState.changed(function(data){ //Update local state if global is updated
           target.props.count = data.count
         })
@@ -30,7 +29,8 @@ const firstComponent = puffin.element(
 
 const secondComponent = puffin.element(
   `
-     <div>
+     <div> 
+        <firstComponent/>
         <button click="$add">Add 1 to: {{count}}</button>
         <button click="$restart">Restart</button>
      </div>
@@ -53,9 +53,11 @@ const secondComponent = puffin.element(
         myState.emit('restarted',0)
       }
     ],
-    props:["count"]
+    props:["count"],
+    components:{
+      firstComponent
+    }
   }
 );
 
-puffin.render(firstComponent, document.body);
 puffin.render(secondComponent, document.body);

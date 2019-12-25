@@ -14,6 +14,7 @@ const puffin = {
     const currentComponent = loopThrough({
       arr: output.elements,
       parent: null,
+      options:options,
       methods: options.methods,
       components: options.components,
       propsConfigured: options.props
@@ -259,6 +260,7 @@ function loopThrough({
   parent,
   methods = [],
   components = {},
+  options = {},
   usedMethods = [],
   usedProps = [],
   propsConfigured = []
@@ -300,6 +302,9 @@ function loopThrough({
     }
     if (currentComponent.type !== "text"  ) {
       if (parent != null ) {
+        if (importedComponent.options.events && importedComponent.options.events.imported) {
+          importedComponent.options.events.imported(node);
+        }
         const result = parent.appendChild(node);
         loopThrough({
           arr: currentComponent.elements,
@@ -320,7 +325,7 @@ function loopThrough({
         });
       }
     } else {
-      if (isImported) {
+      if (isImported ) {
         parent.appendChild(node);
       }
     }

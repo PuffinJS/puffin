@@ -29,7 +29,11 @@ function puffinState(initialData){
     function emit(eventName,data){
         exeListeners(meThis.eventCallbacks.filter(a=> a.eventName == eventName),data)
     }
+    function triggerChange(object){
+        exeCallbacks(meThis.changedCallbacks,object)
+    }
     return {
+        triggerChange,
         changed,
         on:on,
         emit:emit,
