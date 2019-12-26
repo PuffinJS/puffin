@@ -17,22 +17,22 @@ const puffin = {
       options:options,
       methods: options.methods,
       components: options.components,
-      propsConfigured: options.props
+      propsConfigured: options.props,
+      usedEvents : []
     });
     return {
       content: content,
       options: options,
       node: currentComponent.element,
       methods: currentComponent.usedMethods,
-      props: currentComponent.usedProps
+      props: currentComponent.usedProps,
+      usedEvents: currentComponent.usedEvents
     };
   },
   render: (element, parent, options = { removeContent: false }) => {
     if (options.removeContent) parent.innerHTML = "";
     parent.appendChild(element.node);
-    if (element.options.events && element.options.events.mounted) {
-      element.options.events.mounted(element.node);
-    }
+    executeEvent("mounted",element.usedEvents,element.node)
   }
 };
 function isComponentImported(componentsArray, currentComponent) {
@@ -148,6 +148,19 @@ function generateClass() {
   return `pfn_${(Math.random() + Math.random()).toString().slice(12)}`;
 }
 
+function detectEvents(events = {},totalList,node){
+  Object.keys(events).map(function(ev){
+    const classIdentifier = generateClass();
+    totalList.push({
+      class:classIdentifier,
+      name:ev,
+      function:events[ev]
+    })
+   
+    node.classList.add(classIdentifier)
+  })
+}
+
 function detectProps(ExportedProps, PropsValues, node, totalList) {
   ExportedProps.map(prop => {
     PropsValues.map(attribute => {
@@ -210,7 +223,13 @@ function createElement(Node) {
       return document.createElement(Node.name);
   }
 }
-
+function executeEvent(eventName,usedEvents,node){
+  usedEvents.map(function(ev){
+    if(eventName == ev.name){
+      ev.function(node.getElementsByClassName(ev.class)[0] || node)
+    }
+  })
+}
 function appendMethods(currentComponent, node, usedMethods, methods) {
   if (currentComponent.attributes !== undefined) {
     Object.keys(currentComponent.attributes).map(attr => {
@@ -243,7 +262,7 @@ function appendMethods(currentComponent, node, usedMethods, methods) {
     });
   }
 }
-function appendEvents(importedComponent, isImported, node) {
+function appendImportedMethods(importedComponent, isImported, node) {
   if (importedComponent.methods != undefined && isImported) {
     importedComponent.methods.map(met => {
       const elements = node.classList.contains(met.classIdentifier)
@@ -263,7 +282,8 @@ function loopThrough({
   options = {},
   usedMethods = [],
   usedProps = [],
-  propsConfigured = []
+  propsConfigured = [],
+  usedEvents = []
 }) {
   for (let i = 0; i < arr.length; i++) {
     let isImported = false;
@@ -283,18 +303,26 @@ function loopThrough({
         var node = createElement(currentComponent);
         isImported = false;
       }
-      appendEvents(importedComponent, isImported, node);
+      appendImportedMethods(importedComponent, isImported, node);
       appendMethods(currentComponent, node, usedMethods, methods);
     }
-    detectProps(propsConfigured, currentComponentProps, node, usedProps);
+    detectProps(propsConfigured, currentComponentProps, node, usedProps);    
     if (isComponentImported(components, currentComponent)) {
       appendProps(importedComponent.props, currentComponent.attributes, node);
     } else {
-      if (node != undefined)
+      if (node != undefined){
         appendProps(usedProps, currentComponent.attributes, node);
+      }
     }
+    if(currentComponent.type !== "text"  ){
+      if(isImported){
+        importedComponent.usedEvents.map(a=>usedEvents.push(a))
+      }else{
+        detectEvents(options.events,usedEvents,node)
+      }
+    }
+    
     if (currentComponent.type === "text") {
-      
       parent.innerText = currentComponent.text;
     }
     if(currentComponent.type === "element" &&  currentComponent.name == "div"){
@@ -302,17 +330,15 @@ function loopThrough({
     }
     if (currentComponent.type !== "text"  ) {
       if (parent != null ) {
-        if (importedComponent.options.events && importedComponent.options.events.imported) {
-          importedComponent.options.events.imported(node);
-        }
-        const result = parent.appendChild(node);
+        const result = parent.appendChild(node);       
         loopThrough({
           arr: currentComponent.elements,
           parent: result,
           methods: methods,
           components: components,
           usedProps: usedProps,
-          propsConfigured: propsConfigured
+          propsConfigured: propsConfigured,
+          usedEvents:usedEvents
         });
       } else {
         loopThrough({
@@ -321,7 +347,8 @@ function loopThrough({
           methods: methods,
           components: components,
           usedProps: usedProps,
-          propsConfigured: propsConfigured
+          propsConfigured: propsConfigured,
+          usedEvents:usedEvents
         });
       }
     } else {
@@ -330,20 +357,23 @@ function loopThrough({
       }
     }
     if (currentComponent.first != undefined) {
+      executeEvent("fabricated",usedEvents,node)
       usedMethods = getComponentsMethods(usedMethods, components);
       if (parent != null) {
         return {
           element: parent,
           usedMethods: usedMethods,
           propsConfigured: propsConfigured,
-          usedProps: usedProps
+          usedProps: usedProps,
+          usedEvents:usedEvents
         };
       } else {
         return {
           element: node,
           usedMethods: usedMethods,
           propsConfigured: propsConfigured,
-          usedProps: usedProps
+          usedProps: usedProps,
+          usedEvents:usedEvents
         };
       }
     }

@@ -5,6 +5,11 @@ const positionComponent = puffin.element(
     {{count}}
   </p>`,
   {
+    events:{
+      mounted(target){
+        target.props.count = "Hover me!"
+      }
+    },
     methods: [
       function moving(e) {
         this.props.count = Math.random()

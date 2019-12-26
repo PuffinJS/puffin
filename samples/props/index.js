@@ -6,6 +6,7 @@ const myState = new puffin.state({
 
 myState.on('restarted',a=>{
   myState.data.count = a
+  console.log("restarted")
 })
 
 const firstComponent = puffin.element(
@@ -59,5 +60,6 @@ const secondComponent = puffin.element(
     }
   }
 );
+
 
 puffin.render(secondComponent, document.body);
