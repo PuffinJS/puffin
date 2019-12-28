@@ -193,10 +193,9 @@ function detectProps(ExportedProps, PropsValues, node, totalList) {
 function getComponentsMethods(usedMethods = [], components) {
   Object.keys(components).map(function(component) {
     if (components[component] != null) {
-      usedMethods = usedMethods.concat(components[component].methods);
+      components[component].methods.map(a=>usedMethods.push(a))
     }
   });
-  return usedMethods;
 }
 
 function createElement(Node) {
@@ -335,6 +334,7 @@ function loopThrough({
           arr: currentComponent.elements,
           parent: result,
           methods: methods,
+          usedMethods:usedMethods,
           components: components,
           usedProps: usedProps,
           propsConfigured: propsConfigured,
@@ -345,6 +345,7 @@ function loopThrough({
           arr: currentComponent.elements,
           parent: node,
           methods: methods,
+          usedMethods:usedMethods,
           components: components,
           usedProps: usedProps,
           propsConfigured: propsConfigured,
@@ -358,7 +359,7 @@ function loopThrough({
     }
     if (currentComponent.first != undefined) {
       executeEvent("fabricated",usedEvents,node)
-      usedMethods = getComponentsMethods(usedMethods, components);
+      getComponentsMethods(usedMethods, components);
       if (parent != null) {
         return {
           element: parent,

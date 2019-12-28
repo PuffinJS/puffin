@@ -35,7 +35,7 @@ const componentTest = puffin.element(
 const App = puffin.element(
   `
      <div>
-        <positionComponent count="0"></positionComponent>
+        <positionComponent></positionComponent>
         <componentTest></componentTest>
         <button click="$increase">Count: {{count}}</button>
      </div>
@@ -59,4 +59,12 @@ const App = puffin.element(
   }
 );
 
-puffin.render(App, document.getElementById("app"));
+
+const test = puffin.element(
+  `<App count="0"/>`,
+  {
+    components:{App}
+  }
+);
+
+puffin.render(test, document.getElementById("app"));
