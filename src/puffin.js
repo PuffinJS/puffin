@@ -88,7 +88,6 @@ function appendProps(PropsObjects, options, node) {
   if (PropsObjects != undefined && node != undefined) {
     PropsObjects.map(prop => {
       const element = node.getElementsByClassName(prop.class)[0] || node;
-      if (element.props == undefined)
         element.props = new ObjectObserver(options, element, PropsObjects);
       setProp({
         object: prop,
@@ -104,13 +103,15 @@ function ObjectObserver(optionalOptions, node, PropsObjects) {
     set: function(object, propName, propValue) {
       PropsObjects.map(prop => {
         if (prop.name === propName) {
-          const element = node.getElementsByClassName(prop.class)[0] || node;
+          const element = node.getElementsByClassName(prop.class)[0]  || node
+          if(element != null)
           setProp({
             object: prop,
             options: optionalOptions,
             node: element,
             directValue: propValue
           });
+           
         }
       });
       object[propName] = propValue;
@@ -123,6 +124,7 @@ function ObjectObserver(optionalOptions, node, PropsObjects) {
 function setProp({ object, options = {}, node, directValue = null }) {
   if (object.type === "visible") {
     if (object.attribute === "__text") {
+      
       node.textContent = object.value.replace(
         new RegExp(`{{${object.name}}}`,'g'),
         directValue != null ? directValue : options[object.name]
@@ -273,6 +275,32 @@ function appendImportedMethods(importedComponent, isImported, node) {
     });
   }
 }
+
+function randomizeEvents(events,node){
+  const newEvents = JSON.parse(JSON.stringify({events})).events
+  newEvents.map(function(event,index){
+    event.function = events[index].function
+    const element = document.getElementsByClassName(event.class)[0] || node
+    if(element.classList.contains(event.class)){
+      const newClass = generateClass()
+      element.classList.replace(event.class,newClass)
+      event.class = newClass
+    }
+  })
+  return newEvents
+}
+
+function randomizeProps(props,node){
+  props.map(function(prop,index){
+    const element = document.getElementsByClassName(prop.class)[0] || node
+    if(element.classList.contains(prop.class)){
+      const newClass = generateClass()
+      element.classList.replace(prop.class,newClass)
+      prop.class = newClass
+    }
+  })
+}
+
 function loopThrough({
   arr = [],
   parent,
@@ -307,6 +335,7 @@ function loopThrough({
     }
     detectProps(propsConfigured, currentComponentProps, node, usedProps);    
     if (isComponentImported(components, currentComponent)) {
+      randomizeProps(importedComponent.props,node) 
       appendProps(importedComponent.props, currentComponent.attributes, node);
     } else {
       if (node != undefined){
@@ -315,12 +344,13 @@ function loopThrough({
     }
     if(currentComponent.type !== "text"  ){
       if(isImported){
-        importedComponent.usedEvents.map(a=>usedEvents.push(a))
+        const tempEvents = randomizeEvents(importedComponent.usedEvents,node)
+        tempEvents.map(a=>usedEvents.push(a)) 
+              
       }else{
         detectEvents(options.events,usedEvents,node)
       }
     }
-    
     if (currentComponent.type === "text") {
       parent.innerText = currentComponent.text;
     }

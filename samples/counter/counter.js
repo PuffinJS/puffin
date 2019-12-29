@@ -1,25 +1,27 @@
 const { puffin } = require("../../src/main.js");
 
 const positionComponent = puffin.element(
-  `<p mousemove="$moving" message="Random number: {{count}} , but attribute">
-    {{count}}
+  `<p mousemove="$moving" message="Random number: {{number}} , but attribute">
+    --> {{number}}
   </p>`,
   {
     events:{
       mounted(target){
-        target.props.count = "Hover me!"
+        target.props.number = "Hover me!"
       }
     },
     methods: [
       function moving(e) {
-        this.props.count = Math.random()
+        this.props.number = Math.random()
       }
     ],
     props:[
-      "count"
+      "number"
     ]
   }
 );
+
+
 
 const componentTest = puffin.element(
   `<button click="$test">Component test!</button>`,
@@ -35,6 +37,7 @@ const componentTest = puffin.element(
 const App = puffin.element(
   `
      <div>
+        <positionComponent></positionComponent>
         <positionComponent></positionComponent>
         <componentTest></componentTest>
         <button click="$increase">Count: {{count}}</button>
@@ -59,12 +62,4 @@ const App = puffin.element(
   }
 );
 
-
-const test = puffin.element(
-  `<App count="0"/>`,
-  {
-    components:{App}
-  }
-);
-
-puffin.render(test, document.getElementById("app"));
+puffin.render(App, document.getElementById("app"));
