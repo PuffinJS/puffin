@@ -21,8 +21,6 @@ const positionComponent = puffin.element(
   }
 );
 
-
-
 const componentTest = puffin.element(
   `<button click="$test">Component test!</button>`,
   {
@@ -34,12 +32,18 @@ const componentTest = puffin.element(
   }
 );
 
+const sharedState = puffin.state({
+  count:0
+})
+
 const App = puffin.element(
   `
      <div>
         <positionComponent></positionComponent>
         <positionComponent></positionComponent>
-        <componentTest></componentTest>
+        <componentTest>I am an imported component</componentTest>
+        <p>Shared counter:</p>
+        <button click="$increase">Count: {{count}}</button>
         <button click="$increase">Count: {{count}}</button>
      </div>
   `,
@@ -50,12 +54,18 @@ const App = puffin.element(
     },
     methods: [
       function increase() {
-        this.props.count++;  //Increase the count by one on clicking
+        sharedState.data.count++
       }
     ],
     events:{
       mounted(target){
-        target.props.count = 0 //Initial value
+        console.log(target);
+        target.props.count = sharedState.data.count //Initial value
+
+        sharedState.changed(function(data){
+          target.props.count = data.count
+        })
+
       }
     },
     props:["count"]

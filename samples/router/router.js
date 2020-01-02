@@ -1,4 +1,4 @@
-const { puffin , puffinRouter } = require("../../src/main.js");
+const { puffin } = require("../../src/main.js");
 
 const Home = puffin.element(
   `
@@ -15,6 +15,10 @@ const Contact = puffin.element(
 );
 
 const router = new puffin.router([
+  {
+    path:'/', //Fallback to home when no section is specified
+    component:Home
+  },
   {
     path:'/home',
     component:Home

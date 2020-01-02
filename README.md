@@ -24,7 +24,7 @@ Ideas:
 Installing:
 > npm install @mkenzo_8/puffin
 
-Requiring on your project:
+Using it on your project:
 > const { puffin } = require("@mkenzo_8/puffin")
 
 You can find some samples on the /samples directory.

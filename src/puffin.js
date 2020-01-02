@@ -301,6 +301,28 @@ function randomizeProps(props,node){
   })
 }
 
+function getNode(components, currentComponent){
+  let node;
+  let isImported = false;
+  let importedComponent = {
+    options: {
+      props: []
+    }
+  };
+  if (isComponentImported(components, currentComponent)) {
+    node = components[currentComponent.name].node.cloneNode(true);
+    importedComponent = components[currentComponent.name];
+    isImported = true;
+  } else {
+    node = createElement(currentComponent);
+  }
+  return {
+    isImported,
+    node,
+    importedComponent
+  }
+}
+
 function loopThrough({
   arr = [],
   parent,
@@ -312,27 +334,14 @@ function loopThrough({
   propsConfigured = [],
   usedEvents = []
 }) {
-  for (let i = 0; i < arr.length; i++) {
-    let isImported = false;
-    const currentComponent = arr[i];
+  for (let currentComponent of arr) {
     const currentComponentProps = getProps(currentComponent);
-    let importedComponent = {
-      options: {
-        props: []
-      }
-    };
     if (currentComponent.type === "element") {
-      if (isComponentImported(components, currentComponent)) {
-        var node = components[currentComponent.name].node.cloneNode(true);
-        importedComponent = components[currentComponent.name];
-        isImported = true;
-      } else {
-        var node = createElement(currentComponent);
-        isImported = false;
-      }
+      var { node,isImported ,importedComponent } = getNode(components, currentComponent)
       appendImportedMethods(importedComponent, isImported, node);
       appendMethods(currentComponent, node, usedMethods, methods);
     }
+    
     detectProps(propsConfigured, currentComponentProps, node, usedProps);    
     if (isComponentImported(components, currentComponent)) {
       randomizeProps(importedComponent.props,node) 
@@ -345,8 +354,7 @@ function loopThrough({
     if(currentComponent.type !== "text"  ){
       if(isImported){
         const tempEvents = randomizeEvents(importedComponent.usedEvents,node)
-        tempEvents.map(a=>usedEvents.push(a)) 
-              
+        tempEvents.map(a=>usedEvents.push(a))  
       }else{
         detectEvents(options.events,usedEvents,node)
       }

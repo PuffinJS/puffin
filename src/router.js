@@ -10,20 +10,18 @@ function parseURL(url){
             })
         }
     })
-    console.log(parsedURL)
-   const returnURL = {
-        protocol:parsedURL[0],
-        domain:parsedURL[3],
-        paths:paths
-   }
-   return returnURL
+    const returnURL = {
+            protocol:parsedURL[0],
+            domain:parsedURL[3],
+            paths:paths
+    }
+    return returnURL
 }
 
 function matchPath(objectURL,arrayPaths){
     let message = {
         status:false
     }
-    console.log(objectURL.paths)
     arrayPaths.map(function(path){
         objectURL.paths.map(function(currentPath){
             const splittedPath = path.path == "/" ? "/" : path.path.split('/')[1]
@@ -64,7 +62,7 @@ function puffinRouter(configuration){
                     }
                 ],
                 props:["text","path"]
-        })
+            })
     }
     window.addEventListener("load",function(){
         renderBox(configuration,boxId)          
