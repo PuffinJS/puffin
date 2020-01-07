@@ -148,8 +148,7 @@ const App = puffin.element(
   {
     components:{
       StyledButton
-    },
-    props:["count"]
+    }
   }
 );
 
