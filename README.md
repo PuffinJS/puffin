@@ -47,6 +47,7 @@ Run a local server:
 ### Reactive component
 
 ```javascript
+const { puffin } = require("@mkenzo_8/puffin")
 
 const App = puffin.element(
   `
@@ -74,7 +75,7 @@ puffin.render(App, document.body);
 ### Routing component
 
 ```javascript
-const { puffin , puffinRouter } = require("../../src/main.js");
+const { puffin } = require("@mkenzo_8/puffin")
 
 const Home = puffin.element(
   `
@@ -120,11 +121,45 @@ const App = puffin.element(
 puffin.render(App, document.getElementById("app"));
 
 ```
-
 ### Component using centralized state:
 
 ```javascript
-const { puffin } = require("../../src/main.js");
+const { puffin } = require("@mkenzo_8/puffin")
+
+const StyledButton = puffin.style.button`
+  & {
+    padding:12px;
+    color:white;
+    background:black;
+    border:none;
+  }
+
+  &:hover {
+    border:3px solid blue;
+  }
+`
+const App = puffin.element(
+  `
+     <div>
+        <StyledButton>I'm a button</StyledButton>
+     </div>
+  `,
+  {
+    components:{
+      StyledButton
+    },
+    props:["count"]
+  }
+);
+
+puffin.render(App, document.body);
+
+
+```
+### Component using centralized state:
+
+```javascript
+const { puffin } = require("@mkenzo_8/puffin")
 
 const myState = new puffin.state({
   count: 0

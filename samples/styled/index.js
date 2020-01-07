@@ -1,64 +1,29 @@
 const { puffin } = require("../../src/main.js");
 
-const state = new puffin.state({
-  static:'red',
-  onHovering:'blue'
-})
-
-const Button = puffin.style.button`
-  ${state}
-  &{
-    color:{{static}};
+const StyledButton = puffin.style.button`
+  & {
+    padding:12px;
+    color:white;
+    background:black;
+    border:none;
   }
 
-  &:hover{
-    color:{{onHovering}};
+  &:hover {
+    border:3px solid blue;
   }
 `
-
-const FlexAlign = puffin.style.div`
-  ${state}
-  &{
-    display:flex;
-    justify-content:center;
-  }
-`
-
-const thirdComponent = puffin.element(
+const App = puffin.element(
   `
-     <div> 
-        Click the button:
-        <FlexAlign>
-          <Button click="$change">
-            Styled Button
-          </Button>
-          <Button click="$change">
-            Styled Button
-          </Button>
-          <Button click="$change">
-            Styled Button
-          </Button>
-          <Button click="$change">
-            Styled Button
-          </Button>
-          <Button click="$change">
-            Styled Button
-          </Button>
-        </FlexAlign>
+     <div>
+        <StyledButton>I'm a button</StyledButton>
      </div>
   `,
   {
-    methods:[
-      function change(){
-        state.data.static = "green"
-        state.data.onHovering = "yellow"
-      }
-    ],
     components:{
-      Button,
-      FlexAlign
-    }
+      StyledButton
+    },
+    props:["count"]
   }
 );
 
-puffin.render(thirdComponent, document.body);
+puffin.render(App, document.body);
