@@ -18,14 +18,14 @@ function parseURL(url){
     return returnURL
 }
 
-function matchPath(objectURL,arrayPaths){
+function matchPath(objectURL,arrayPaths,additional){
     let message = {
         status:false
     }
     arrayPaths.map(function(path){
+        const splittedPath = path.path == "/" ? ["/"] : path.path.split('/').filter(Boolean)
         objectURL.paths.map(function(currentPath){
-            const splittedPath = path.path == "/" ? "/" : path.path.split('/')[1]
-            if( splittedPath == currentPath.name){
+            if(( splittedPath[0] == currentPath.name && splittedPath[0] !== "/" && splittedPath[1] == undefined) || (splittedPath[0] === "/" && objectURL.paths.length == 1) ){
                 message = {
                     status : true,
                     component : path.component
@@ -33,12 +33,18 @@ function matchPath(objectURL,arrayPaths){
             }
         })
     })
+    if(message.status == false){
+        message = {
+            status : true,
+            component : additional.lost.component
+        }
+    }
     return message;
 }
 
-function renderBox(configuration,boxId){
+function renderBox(configuration,boxId,additionalConfig){
     const currentURL = parseURL(window.location)
-    const result = matchPath(currentURL,configuration)
+    const result = matchPath(currentURL,configuration,additionalConfig)
     if(result.status){
         puffin.render(result.component,document.getElementById(boxId),{
             removeContent:true
@@ -46,7 +52,7 @@ function renderBox(configuration,boxId){
     }
 }
 
-function puffinRouter(configuration){
+function puffinRouter(configuration,additionalConfig){
     const boxId = Math.random()
     const data = {
         box: puffin.element(`
@@ -58,14 +64,14 @@ function puffinRouter(configuration){
                 methods:[
                     function click(){
                         history.replaceState({}, "", this.getAttribute("path"))
-                        renderBox(configuration,boxId)
+                        renderBox(configuration,boxId,additionalConfig)
                     }
                 ],
                 props:["text","path"]
             })
     }
     window.addEventListener("load",function(){
-        renderBox(configuration,boxId)          
+        renderBox(configuration,boxId,additionalConfig)          
     })
     return data 
 }

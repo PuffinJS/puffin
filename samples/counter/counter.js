@@ -59,7 +59,6 @@ const App = puffin.element(
     ],
     events:{
       mounted(target){
-        console.log(target);
         target.props.count = sharedState.data.count //Initial value
 
         sharedState.changed(function(data){

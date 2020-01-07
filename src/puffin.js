@@ -9,7 +9,9 @@
 const puffin = {
   element: function(content, options = { methods: [], events: {} }) {
     const parser = require("xml-js");
-    const output = JSON.parse(parser.xml2json(content));
+    const output = JSON.parse(parser.xml2json(content,{
+      trim:true
+    }));
     output.elements[0].first = true; //Defines the parent element on the component
     const currentComponent = loopThrough({
       arr: output.elements,
@@ -124,7 +126,6 @@ function ObjectObserver(optionalOptions, node, PropsObjects) {
 function setProp({ object, options = {}, node, directValue = null }) {
   if (object.type === "visible") {
     if (object.attribute === "__text") {
-      
       node.textContent = object.value.replace(
         new RegExp(`{{${object.name}}}`,'g'),
         directValue != null ? directValue : options[object.name]
@@ -341,16 +342,17 @@ function loopThrough({
       appendImportedMethods(importedComponent, isImported, node);
       appendMethods(currentComponent, node, usedMethods, methods);
     }
-    
-    detectProps(propsConfigured, currentComponentProps, node, usedProps);    
-    if (isComponentImported(components, currentComponent)) {
-      randomizeProps(importedComponent.props,node) 
-      appendProps(importedComponent.props, currentComponent.attributes, node);
-    } else {
-      if (node != undefined){
-        appendProps(usedProps, currentComponent.attributes, node);
+    detectProps(propsConfigured, currentComponentProps, node, usedProps);
+    if (node != undefined){
+      if(isImported){
+        randomizeProps(importedComponent.props,node)
+        importedComponent.props.forEach((prop)=>{
+          usedProps.push(prop)
+        })
       }
+      appendProps(usedProps, currentComponent.attributes, node);
     }
+
     if(currentComponent.type !== "text"  ){
       if(isImported){
         const tempEvents = randomizeEvents(importedComponent.usedEvents,node)
@@ -362,8 +364,10 @@ function loopThrough({
     if (currentComponent.type === "text") {
       parent.innerText = currentComponent.text;
     }
-    if(currentComponent.type === "element" &&  currentComponent.name == "div"){
-      node.innerText = ""
+    if(currentComponent.type === "element" &&  currentComponent.name.match(/(div)|(button)/g)){
+      node.textContent = ""
+    }else if(isImported && importedComponent.node.tagName.match(/(BUTTON)/g)){
+      node.textContent = ""
     }
     if (currentComponent.type !== "text"  ) {
       if (parent != null ) {

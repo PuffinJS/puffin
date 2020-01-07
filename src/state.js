@@ -37,7 +37,8 @@ function puffinState(initialData){
         changed,
         on:on,
         emit:emit,
-        data:new Proxy(initialData, observer)
+        data:new Proxy(initialData, observer),
+        info:'state'
     }
 }
 

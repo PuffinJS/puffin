@@ -14,6 +14,11 @@ const Contact = puffin.element(
   `,
 );
 
+const Lost = puffin.element(
+  `
+    <p>You are lost...</p>
+  `,
+);
 const router = new puffin.router([
   {
     path:'/', //Fallback to home when no section is specified
@@ -27,7 +32,11 @@ const router = new puffin.router([
     path:'/contact',
     component:Contact
   }
-])
+],{
+  lost:{
+    component:Lost
+  }
+})
 
 const App = puffin.element(
   `
