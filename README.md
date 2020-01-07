@@ -122,7 +122,7 @@ const App = puffin.element(
 puffin.render(App, document.getElementById("app"));
 
 ```
-### Component using centralized state:
+### Styled component:
 
 ```javascript
 const { puffin } = require("@mkenzo_8/puffin")
