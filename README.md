@@ -13,8 +13,9 @@ What does it have?
   * Reactive Props
   * Methods
   * Events
+* Basic reactive styling
 * Basic router 
-* Basic centralized state
+* Basic centralized reactive state
 
 Ideas:
 * Sub-routes
