@@ -109,15 +109,20 @@ function ObjectObserver(optionalOptions, node, PropsObjects) {
     set: function(object, propName, propValue) {
       PropsObjects.map(prop => {
         if (prop.name === propName) {
-          const element = node.getElementsByClassName(prop.class)[0]  || node
-          if(element != null)
-          setProp({
-            object: prop,
-            options: optionalOptions,
-            node: element,
-            directValue: propValue
-          });
-           
+          if(node.classList.contains(prop.class)){
+            var element = node;
+          }else {
+            var element =node.getElementsByClassName(prop.class)[0] 
+          }
+          if(element != null){
+            setProp({
+              object: prop,
+              options: optionalOptions,
+              node: element,
+              directValue: propValue
+            });
+          }
+         
         }
       });
       object[propName] = propValue;
@@ -306,19 +311,41 @@ function randomizeProps(props,node){
   })
 }
 
+function cloneComponent(object){
+  let importedComponent = {
+    methods:Object.assign(object.methods),
+    options:Object.assign(object.options),
+    props:[],
+    usedEvents:Object.assign(object.usedEvents),
+    node:Object.assign(object.node)
+  }
+  object.props.map(function(prop){
+    importedComponent.props.push({
+      class:prop.class,
+      attribute:prop.attribute,
+      value:prop.value,
+      type:prop.type,
+      name:prop.name
+    })
+  })
+  return importedComponent
+}
+
 function getNode(components, currentComponent){
   let node;
   let isImported = false;
-  let importedComponent = {
+  var importedComponent = {
     options: {
       props: []
     }
   };
   if (isComponentImported(components, currentComponent)) {
-    node = components[currentComponent.name].node.cloneNode(true);
-    importedComponent = components[currentComponent.name];
+    const object = components[currentComponent.name]
+    importedComponent = cloneComponent(object)
+    node = importedComponent.node.cloneNode(true);
     isImported = true;
   } else {
+    
     node = createElement(currentComponent);
   }
   return {
@@ -353,6 +380,7 @@ function loopThrough({
         importedComponent.props.forEach((prop)=>{
           usedProps.push(prop)
         })
+        
       }
       appendProps(usedProps, currentComponent.attributes, node);
     }

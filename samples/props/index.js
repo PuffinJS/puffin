@@ -19,7 +19,7 @@ const firstComponent = puffin.element(
       mounted(target){
         target.props.count = myState.data.count
         myState.changed(function(data){ //Update local state if global is updated
-          target.props.count = data.count
+          target.props.count = myState.data.count
         })
       }
     },
@@ -29,7 +29,7 @@ const firstComponent = puffin.element(
 
 const secondComponent = puffin.element(
   `
-     <div> 
+     <div acount="{{count}}"> 
         <firstComponent/>
         <button click="$add">Add 1 to: {{count}}</button>
         <button click="$restart">Restart</button>
@@ -41,7 +41,7 @@ const secondComponent = puffin.element(
         target.props.count = myState.data.count
 
         myState.changed(function(data){ //Update local state if global is updated
-          target.props.count = data.count
+          target.props.count = myState.data.count
         })
       }
     },
