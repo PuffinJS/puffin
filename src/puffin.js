@@ -7,11 +7,16 @@
 */
 
 const puffin = {
-  element: function(content, options = { methods: [], events: {} }) {
+  element: function(input, options = { methods: [], events: {} }) {
     const parser = require("xml-js");
-    const output = JSON.parse(parser.xml2json(content,{
-      trim:true
-    }));
+    let output;
+    if(typeof input == "string"){
+      output = JSON.parse(parser.xml2json(input,{
+        trim:true
+      }));
+    }else{
+      output = input; 
+    }
     output.elements[0].first = true; //Defines the parent element on the component
     const currentComponent = loopThrough({
       arr: output.elements,
@@ -23,7 +28,6 @@ const puffin = {
       usedEvents : []
     });
     return {
-      content: content,
       options: options,
       node: currentComponent.element,
       methods: currentComponent.usedMethods,

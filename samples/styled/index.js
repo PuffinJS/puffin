@@ -9,20 +9,39 @@ const Button = puffin.style.button`
   ${state}
   &{
     color:{{static}};
-  }
-
-  &:hover{
-    color:{{onHovering}};
+    padding:10px;
   }
 `
 
 const FlexAlign = puffin.style.div`
   ${state}
   &{
+    transition:0.2s;
     display:flex;
     justify-content:center;
+    padding:20px;
+    border:3px solid {{static}};
+  }
+  &:hover {
+    transition:0.2s;
+    border:3px solid {{onHovering}};
   }
 `
+
+const manualComp = puffin.element({
+  elements:[
+    {
+      name:'p',
+      type:'element',
+      elements:[
+        {
+          type:'text',
+          text:'Manual component'
+        }
+      ]
+    }
+  ]
+})
 
 const thirdComponent = puffin.element(
   `
@@ -45,6 +64,7 @@ const thirdComponent = puffin.element(
             Styled Button
           </Button>
         </FlexAlign>
+        <manualComp/>
      </div>
   `,
   {
@@ -56,7 +76,8 @@ const thirdComponent = puffin.element(
     ],
     components:{
       Button,
-      FlexAlign
+      FlexAlign,
+      manualComp
     }
   }
 );

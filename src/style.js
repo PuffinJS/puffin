@@ -4,6 +4,15 @@ function generateClass() {
     return `pfn_${(Math.random() + Math.random()).toString().slice(12)}`;
 }
 
+function throwWarn(message) {
+    console.warn("puffin warn -->", message);
+  }
+  
+  function throwError(message) {
+    console.error("puffin error -->", message);
+  }
+  
+
 function replaceMatchs(text,state){
     let css = text;
     if(state != null){
@@ -11,6 +20,10 @@ function replaceMatchs(text,state){
             const regex = new RegExp(`{{${prop}}}`,'g')
             css = css.replace(regex,state.data[prop])
         })
+    }else{
+        if(css.match(/({{)/g)){
+            throwWarn('There is no state passed into style: '+text)
+        }
     }
     return css
 }
@@ -24,8 +37,9 @@ function applyCSS(css,target,selector){
         if(sy != ""){
             if(sy.match(/&/g)){
                 var rule = sy.replace(/&/g,`.${selector}`)
+                rule += " } "
             }else{
-                var rule = `.${selector} ${sy}`
+                var rule = `.${selector} ${sy} }`
             }
             style.sheet.insertRule(rule)
         }
@@ -33,12 +47,12 @@ function applyCSS(css,target,selector){
 }
 
 function getCSS(text,state){
-   return replaceMatchs(text,state).split('\n\n').map((a)=>a.trim())
+   return replaceMatchs(text,state).split('}').map((a)=>a.trim())
 }
 
 function main(text,values,tagName){
     let state = null;
-    if(values[0] !=undefined){
+    if(values[0] != undefined){
         state = values[0].info == 'state'?values[0]:null
         text = text[1]
     }else{
@@ -56,7 +70,6 @@ function main(text,values,tagName){
                         applyCSS(getCSS(text,state),target,classSelected)
                     })
                 }
-
                 applyCSS(css,target,classSelected)
             }
         }
@@ -73,6 +86,30 @@ const styled = {
     },
     span:(text,...values)=> {
         return main(text,values,'span')
+    },
+    p:(text,...values)=> {
+        return main(text,values,'p')
+    },
+    h1:(text,...values)=> {
+        return main(text,values,'h1')
+    },
+    h2:(text,...values)=> {
+        return main(text,values,'h2')
+    },
+    h3:(text,...values)=> {
+        return main(text,values,'h3')
+    },
+    h3:(text,...values)=> {
+        return main(text,values,'h4')
+    },
+    li:(text,...values)=> {
+        return main(text,values,'li')
+    },
+    a:(text,...values)=> {
+        return main(text,values,'a')
+    },
+    ul:(text,...values)=> {
+        return main(text,values,'ul')
     }
 }
 

@@ -2,7 +2,7 @@
 
 ## 🤔 About
 
-Puffin is a JavaScript library for creating reusable reactive components ready for the web. It doesn't need any transpiling.
+Puffin is a JavaScript library for creating reusable reactive components ready for the web.
 
 ## 🔬 Status
 
@@ -153,9 +153,46 @@ const App = puffin.element(
 );
 
 puffin.render(App, document.body);
-
-
 ```
+### Reactive styled component:
+
+```javascript
+const { puffin } = require("@mkenzo_8/puffin")
+
+const themeState = new puffin.state({
+  primaryColor: 'red'
+})
+
+const StyledButton = puffin.style.button`
+  ${themeState  }
+  & {
+    padding:12px;
+    color:white;
+    background:{{primaryColor}};
+    border:none;
+  }
+`
+const App = puffin.element(
+  `
+     <div>
+        <StyledButton click="$switchTheme">Click me!</StyledButton>
+     </div>
+  `,
+  {
+    components:{
+      StyledButton
+    },
+    methods:[
+      function switchTheme(){
+        themeState.data.primaryColor = 'blue'
+      }
+    ]
+  }
+);
+
+puffin.render(App, document.body);
+```
+
 ### Component using centralized state:
 
 ```javascript
