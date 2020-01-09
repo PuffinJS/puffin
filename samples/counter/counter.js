@@ -20,7 +20,7 @@ const positionComponent = puffin.element(
     ]
   }
 );
-console.log(positionComponent)
+
 const componentTest = puffin.element(
   `<button click="$test">Component test!</button>`,
   {
@@ -39,6 +39,7 @@ const sharedState = puffin.state({
 const App = puffin.element(
   `
      <div>
+        <h2>Components:</h2>
         <positionComponent></positionComponent>
         <positionComponent></positionComponent>
         <componentTest>I am an imported component</componentTest>

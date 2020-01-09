@@ -94,12 +94,14 @@ function appendProps(PropsObjects, options, node) {
   if (PropsObjects != undefined && node != undefined) {
     PropsObjects.map(prop => {
       const element = node.getElementsByClassName(prop.class)[0] || node;
+      if(element.classList.contains(prop.class)) {
         element.props = new ObjectObserver(options, element, PropsObjects);
-      setProp({
-        object: prop,
-        options: options,
-        node: element
-      });
+          setProp({
+          object: prop,
+          options: options,
+          node: element
+        });
+      }
     });
   }
 }
