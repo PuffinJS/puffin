@@ -96,7 +96,7 @@ function appendProps(PropsObjects, options, node) {
       const element = node.getElementsByClassName(prop.class)[0] || node;
       if(element.classList.contains(prop.class)) {
         element.props = new ObjectObserver(options, element, PropsObjects);
-          setProp({
+        setProp({
           object: prop,
           options: options,
           node: element
@@ -137,6 +137,7 @@ function ObjectObserver(optionalOptions, node, PropsObjects) {
 function setProp({ object, options = {}, node, directValue = null }) {
   if (object.type === "visible") {
     if (object.attribute === "__text") {
+      if(directValue == null && options[object.name] == undefined) return;
       node.textContent = object.value.replace(
         new RegExp(`{{${object.name}}}`,'g'),
         directValue != null ? directValue : options[object.name]
@@ -397,11 +398,6 @@ function loopThrough({
     }
     if (currentComponent.type === "text") {
       parent.innerText = currentComponent.text;
-    }
-    if(currentComponent.type === "element" &&  currentComponent.name.match(/(div)|(button)/g)){
-      node.textContent = ""
-    }else if(isImported && importedComponent.node.tagName.match(/(BUTTON)/g)){
-      node.textContent = ""
     }
     if (currentComponent.type !== "text"  ) {
       if (parent != null ) {
