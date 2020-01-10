@@ -4,7 +4,7 @@ function parseURL(url){
     const parsedURL = url.toString().split(/(\/)|(#)/g).filter(x => Boolean(x))
     let paths = []
     parsedURL.map(function(path,index){
-        if(index > 3){
+        if(index > 3 && path != "#"){
             paths.push({
                 name:path
             })
@@ -22,14 +22,23 @@ function matchPath(objectURL,arrayPaths,additional){
     let message = {
         status:false
     }
-    arrayPaths.map(function(path){
-        const splittedPath = path.path == "/" ? ["/"] : path.path.split('/').filter(Boolean)
-        objectURL.paths.map(function(currentPath){
-            if(( splittedPath[0] == currentPath.name && splittedPath[0] !== "/" && splittedPath[1] == undefined) || (splittedPath[0] === "/" && objectURL.paths.length == 1) ){
-                message = {
-                    status : true,
-                    component : path.component
+    arrayPaths.map(function(pathComponent){
+        const splittedPath = pathComponent.path == "/" ? ["/"] : pathComponent.path.split('/').filter(Boolean)
+        objectURL.paths.map(function(currentPath,index){
+            if(( splittedPath[index-1] == currentPath.name && splittedPath[index-1] !== "/" && splittedPath[index] == undefined) || (splittedPath[index-1] === "/" && objectURL.paths.length == splittedPath.length) ){
+                if(pathComponent.paths != undefined && objectURL.paths[objectURL.paths.length-1].name != currentPath.name){
+                    objectURL.paths.splice(0,3)
+                    const paths =  {paths:[{name:"/"},...objectURL.paths]}
+                    message = matchPath(paths,pathComponent.paths,{
+                        lost:pathComponent.lost == undefined?additional.lost:pathComponent.lost
+                    })
+                }else{
+                    message = {
+                        status : true,
+                        component : pathComponent.component
+                    }
                 }
+                
             }
         })
     })
@@ -52,6 +61,11 @@ function renderBox(configuration,boxId,additionalConfig){
     }
 }
 
+function goToPath(configuration,boxId,additionalConfig,path){
+    history.replaceState({}, "", path)
+    renderBox(configuration,boxId,additionalConfig)
+}
+
 function puffinRouter(configuration,additionalConfig){
     const boxId = Math.random()
     const data = {
@@ -63,8 +77,7 @@ function puffinRouter(configuration,additionalConfig){
             `,{
                 methods:[
                     function click(){
-                        history.replaceState({}, "", this.getAttribute("path"))
-                        renderBox(configuration,boxId,additionalConfig)
+                        goToPath(configuration,boxId,additionalConfig,this.getAttribute("path"))
                     }
                 ],
                 props:["text","path"]

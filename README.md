@@ -14,18 +14,16 @@ What does it have?
   * Methods
   * Events
 * Basic reactive styling
-* Basic router 
+* Basic router (with subroutes, see /samples) 
 * Basic centralized reactive state
 
-Ideas:
-* Sub-routes
 
 ## ⚽ Usage
 
 Installing:
 > npm install @mkenzo_8/puffin
 
-Using it on your project:
+Importing:
 > const { puffin } = require("@mkenzo_8/puffin")
 
 You can find some samples on the /samples directory.
