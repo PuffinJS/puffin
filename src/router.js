@@ -25,7 +25,7 @@ function matchPath(objectURL,arrayPaths,additional){
     arrayPaths.map(function(pathComponent){
         const splittedPath = pathComponent.path == "/" ? ["/"] : pathComponent.path.split('/').filter(Boolean)
         objectURL.paths.map(function(currentPath,index){
-            if(( splittedPath[index-1] == currentPath.name && splittedPath[index-1] !== "/" && splittedPath[index] == undefined) || (splittedPath[index-1] === "/" && objectURL.paths.length == splittedPath.length) ){
+            if(( splittedPath[index-1] == currentPath.name && splittedPath[index-1] !== "/" && splittedPath[index] == undefined) || (splittedPath[index] === "/" && objectURL.paths.length == splittedPath.length) ){
                 if(pathComponent.paths != undefined && objectURL.paths[objectURL.paths.length-1].name != currentPath.name){
                     objectURL.paths.splice(0,3)
                     const paths =  {paths:[{name:"/"},...objectURL.paths]}
