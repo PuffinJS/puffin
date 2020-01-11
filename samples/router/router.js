@@ -12,8 +12,16 @@ const SubRouting = puffin.element(
   `
     <div>
       <p>This is SubRouting page </p>
+      <button click="$goTo" to="/subrouting/subroute1">This is SubRouting page </button>
+      <button click="$goTo" to="/subrouting/subroute1/subroute2">This is SubRouting page </button>
     </div>
-  `,
+  `,{
+    methods:[
+     function goTo(){
+      router.goTo(this.getAttribute("to"))
+     } 
+    ]
+  }
 );
 
 const Lost = puffin.element(
@@ -70,8 +78,6 @@ const App = puffin.element(
     <div>
       <routerLink text="go home " path="/home"/>
       <routerLink text="go to subrouting " path="/subrouting"/>
-      <routerLink text="go to subroute1 " path="/subrouting/subroute1"/>
-      <routerLink text="go to subroute2 " path="/subrouting/subroute1/subroute2"/>
       <routerBox/>
     </div>
   `,

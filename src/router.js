@@ -73,7 +73,7 @@ function puffinRouter(configuration,additionalConfig){
             <div id="${boxId}"></div>
         `),
         link: puffin.element(`
-                <a click="$click" path="{{path}}" href="#">{{text}}</a>
+                <a click="$click" href="#">{{text}}</a>
             `,{
                 methods:[
                     function click(){
@@ -81,7 +81,10 @@ function puffinRouter(configuration,additionalConfig){
                     }
                 ],
                 props:["text","path"]
-            })
+            }),
+        goTo(path){
+            goToPath(configuration,boxId,additionalConfig,path)
+        }
     }
     window.addEventListener("load",function(){
         renderBox(configuration,boxId,additionalConfig)          

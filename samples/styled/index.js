@@ -26,6 +26,9 @@ const FlexAlign = puffin.style.div`
     transition:0.2s;
     border:3px solid {{onHovering}};
   }
+  body{
+    background:#F1F1F1;
+  }
 `
 
 const manualComp = puffin.element({

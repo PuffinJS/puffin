@@ -38,6 +38,8 @@ function applyCSS(css,target,selector){
             if(sy.match(/&/g)){
                 var rule = sy.replace(/&/g,`.${selector}`)
                 rule += " } "
+            }else if(sy.match(/(body)||(html)/g)){
+                var rule = sy;
             }else{
                 var rule = `.${selector} ${sy} }`
             }
