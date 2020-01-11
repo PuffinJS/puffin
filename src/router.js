@@ -35,7 +35,8 @@ function matchPath(objectURL,arrayPaths,additional){
                 }else{
                     message = {
                         status : true,
-                        component : pathComponent.component
+                        component : pathComponent.component,
+                        title:pathComponent.title
                     }
                 }
                 
@@ -45,7 +46,8 @@ function matchPath(objectURL,arrayPaths,additional){
     if(message.status == false){
         message = {
             status : true,
-            component : additional.lost.component
+            component : additional.lost.component,
+            title:additional.lost.title
         }
     }
     return message;
@@ -55,6 +57,7 @@ function renderBox(configuration,boxId,additionalConfig){
     const currentURL = parseURL(window.location)
     const result = matchPath(currentURL,configuration,additionalConfig)
     if(result.status){
+        document.title = result.title
         puffin.render(result.component,document.getElementById(boxId),{
             removeContent:true
         })

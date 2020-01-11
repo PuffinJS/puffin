@@ -45,23 +45,28 @@ const subroute2 = puffin.element(
 const router = new puffin.router([
   {
     path:'/', //Fallback to home when no section is specified
-    component:Home
+    component:Home,
+    title:'Home'
   },
   {
     path:'/home',
-    component:Home
+    component:Home,
+    title:'Home'
   },
   {
     path:'/subrouting',
     component:SubRouting,
+    title:'Subrouting 1',
     paths:[
       {
         path:'/subroute1',
         component:subroute1,
+        title:'Subroute 1',
         paths:[
           {
             path:'/subroute2',
-            component:subroute2
+            component:subroute2,
+            title:'Subroute 2'
           }
         ]
       }
@@ -69,7 +74,8 @@ const router = new puffin.router([
   }
 ],{
   lost:{
-    component:Lost
+    component:Lost,
+    title:'You are lost'
   }
 })
 
