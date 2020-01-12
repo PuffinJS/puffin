@@ -27,6 +27,9 @@ const componentTest = puffin.element(
     methods: [
       function test() {
         alert("Executed from the component test");
+        const clickedEvent = new CustomEvent("clicked", { detail: 'I have been clicked' });
+
+        this.dispatchEvent(clickedEvent);
       }
     ]
   }
@@ -42,7 +45,7 @@ const App = puffin.element(
         <h2>Components:</h2>
         <positionComponent></positionComponent>
         <positionComponent></positionComponent>
-        <componentTest>I am an imported component</componentTest>
+        <componentTest clicked="$clicked">I am an imported component</componentTest>
         <p>Shared counter:</p>
         <button click="$increase">Count: {{count}}</button>
         <button click="$increase">Count: {{count}}</button>
@@ -56,12 +59,23 @@ const App = puffin.element(
     methods: [
       function increase() {
         sharedState.data.count++
+      },
+      function clicked(e){
+        console.log(e.detail)
       }
     ],
     events:{
+      fabricated(target){
+        console.log("I am fabricated")
+      },
+      beforeMounted(target){
+        console.log("I am going to be mounted")
+      },
       mounted(target){
-        target.props.count = sharedState.data.count //Initial value
+        console.log("I am now mounted")
 
+        target.props.count = sharedState.data.count //Initial value
+        
         sharedState.changed(function(data){
           target.props.count = data.count
         })

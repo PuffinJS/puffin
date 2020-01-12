@@ -93,11 +93,13 @@ const Contact = puffin.element(
 const router = new puffin.router([
   {
     path:'/home',
-    component:Home
+    component:Home,
+    title:'Home'
   },
   {
     path:'/contact',
-    component:Contact
+    component:Contact,
+    title:'Contact'
   }
 ])
 

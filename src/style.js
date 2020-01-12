@@ -32,7 +32,7 @@ function applyCSS(css,target,selector){
     const style = document.createElement("style");
     style.type = "text/css";
     style.rel = "stylesheet";
-    target.appendChild(style);
+    document.head.appendChild(style);
     css.map(function(sy){
         if(sy != ""){
             if(sy.match(/&/g)){

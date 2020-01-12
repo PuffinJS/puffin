@@ -36,6 +36,7 @@ const puffin = {
     };
   },
   render: (element, parent, options = { removeContent: false }) => {
+    executeEvent("beforeMounted",element.usedEvents,element.node)
     if (options.removeContent) parent.innerHTML = "";
     parent.appendChild(element.node);
     executeEvent("mounted",element.usedEvents,element.node)
@@ -392,9 +393,8 @@ function loopThrough({
       if(isImported){
         const tempEvents = randomizeEvents(importedComponent.usedEvents,node)
         tempEvents.map(a=>usedEvents.push(a))  
-      }else{
-        detectEvents(options.events,usedEvents,node)
       }
+      detectEvents(options.events,usedEvents,node)
     }
     if (currentComponent.type === "text") {
       parent.innerText = currentComponent.text;

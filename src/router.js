@@ -1,4 +1,9 @@
 const puffin = require("./puffin")
+const puffinState = require("./state")
+
+const state = puffinState({
+    active:null
+})
 
 function parseURL(url){
     const parsedURL = url.toString().split(/(\/)|(#)/g).filter(x => Boolean(x))
@@ -36,7 +41,8 @@ function matchPath(objectURL,arrayPaths,additional){
                     message = {
                         status : true,
                         component : pathComponent.component,
-                        title:pathComponent.title
+                        title:pathComponent.title == undefined? pathComponent.path:pathComponent.title,
+                        path:pathComponent.path
                     }
                 }
                 
@@ -47,7 +53,8 @@ function matchPath(objectURL,arrayPaths,additional){
         message = {
             status : true,
             component : additional.lost.component,
-            title:additional.lost.title
+            title:additional.lost.title == undefined? '':additional.lost.title,
+            path:'lost'
         }
     }
     return message;
@@ -57,6 +64,7 @@ function renderBox(configuration,boxId,additionalConfig){
     const currentURL = parseURL(window.location)
     const result = matchPath(currentURL,configuration,additionalConfig)
     if(result.status){
+        state.data.active = result.path
         document.title = result.title
         puffin.render(result.component,document.getElementById(boxId),{
             removeContent:true
@@ -83,7 +91,17 @@ function puffinRouter(configuration,additionalConfig){
                         goToPath(configuration,boxId,additionalConfig,this.getAttribute("path"))
                     }
                 ],
-                props:["text","path"]
+                props:["text","path"],
+                events:{
+                    mounted(target){
+                        state.changed(function(data){
+                            target.classList.remove('active')
+                            if(target.getAttribute("path") == data.active){
+                                target.classList.toggle('active')
+                            }
+                        })
+                    }
+                }
             }),
         goTo(path){
             goToPath(configuration,boxId,additionalConfig,path)
