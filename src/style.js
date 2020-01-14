@@ -1,8 +1,6 @@
 const puffin = require("./puffin")
 
-function generateClass() {
-    return `pfn_${(Math.random() + Math.random()).toString().slice(12)}`;
-}
+const {generateClass} = require("./utils")
 
 function throwWarn(message) {
     console.warn("puffin warn -->", message);

@@ -5,6 +5,7 @@
   Copyright (c) Marc Espín Sanz
 
 */
+const {generateClass} = require("./utils")
 
 const puffin = {
   element: function(input, options = { methods: [], events: {} }) {
@@ -100,7 +101,8 @@ function appendProps(PropsObjects, options, node) {
         setProp({
           object: prop,
           options: options,
-          node: element
+          node: element,
+          props:PropsObjects
         });
       }
     });
@@ -122,7 +124,8 @@ function ObjectObserver(optionalOptions, node, PropsObjects) {
               object: prop,
               options: optionalOptions,
               node: element,
-              directValue: propValue
+              directValue: propValue,
+              props:PropsObjects
             });
           }
          
@@ -135,33 +138,37 @@ function ObjectObserver(optionalOptions, node, PropsObjects) {
   return new Proxy({}, observer);
 }
 
-function setProp({ object, options = {}, node, directValue = null }) {
-  if (object.type === "visible") {
+function setProp({ object, options = {}, node, directValue = null,props=[] }) {
+  let computedValue = null;
+
+  if(directValue!=null){
+    computedValue = directValue;
+  }else{
+    computedValue = object.value
+  }
+
+  if (object.visible) {
     if (object.attribute === "__text") {
       if(directValue == null && options[object.name] == undefined) return;
       node.textContent = object.value.replace(
         new RegExp(`{{${object.name}}}`,'g'),
-        directValue != null ? directValue : options[object.name]
+        computedValue
       );
     } else {
       node.setAttribute(
         object.attribute,
         object.value.replace(
           new RegExp(`{{${object.name}}}`,'g'),
-          directValue != null ? directValue : options[object.name]
+          computedValue
         )
       );
     }
   } else {
     Object.defineProperty(node.props, object.name, {
-      value: directValue != null ? directValue : object.value,
+      value: computedValue,
       writable: true
     });
   }
-}
-
-function generateClass() {
-  return `pfn_${(Math.random() + Math.random()).toString().slice(12)}`;
 }
 
 function detectEvents(events = {},totalList,node){
@@ -187,7 +194,7 @@ function detectProps(ExportedProps, PropsValues, node, totalList) {
             class: classIdentifier,
             attribute: name,
             value: attribute[name],
-            type: "visible",
+            visible:true,
             name: prop
           });
           node.classList.add(classIdentifier);
@@ -199,7 +206,7 @@ function detectProps(ExportedProps, PropsValues, node, totalList) {
       class: classIdentifier,
       attribute: name,
       value: null,
-      type: "hidden",
+      visible: false,
       name: prop
     });
     if (node != undefined) node.classList.add(classIdentifier);
@@ -329,6 +336,7 @@ function cloneComponent(object){
       attribute:prop.attribute,
       value:prop.value,
       type:prop.type,
+      visible:prop.visible,
       name:prop.name
     })
   })
@@ -388,7 +396,6 @@ function loopThrough({
       }
       appendProps(usedProps, currentComponent.attributes, node);
     }
-
     if(currentComponent.type !== "text"  ){
       if(isImported){
         const tempEvents = randomizeEvents(importedComponent.usedEvents,node)
