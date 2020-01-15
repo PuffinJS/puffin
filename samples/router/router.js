@@ -82,8 +82,8 @@ const router = new puffin.router([
 const App = puffin.element(
   `
     <div>
-      <routerLink text="go home " path="/home"/>
-      <routerLink text="go to subrouting " path="/subrouting"/>
+      <routerLink ok="hello" text="go home " path="/home"/>
+      <routerLink text="go to subrouting" path="/subrouting"/>
       <routerBox/>
     </div>
   `,

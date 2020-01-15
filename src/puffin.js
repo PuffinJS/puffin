@@ -144,7 +144,7 @@ function setProp({ object, options = {}, node, directValue = null,props=[] }) {
   if(directValue!=null){
     computedValue = directValue;
   }else{
-    computedValue = object.value
+    computedValue = options[object.name]
   }
 
   if (object.visible) {
