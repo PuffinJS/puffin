@@ -84,7 +84,7 @@ function puffinRouter(configuration,additionalConfig){
             <div id="${boxId}"></div>
         `),
         link: puffin.element(`
-                <a click="$click" href="#">{{text}}</a>
+                <a click="$click">{{text}}</a>
             `,{
                 methods:[
                     function click(){
