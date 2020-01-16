@@ -60,11 +60,11 @@ const App = puffin.element(
         target.props.count = 0 //Initial value
       }
     },
-    methods: [
-      function increase() {
+    methods: {
+      increase() {
         this.props.count++;  //Increase the count by one on clicking
       }
-    ],
+    },
     props:["count"]
   }
 );
@@ -182,11 +182,11 @@ const App = puffin.element(
     components:{
       StyledButton
     },
-    methods:[
-      function switchTheme(){
+    methods:{
+      switchTheme(){
         themeState.data.primaryColor = 'blue'
       }
-    ]
+    }
   }
 );
 
@@ -238,11 +238,11 @@ const secondComponent = puffin.element(
         })
       }
     },
-    methods:[
-      function add(){
+    methods:{
+      add(){
         myState.data.count++ //Updates the global state
       }
-    ],
+    },
     props:["count"]
   }
 );
