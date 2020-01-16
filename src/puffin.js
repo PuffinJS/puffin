@@ -8,7 +8,7 @@
 const {generateClass} = require("./utils")
 
 const puffin = {
-  element: function(input, options = { methods: [], events: {} }) {
+  element: function(input, options = { methods: {}, events: {} }) {
     const parser = require("xml-js");
     let output;
     if(typeof input == "string"){
@@ -216,7 +216,9 @@ function detectProps(ExportedProps, PropsValues, node, totalList) {
 function getComponentsMethods(usedMethods = [], components) {
   Object.keys(components).map(function(component) {
     if (components[component] != null) {
-      components[component].methods.map(a=>usedMethods.push(a))
+      components[component].methods.map(function(a){
+        usedMethods.push(a)
+      })
     }
   });
 }
@@ -266,20 +268,18 @@ function appendMethods(currentComponent, node, usedMethods, methods) {
           node.setAttribute(attr, reference[0]);
         }
       } else {
-        methods.map(func => {
-          if (func.name === reference[1]) {
-            node.addEventListener(attr, func);
+        if(methods.hasOwnProperty(reference[1])){
+          node.addEventListener(attr, methods[reference[1]]);
             const classIdentifier = generateClass();
             node.classList.add(classIdentifier);
             usedMethods.push({
               classIdentifier: classIdentifier,
               event: {
                 name: attr,
-                func: func
+                func: methods[reference[1]]
               }
             });
-          }
-        });
+        }
       }
     });
   }
@@ -370,7 +370,7 @@ function getNode(components, currentComponent){
 function loopThrough({
   arr = [],
   parent,
-  methods = [],
+  methods = {},
   components = {},
   options = {},
   usedMethods = [],
@@ -382,7 +382,7 @@ function loopThrough({
     const currentComponentProps = getProps(currentComponent);
     if (currentComponent.type === "element") {
       var { node,isImported ,importedComponent } = getNode(components, currentComponent)
-      appendImportedMethods(importedComponent, isImported, node);
+      if(isImported)appendImportedMethods(importedComponent, isImported, node);
       appendMethods(currentComponent, node, usedMethods, methods);
     }
     detectProps(propsConfigured, currentComponentProps, node, usedProps);

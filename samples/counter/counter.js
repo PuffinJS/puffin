@@ -10,28 +10,27 @@ const positionComponent = puffin.element(
         target.props.number = "Hover me!"
       }
     },
-    methods: [
-      function moving(e) {
+    methods: {
+      moving(e) {
         this.props.number = Math.random()
       }
-    ],
+    },
     props:[
       "number"
     ]
   }
 );
-
 const componentTest = puffin.element(
   `<button click="$test">Component test!</button>`,
   {
-    methods: [
-      function test() {
+    methods: {
+      test() {
         alert("Executed from the component test");
         const clickedEvent = new CustomEvent("clicked", { detail: 'I have been clicked' });
 
         this.dispatchEvent(clickedEvent);
       }
-    ]
+    }
   }
 );
 
@@ -56,14 +55,14 @@ const App = puffin.element(
       componentTest,
       positionComponent
     },
-    methods: [
-      function increase() {
+    methods: {
+      increase() {
         sharedState.data.count++
       },
-      function clicked(e){
+      clicked(e){
         console.log(e.detail)
       }
-    ],
+    },
     events:{
       fabricated(target){
         console.log("I am fabricated")

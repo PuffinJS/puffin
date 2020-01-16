@@ -1,6 +1,6 @@
 {
   "name": "@mkenzo_8/puffin",
-  "version": "0.2.04",
+  "version": "0.2.05",
   "description": "A reactive components library for web.",
   "main": "src/main.js",
   "scripts": {},
@@ -8,9 +8,8 @@
   "author": "Marc Espín Sanz <mespinsanz@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "parcel": "^1.12.4",
     "xml-js": "^1.6.11"
   },
-  "devDependencies": {
-    "parcel": "^1.12.4"
-  }
+  "devDependencies": {}
 }
