@@ -86,11 +86,11 @@ function puffinRouter(configuration,additionalConfig){
         link: puffin.element(`
                 <a click="$click">{{text}}</a>
             `,{
-                methods:[
-                    function click(){
+                methods:{
+                    click(){
                         goToPath(configuration,boxId,additionalConfig,this.getAttribute("path"))
                     }
-                ],
+                },
                 props:["text","path"],
                 events:{
                     mounted(target){

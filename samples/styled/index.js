@@ -71,12 +71,12 @@ const thirdComponent = puffin.element(
      </div>
   `,
   {
-    methods:[
-      function change(){
+    methods:{
+      change(){
         state.data.static = "green"
         state.data.onHovering = "yellow"
       }
-    ],
+    },
     components:{
       Button,
       FlexAlign,

@@ -45,14 +45,14 @@ const secondComponent = puffin.element(
         })
       }
     },
-    methods:[
-      function add(){
+    methods:{
+      add(){
         myState.data.count++ //Updates the global state
       },
-      function restart(){
+      restart(){
         myState.emit('restarted',0)
       }
-    ],
+    },
     props:["count"],
     components:{
       firstComponent
