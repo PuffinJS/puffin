@@ -7,16 +7,44 @@
 */
 const {generateClass} = require("./utils")
 
+
+function evaluate(input){
+  const parser = require("xml-js");
+  let output = false
+  try{
+    output = {
+      error:false,
+      output: JSON.parse(parser.xml2json(input,{
+        trim:true
+      }))
+    }
+  }catch(err){
+    return {
+      error:true,
+      output: errorComponent({
+        structure:input,
+        error:err
+      })
+    }
+  }
+  return output
+}
+
 const puffin = {
   element: function(input, options = { methods: {}, events: {} }) {
-    const parser = require("xml-js");
+    let result = {
+      error:false
+    };
     let output;
     if(typeof input == "string"){
-      output = JSON.parse(parser.xml2json(input,{
-        trim:true
-      }));
+      result = evaluate(input)
     }else{
-      output = input; 
+      result.output = input; 
+    }
+    if(result.error){
+      return result.output
+    }else{
+      output = result.output
     }
     output.elements[0].first = true; //Defines the parent element on the component
     const currentComponent = loopThrough({
@@ -459,5 +487,49 @@ function loopThrough({
     }
   }
 }
+function errorComponent(message){
+  const Styler = require("./style")
+  const content = `Failed to render: 
 
+  ${message.structure}
+  
+  ${message.error}`
+
+  throwError(content)
+
+  const wrapper = Styler.div`
+
+    &{
+      background:red;
+      color:white;
+      padding:15px;
+      font-family:Montserrat, sans-serif;
+      border-radius:10px;
+      overflow:auto;
+      border:2px solid white;
+      opacity:0.7
+    }
+    & xmp{
+      font-family:Montserrat, sans-serif;
+    }
+  `
+  return puffin.element(`
+    <wrapper>
+    
+    </wrapper>
+  `,{
+    events:{
+      mounted(target){
+        target.innerHTML = `Failed to render: \n 
+        
+        <xmp>${message.structure}</xmp>
+        
+        ${message.error}`
+      }
+    },
+    components:{
+      wrapper
+    }
+  })
+}
 module.exports = puffin;
