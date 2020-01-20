@@ -21,7 +21,7 @@ const positionComponent = puffin.element(
   }
 );
 const componentTest = puffin.element(
-  `f<button click="$test">Component test!</button>`,
+  `<button click="$test">Component test!</button>`,
   {
     methods: {
       test() {
