@@ -63,8 +63,17 @@ const thirdComponent = puffin.element(
           <Button click="$change">
             Styled Button
           </Button>
-          <Button click="$change">
-            Styled Button
+          <Button click="$change" class="${puffin.style.css`
+            &{
+              background:lightblue;
+              border:0;
+              border-radius:5px;
+            }
+            &:hover{
+              color:green;
+            }
+          `}">
+            Inline styling
           </Button>
         </FlexAlign>
         <manualComp/>

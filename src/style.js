@@ -26,7 +26,7 @@ function replaceMatchs(text,state){
     return css
 }
 
-function applyCSS(css,target,selector){
+function applyCSS(css,selector){
     const style = document.createElement("style");
     style.type = "text/css";
     style.rel = "stylesheet";
@@ -41,6 +41,7 @@ function applyCSS(css,target,selector){
             }else{
                 var rule = `.${selector} ${sy} }`
             }
+            console.log(rule)
             style.sheet.insertRule(rule)
         }
     })
@@ -60,21 +61,31 @@ function main(text,values,tagName){
     }
     const css = getCSS(text,state)
     const classSelected = generateClass()
-    const element = puffin.element(`
-        <${tagName} class="${classSelected}"></${tagName}>
-    `,{
-        events:{
-            mounted(target){
-                if(state != null){
-                    state.changed(function(){
-                        applyCSS(getCSS(text,state),target,classSelected)
-                    })
+    if(tagName!="css"){
+        const element = puffin.element(`
+            <${tagName} class="${classSelected}"></${tagName}>
+        `,{
+            events:{
+                mounted(){
+                    if(state != null){
+                        state.changed(function(){
+                            applyCSS(getCSS(text,state),classSelected)
+                        })
+                    }
+                    applyCSS(css,classSelected)
                 }
-                applyCSS(css,target,classSelected)
             }
+        })  
+        return element
+    }else{
+        if(state != null){
+            state.changed(function(){
+                applyCSS(getCSS(text,state),classSelected)
+            })
         }
-    })
-    return element
+        applyCSS(css,classSelected)
+        return classSelected
+    }
 }
 
 const styled = {
@@ -110,6 +121,9 @@ const styled = {
     },
     ul:(text,...values)=> {
         return main(text,values,'ul')
+    },
+    css:(text,...values)=> {
+        return main(text,values,'css')
     }
 }
 
