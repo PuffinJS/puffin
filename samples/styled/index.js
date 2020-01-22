@@ -68,9 +68,11 @@ const thirdComponent = puffin.element(
               background:lightblue;
               border:0;
               border-radius:5px;
+              transition:0.2s;
             }
             &:hover{
-              color:green;
+              border-radius:50px;
+              transition:0.2s;
             }
           `}">
             Inline styling

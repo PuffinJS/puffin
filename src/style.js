@@ -1,15 +1,6 @@
 const puffin = require("./puffin")
 
-const {generateClass} = require("./utils")
-
-function throwWarn(message) {
-    console.warn("puffin warn -->", message);
-  }
-  
-  function throwError(message) {
-    console.error("puffin error -->", message);
-  }
-  
+const {generateClass,throwError,throwWarn} = require("./utils")
 
 function replaceMatchs(text,state){
     let css = text;
@@ -41,7 +32,6 @@ function applyCSS(css,selector){
             }else{
                 var rule = `.${selector} ${sy} }`
             }
-            console.log(rule)
             style.sheet.insertRule(rule)
         }
     })

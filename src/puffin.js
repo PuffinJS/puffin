@@ -5,8 +5,7 @@
   Copyright (c) Marc Espín Sanz
 
 */
-const {generateClass} = require("./utils")
-
+const {generateClass,throwError,throwWarn} = require("./utils")
 
 function evaluate(input){
   const parser = require("xml-js");
@@ -64,13 +63,16 @@ const puffin = {
       usedEvents: currentComponent.usedEvents
     };
   },
-  render: (element, parent, options = { removeContent: false }) => {
-    executeEvent("beforeMounted",element.usedEvents,element.node)
-    if (options.removeContent) parent.innerHTML = "";
-    parent.appendChild(element.node);
-    executeEvent("mounted",element.usedEvents,element.node)
-  }
+  render
 };
+
+function render(element, parent, options = { removeContent: false }){
+  executeEvent("beforeMounted",element.usedEvents,element.node)
+  if (options.removeContent) parent.innerHTML = "";
+  parent.appendChild(element.node);
+  executeEvent("mounted",element.usedEvents,element.node)
+}
+
 function isComponentImported(componentsArray, currentComponent) {
   if (
     Object.keys(componentsArray).filter(comp => {
@@ -108,14 +110,6 @@ function isContainer(nodeName) {
     case "DIV":
       return true;
   }
-}
-
-function throwWarn(message) {
-  console.warn("puffin warn -->", message);
-}
-
-function throwError(message) {
-  console.error("puffin error -->", message);
 }
 
 function appendProps(PropsObjects, options, node) {
@@ -420,7 +414,6 @@ function loopThrough({
         importedComponent.props.forEach((prop)=>{
           usedProps.push(prop)
         })
-        
       }
       appendProps(usedProps, currentComponent.attributes, node);
     }
