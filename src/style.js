@@ -21,6 +21,7 @@ function applyCSS(css,selector){
     const style = document.createElement("style");
     style.type = "text/css";
     style.rel = "stylesheet";
+    style.classList.add(`${selector}_style`)
     document.head.appendChild(style);
     css.map(function(sy){
         if(sy != ""){
@@ -35,6 +36,9 @@ function applyCSS(css,selector){
             style.sheet.insertRule(rule)
         }
     })
+    if(document.getElementsByClassName(`${selector}_style`).length > 2){
+        document.getElementsByClassName(`${selector}_style`)[0].remove()
+    }
 }
 
 function getCSS(text,state){
