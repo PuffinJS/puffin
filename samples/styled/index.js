@@ -1,15 +1,18 @@
 const { puffin } = require("../../src/main.js");
 
 const state = new puffin.state({
-  static:'red',
-  onHovering:'blue'
+  firstColor:'red',
+  secondColor:'blue'
 })
 
 const Button = puffin.style.button`
   ${state}
   &{
-    color:{{static}};
+    color:{{firstColor}};
     padding:10px;
+    border-radius:5px;
+    border:2px solid {{firstColor}};
+    margin:3px;
   }
 `
 
@@ -20,11 +23,11 @@ const FlexAlign = puffin.style.div`
     display:flex;
     justify-content:center;
     padding:20px;
-    border:3px solid {{static}};
+    border:3px solid {{firstColor}};
   }
   &:hover {
     transition:0.2s;
-    border:3px solid {{onHovering}};
+    border:3px solid {{secondColor}};
   }
   body{
     background:#F1F1F1;
@@ -84,8 +87,8 @@ const thirdComponent = puffin.element(
   {
     methods:{
       change(){
-        state.data.static = "green"
-        state.data.onHovering = "yellow"
+        state.data.firstColor = "green"
+        state.data.secondColor = "yellow"
       }
     },
     components:{

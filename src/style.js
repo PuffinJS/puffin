@@ -3,35 +3,44 @@ const puffin = require("./puffin")
 const {generateClass,throwError,throwWarn} = require("./utils")
 
 function replaceMatchs(text,state){
-    let css = text;
-    if(state != null){
-        Object.keys(state.data).map(function(prop){
-            const regex = new RegExp(`{{${prop}}}`,'g')
-            css = css.replace(regex,state.data[prop])
-        })
-    }else{
-        if(css.match(/({{)/g)){
-            throwWarn('There is no state passed into style: '+text)
+    let rules = text.split(/[\}]+$/gm).map((a)=>{
+        return {
+            sheet:a.trim(),
+            reactive:false
         }
-    }
-    return css
+    })
+    rules = rules.map((rule)=>{
+        if(state != null){
+            Object.keys(state.data).map(function(prop){
+                const regex = new RegExp(`{{${prop}}}`,'g')
+                rule.sheet = rule.sheet.replace(regex,state.data[prop])
+                rule.reactive = true
+            })
+        }else{
+            if(rule.sheet.match(/({{)/g)){
+                throwWarn('There is no state passed icx nto style: '+text)
+            }
+        }
+        return rule
+    })
+    return rules
 }
 
-function applyCSS(css,selector){
+function applyCSS(css,selector,reactive = false){
     const style = document.createElement("style");
     style.type = "text/css";
     style.rel = "stylesheet";
     style.classList.add(`${selector}_style`)
     document.head.appendChild(style);
     css.map(function(sy){
-        if(sy != ""){
-            if(sy.match(/&/g)){
-                var rule = sy.replace(/&/g,`.${selector}`)
+        if(sy.sheet != "" && sy.reactive){
+            if(sy.sheet.match(/&/g)){
+                var rule = sy.sheet.replace(/&/g,`.${selector}`)
                 rule += " } "
-            }else if(sy.match(/(body)||(html)/g)){
-                var rule = sy;
+            }else if(sy.sheet.match(/(body)||(html)/g)){
+                var rule = sy.sheet;
             }else{
-                var rule = `.${selector} ${sy} }`
+                var rule = `.${selector} ${sy.sheet} }`
             }
             style.sheet.insertRule(rule)
         }
@@ -42,7 +51,7 @@ function applyCSS(css,selector){
 }
 
 function getCSS(text,state){
-   return replaceMatchs(text,state).split('}').map((a)=>a.trim())
+   return replaceMatchs(text,state)
 }
 
 function main(text,values,tagName){
@@ -74,7 +83,7 @@ function main(text,values,tagName){
     }else{
         if(state != null){
             state.changed(function(){
-                applyCSS(getCSS(text,state),classSelected)
+                applyCSS(getCSS(text,state),classSelected,true)
             })
         }
         applyCSS(css,classSelected)
