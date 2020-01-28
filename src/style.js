@@ -113,8 +113,14 @@ const styled = {
     h3:(text,...values)=> {
         return main(text,values,'h3')
     },
-    h3:(text,...values)=> {
+    h4:(text,...values)=> {
         return main(text,values,'h4')
+    },
+    h5:(text,...values)=> {
+        return main(text,values,'h5')
+    },
+    h6:(text,...values)=> {
+        return main(text,values,'h6')
     },
     li:(text,...values)=> {
         return main(text,values,'li')
