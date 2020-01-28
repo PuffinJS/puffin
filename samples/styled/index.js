@@ -68,8 +68,7 @@ const thirdComponent = puffin.element(
           </Button>
           <Button click="$change" class="${puffin.style.css`
             &{
-              background:lightblue;
-              border:0;
+              background:yellow;
               border-radius:5px;
               transition:0.2s;
             }

@@ -33,7 +33,7 @@ function applyCSS(css,selector,reactive = false){
     style.classList.add(`${selector}_style`)
     document.head.appendChild(style);
     css.map(function(sy){
-        if(sy.sheet != "" && sy.reactive){
+        if(sy.sheet != "" && (sy.reactive || reactive)){
             if(sy.sheet.match(/&/g)){
                 var rule = sy.sheet.replace(/&/g,`.${selector}`)
                 rule += " } "
@@ -75,7 +75,7 @@ function main(text,values,tagName){
                             applyCSS(getCSS(text,state),classSelected)
                         })
                     }
-                    applyCSS(css,classSelected)
+                    applyCSS(css,classSelected,true)
                 }
             }
         })  
@@ -83,10 +83,10 @@ function main(text,values,tagName){
     }else{
         if(state != null){
             state.changed(function(){
-                applyCSS(getCSS(text,state),classSelected,true)
+                applyCSS(getCSS(text,state),classSelected)
             })
         }
-        applyCSS(css,classSelected)
+        applyCSS(getCSS(text,state),classSelected,true)
         return classSelected
     }
 }
