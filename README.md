@@ -2,7 +2,7 @@
 
 ## 🤔 About
 
-Puffin is a JavaScript library for creating reusable reactive components ready for the web.
+PuffinJS is a JavaScript library for creating reusable reactive components ready for the web.
 
 ## 🔬 Status
 
@@ -13,9 +13,11 @@ What does it have?
   * Reactive Props
   * Methods
   * Events
+* Language addon
 * Basic reactive styling
 * Basic router (with subroutes, see /samples) 
 * Basic centralized reactive state
+* Addon support (WIP)
 
 
 ## ⚽ Usage

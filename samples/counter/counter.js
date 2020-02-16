@@ -38,10 +38,14 @@ const sharedState = puffin.state({
   count:0
 })
 
+const LanguageState = puffin.state({
+  Components:'Components'
+})
+
 const App = puffin.element(
   `
      <div>
-        <h2>Components:</h2>
+        <h2 lang-string="Components"></h2>
         <positionComponent></positionComponent>
         <positionComponent></positionComponent>
         <componentTest clicked="$clicked">I am an imported component</componentTest>
@@ -51,9 +55,13 @@ const App = puffin.element(
      </div>
   `,
   {
+    addons:{
+      lang : puffin.lang(LanguageState)
+    },
     components: {
       componentTest,
-      positionComponent
+      positionComponent,
+
     },
     methods: {
       increase() {

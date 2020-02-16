@@ -3,7 +3,7 @@ const puffin = require("./puffin")
 const {generateClass,throwError,throwWarn} = require("./utils")
 
 function replaceMatchs(text,state){
-    let rules = text.split(/[\}]+$/gm).map((a)=>{
+    let rules = text.split(/[\}]$/gm).map((a)=>{
         return {
             sheet:a.trim(),
             reactive:false

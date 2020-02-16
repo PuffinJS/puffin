@@ -389,6 +389,15 @@ function getNode(components, currentComponent){
   }
 }
 
+function executeAddons(element,{ options = {} }){
+  if(options.addons != undefined){
+    Object.keys(options.addons).map(function(key){
+      const addon = options.addons[key]
+      addon.iterateElement(element)
+    })
+  }
+}
+
 function loopThrough({
   arr = [],
   parent,
@@ -416,6 +425,7 @@ function loopThrough({
         })
       }
       appendProps(usedProps, currentComponent.attributes, node);
+      executeAddons(node,arguments[0])
     }
     if(currentComponent.type !== "text"  ){
       if(isImported){
@@ -434,6 +444,7 @@ function loopThrough({
           arr: currentComponent.elements,
           parent: result,
           methods: methods,
+          options:options,
           usedMethods:usedMethods,
           components: components,
           usedProps: usedProps,
@@ -445,6 +456,7 @@ function loopThrough({
           arr: currentComponent.elements,
           parent: node,
           methods: methods,
+          options:options,
           usedMethods:usedMethods,
           components: components,
           usedProps: usedProps,

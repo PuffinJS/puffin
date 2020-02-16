@@ -2,9 +2,11 @@ const puffin = require("./puffin.js");
 const puffinRouter = require("./router.js")
 const puffinState = require("./state.js")
 const puffinStyle = require("./style.js")
+const puffinLang = require("./languages.js")
 
 puffin.router = puffinRouter
 puffin.state = puffinState
 puffin.style = puffinStyle
+puffin.lang = puffinLang
 
 module.exports = { puffin };
