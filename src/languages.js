@@ -4,7 +4,6 @@
 function lang(state){
     return {
         iterateElement(element){
-            element.setAttribute("TEST000","TEST999")
             appendText(state,element)
             state.changed(()=> appendText(state,element))
         }

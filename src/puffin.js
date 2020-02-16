@@ -1,9 +1,6 @@
 /*
-
   MIT License
-
   Copyright (c) Marc Espín Sanz
-
 */
 const {generateClass,throwError,throwWarn} = require("./utils")
 
@@ -50,6 +47,7 @@ const puffin = {
       arr: output.elements,
       parent: null,
       options:options,
+      addons:options.addons,
       methods: options.methods,
       components: options.components,
       propsConfigured: options.props,
@@ -389,14 +387,16 @@ function getNode(components, currentComponent){
   }
 }
 
-function executeAddons(element,{ options = {} }){
-  if(options.addons != undefined){
-    Object.keys(options.addons).map(function(key){
-      const addon = options.addons[key]
+function executeAddons(element,addons){
+  if(addons != undefined){
+    Object.keys(addons).map(function(key){
+      const addon = addons[key]
       addon.iterateElement(element)
     })
   }
 }
+
+
 
 function loopThrough({
   arr = [],
@@ -404,6 +404,7 @@ function loopThrough({
   methods = {},
   components = {},
   options = {},
+  addons= {},
   usedMethods = [],
   usedProps = [],
   propsConfigured = [],
@@ -425,7 +426,7 @@ function loopThrough({
         })
       }
       appendProps(usedProps, currentComponent.attributes, node);
-      executeAddons(node,arguments[0])
+      executeAddons(node,addons)
     }
     if(currentComponent.type !== "text"  ){
       if(isImported){
@@ -444,9 +445,9 @@ function loopThrough({
           arr: currentComponent.elements,
           parent: result,
           methods: methods,
-          options:options,
           usedMethods:usedMethods,
           components: components,
+          addons:addons,
           usedProps: usedProps,
           propsConfigured: propsConfigured,
           usedEvents:usedEvents
@@ -456,9 +457,9 @@ function loopThrough({
           arr: currentComponent.elements,
           parent: node,
           methods: methods,
-          options:options,
           usedMethods:usedMethods,
           components: components,
+          addons:addons,
           usedProps: usedProps,
           propsConfigured: propsConfigured,
           usedEvents:usedEvents
@@ -495,7 +496,6 @@ function loopThrough({
 function errorComponent(message){
   const Styler = require("./style")
   const content = `Failed to render: 
-
   ${message.structure}
   
   ${message.error}`
@@ -503,7 +503,6 @@ function errorComponent(message){
   throwError(content)
 
   const wrapper = Styler.div`
-
     &{
       background:red;
       color:white;
