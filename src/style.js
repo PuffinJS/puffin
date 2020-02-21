@@ -131,6 +131,12 @@ const styled = {
     ul:(text,...values)=> {
         return main(text,values,'ul')
     },
+    b:(text,...values)=> {
+        return main(text,values,'b')
+    },
+    input:(text,...values)=> {
+        return main(text,values,'input')
+    },
     css:(text,...values)=> {
         return main(text,values,'css')
     }
