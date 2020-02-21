@@ -70,12 +70,14 @@ function main(text,values,tagName){
         `,{
             events:{
                 mounted(){
+                    applyCSS(css,classSelected,true)
+                },
+                fabricated(){
                     if(state != null){
                         state.changed(function(){
                             applyCSS(getCSS(text,state),classSelected)
                         })
                     }
-                    applyCSS(css,classSelected,true)
                 }
             }
         })  
