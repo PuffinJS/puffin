@@ -18,7 +18,7 @@ function replaceMatchs(text,state){
             })
         }else{
             if(rule.sheet.match(/({{)/g)){
-                throwWarn('There is no state passed icx nto style: '+text)
+                throwWarn('There is no state passed to this style rule: '+text)
             }
         }
         return rule
@@ -70,7 +70,7 @@ function main(text,values,tagName){
         `,{
             events:{
                 mounted(){
-                    applyCSS(css,classSelected,true)
+                    applyCSS(getCSS(text,state),classSelected,true)
                 },
                 fabricated(){
                     if(state != null){
