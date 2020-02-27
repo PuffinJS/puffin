@@ -270,7 +270,8 @@ function createElement(Node) {
 function executeEvent(eventName,usedEvents,node){
   usedEvents.map(function(ev){
     if(eventName == ev.name){
-      ev.function(node.getElementsByClassName(ev.class)[0] || node)
+      const resultNode = node.getElementsByClassName(ev.class)[0] || node
+      ev.function.call(resultNode, resultNode)
     }
   })
 }
