@@ -1,5 +1,5 @@
 const { puffin } = require("../../src/main.js");
-
+import 'babel-polyfill'
 const positionComponent = puffin.element(
   `<p mousemove="$moving" message="Random number: {{number}} , but attribute">
     --> {{number}}
@@ -94,3 +94,21 @@ const App = puffin.element(
 );
 
 puffin.render(App, document.getElementById("app"));
+
+const stateTest = new puffin.state({})
+
+console.log(stateTest)
+
+async function process(){
+
+  await stateTest.on('test1')
+  console.log("test1")
+
+  await stateTest.on('test2')
+  console.log("test2")
+  
+  await stateTest.on('test3')
+  console.log("test3")
+}
+
+process()

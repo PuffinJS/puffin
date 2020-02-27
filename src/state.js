@@ -21,10 +21,20 @@ function puffinState(initialData){
         meThis.changedCallbacks.push(callback)
     }
     function on(eventName,callback){
-        meThis.eventCallbacks.push({
-            eventName :eventName,
-            callback: callback
-        })
+        if(callback != null){
+            meThis.eventCallbacks.push({
+                eventName :eventName,
+                callback: callback
+            })
+        }else{
+            return new Promise((resolve,reject)=>{
+                meThis.eventCallbacks.push({
+                    eventName :eventName,
+                    callback: resolve
+                })
+            })
+        }
+       
     }
     function emit(eventName,data){
         exeListeners(meThis.eventCallbacks.filter(a=> a.eventName == eventName),data)
