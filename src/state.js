@@ -21,20 +21,29 @@ function puffinState(initialData){
         meThis.changedCallbacks.push(callback)
     }
     function on(eventName,callback){
-        if(callback != null){
+      	let events = []
+        let gottaReturn = null;
+      	if(typeof eventName == "object"){
+          events = eventName
+        }else{
+          events.push(eventName)
+        }
+        events.map((eventToRegister)=>{
+          if(callback != null){
             meThis.eventCallbacks.push({
-                eventName :eventName,
+                eventName :eventToRegister,
                 callback: callback
             })
-        }else{
-            return new Promise((resolve,reject)=>{
-                meThis.eventCallbacks.push({
-                    eventName :eventName,
-                    callback: resolve
-                })
-            })
-        }
-       
+          }else{
+              gottaReturn = new Promise((resolve,reject)=>{
+                  meThis.eventCallbacks.push({
+                      eventName :eventToRegister,
+                      callback: resolve
+                  })
+              })
+          }
+        })
+      return gottaReturn
     }
     function emit(eventName,data){
         exeListeners(meThis.eventCallbacks.filter(a=> a.eventName == eventName),data)

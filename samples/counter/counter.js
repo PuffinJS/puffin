@@ -99,6 +99,10 @@ const stateTest = new puffin.state({})
 
 console.log(stateTest)
 
+stateTest.on(['test1','test2','test3'],()=>{
+  console.log("something happened !")
+})
+
 async function process(){
 
   await stateTest.on('test1')
