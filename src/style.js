@@ -5,8 +5,7 @@ const {generateClass,throwError,throwWarn} = require("./utils")
 function replaceMatchs(text,state){
     let rules = text.split(/[\}]$/gm).map((a)=>{
         return {
-            sheet:a.trim(),
-            reactive:false
+            sheet:a.trim()
         }
     })
     rules = rules.map((rule)=>{
@@ -14,7 +13,6 @@ function replaceMatchs(text,state){
             Object.keys(state.data).map(function(prop){
                 const regex = new RegExp(`{{${prop}}}`,'g')
                 rule.sheet = rule.sheet.replace(regex,state.data[prop])
-                rule.reactive = true
             })
         }else{
             if(rule.sheet.match(/({{)/g)){
@@ -26,14 +24,14 @@ function replaceMatchs(text,state){
     return rules
 }
 
-function applyCSS(css,selector,reactive = false){
+function applyCSS(css,selector){
     const style = document.createElement("style");
     style.type = "text/css";
     style.rel = "stylesheet";
     style.classList.add(`${selector}_style`)
     document.head.appendChild(style);
     css.map(function(sy){
-        if(sy.sheet != "" && (sy.reactive || reactive)){
+        if(sy.sheet != ""){
             if(sy.sheet.match(/&/g)){
                 var rule = sy.sheet.replace(/&/g,`.${selector}`)
                 rule += " } "
@@ -70,7 +68,7 @@ function main(text,values,tagName){
         `,{
             events:{
                 mounted(){
-                    applyCSS(getCSS(text,state),classSelected,true)
+                    applyCSS(getCSS(text,state),classSelected)
                 },
                 fabricated(){
                     if(state != null){
@@ -88,7 +86,7 @@ function main(text,values,tagName){
                 applyCSS(getCSS(text,state),classSelected)
             })
         }
-        applyCSS(getCSS(text,state),classSelected,true)
+        applyCSS(getCSS(text,state),classSelected)
         return classSelected
     }
 }
@@ -138,6 +136,9 @@ const styled = {
     },
     input:(text,...values)=> {
         return main(text,values,'input')
+    },
+    label:(text,...values)=> {
+        return main(text,values,'label')
     },
     css:(text,...values)=> {
         return main(text,values,'css')
