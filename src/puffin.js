@@ -64,11 +64,15 @@ const puffin = {
   render
 };
 
-function render(element, parent, options = { removeContent: false }){
-  executeEvent("beforeMounted",element.usedEvents,element.node)
-  if (options.removeContent) parent.innerHTML = "";
-  parent.appendChild(element.node);
-  executeEvent("mounted",element.usedEvents,element.node)
+function render(element, parent, options = { removeContent: false, position:null }){
+	executeEvent("beforeMounted",element.usedEvents,element.node)
+	if (options.removeContent) parent.innerHTML = "";
+	if( options.position ){
+		parent.insertBefore(element.node,parent.children[options.position]);
+	}else{
+		parent.appendChild(element.node);
+	}
+	executeEvent("mounted",element.usedEvents,element.node)
 }
 
 function isComponentImported(componentsArray, currentComponent) {
