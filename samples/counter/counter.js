@@ -95,7 +95,14 @@ const App = puffin.element(
 
 puffin.render(App, document.getElementById("app"));
 
-const stateTest = new puffin.state({})
+const stateTest = new puffin.state({
+	"msg1":"hello",
+	"msg2":"bye"
+})
+
+stateTest.keyChanged('msg1',(newValue)=>{
+	console.log(`Changed msg1 to -> ${newValue}`)
+})
 
 console.log(stateTest)
 
