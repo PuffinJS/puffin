@@ -188,6 +188,7 @@ function setProp({ object, options = {}, node, directValue = null,props=[] }) {
       );
     }
   } else {
+    if(!node.props) return
     Object.defineProperty(node.props, object.name, {
       value: computedValue,
       writable: true
