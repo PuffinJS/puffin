@@ -1,8 +1,4 @@
 function exeCallbacks(list,currentData){
-	list.map(a=>a(currentData))
-}
-
-function exeListeners(list,currentData){
 	list.map(a=>a.callback(currentData))
 }
 
@@ -15,17 +11,30 @@ function puffinState(initialData){
 		set: function(object, name, value) {
 			object[name] = value;
 			exeCallbacks(meThis.changedCallbacks,object)
-			exeListeners(meThis.keyChangedCallbacks.filter(a=> a.keyName == name),value)
+			exeCallbacks(meThis.keyChangedCallbacks.filter(a=> a.keyName == name),value)
 			return true;
 		}
 	};
 	function changed(callback){
-		meThis.changedCallbacks.push(callback)
+		meThis.changedCallbacks.push({callback})
+		return {
+			cancel:()=>cancelEvent(meThis.changedCallbacks,callback)
+		}
 	}
 	function keyChanged(keyName,callback){
 		meThis.keyChangedCallbacks.push({
 			keyName,
 			callback
+		})
+		return {
+			cancel:()=>cancelEvent(meThis.keyChangedCallbacks,callback)
+		}
+	}
+	function cancelEvent(list,callback){
+		list.map((event,index)=>{
+			if( callback == event.callback ){
+				list = list.splice(index,1)
+			}
 		})
 	}
 	function on(eventName,callback){
@@ -42,11 +51,14 @@ function puffinState(initialData){
 					eventName :eventToRegister,
 					callback: callback
 				})
+				gottaReturn = {
+					cancel:()=>cancelEvent(meThis.eventCallbacks,callback)
+				}
 			}else{
 				gottaReturn = new Promise((resolve,reject)=>{
 					meThis.eventCallbacks.push({
 						eventName :eventToRegister,
-						callback: resolve
+						callback:resolve
 					})
 				})
 			}
@@ -54,7 +66,7 @@ function puffinState(initialData){
 		return gottaReturn
 	}
 	function emit(eventName,data){
-		exeListeners(meThis.eventCallbacks.filter(a=> a.eventName == eventName),data)
+		exeCallbacks(meThis.eventCallbacks.filter(a=> a.eventName == eventName),data)
 	}
 	function triggerChange(object){
 		exeCallbacks(meThis.changedCallbacks,object)

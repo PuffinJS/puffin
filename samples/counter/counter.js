@@ -100,7 +100,7 @@ const stateTest = new puffin.state({
 	"msg2":"bye"
 })
 
-stateTest.keyChanged('msg1',(newValue)=>{
+const KeyEvent = stateTest.keyChanged('msg1',(newValue)=>{
 	console.log(`Changed msg1 to -> ${newValue}`)
 })
 
@@ -108,6 +108,15 @@ console.log(stateTest)
 
 stateTest.on(['test1','test2','test3'],()=>{
   console.log("something happened !")
+})
+
+const Something = stateTest.on("something",()=>{
+  console.log("something happened !")
+})
+
+stateTest.on("cancel key",()=>{
+	console.log("key event closed!")
+	KeyEvent.cancel()
 })
 
 async function process(){
