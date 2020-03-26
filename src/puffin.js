@@ -217,7 +217,7 @@ function detectProps(ExportedProps, PropsValues, node, totalList) {
 				if(typeof prop == "object" ) {
 					computedProp = {
 						name:prop.name,
-						default:prop.default
+						default:prop.value
 					}
 				}
 				if (attribute[name].match(`{{${computedProp.name}}}`)) {

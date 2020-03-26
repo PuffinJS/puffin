@@ -17,7 +17,7 @@ const firstComponent = puffin.element(
 	{
 		props:[{
 			name:'count',
-			default:0
+			value:0
 		}]
 	}
 );
@@ -49,7 +49,7 @@ const secondComponent = puffin.element(
 		},
 		props:[{
 			name:'count',
-			default:0
+			value:0
 		}],
 		components:{
 			firstComponent
