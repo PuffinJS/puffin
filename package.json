@@ -1,18 +1,18 @@
 {
-  "name": "@mkenzo_8/puffin",
-  "version": "0.4.8",
-  "description": "A reactive components library for web.",
-  "main": "src/main.js",
-  "scripts": {},
-  "repository": "https://github.com/PuffinJS/puffin",
-  "author": "Marc Espín Sanz <mespinsanz@gmail.com>",
-  "license": "MIT",
-  "dependencies": {
-    "xml-js": "^1.6.11"
-  },
-  "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-polyfill": "^6.26.0",
-    "parcel": "^1.12.4"
-  }
+	"name": "@mkenzo_8/puffin",
+	"version": "0.4.9",
+	"description": "A reactive components library for web.",
+	"main": "src/main.js",
+	"scripts": {},
+	"repository": "https://github.com/PuffinJS/puffin",
+	"author": "Marc Espín Sanz <mespinsanz@gmail.com>",
+	"license": "MIT",
+	"dependencies": {
+		"xml-js": "^1.6.11"
+	},
+	"devDependencies": {
+		"babel-core": "^6.26.3",
+		"babel-polyfill": "^6.26.0",
+		"parcel": "^1.12.4"
+	}
 }
