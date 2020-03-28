@@ -51,15 +51,16 @@ function matchPath(objectURL,arrayPaths,additional){
 	})
 	if(message.status == false){
 		const fallbackComp = (()=>{
+			const endpoint = (()=>{
+				return objectURL.paths.map(ph=>{
+					return ph.name
+				}).join("")
+			})()
 			const dynamicComp = {
 				...additional.dynamic({
-					endpoint: (()=>{
-						return objectURL.paths.map(ph=>{
-							return ph.name
-						}).join("")
-					})()
+					endpoint
 				}),
-				path:'lost'
+				path:endpoint
 			}
 			if( dynamicComp ){
 				return dynamicComp
@@ -122,15 +123,14 @@ function puffinRouter(configuration,additionalConfig){
 			props:["text","path"],
 			events:{
 				mounted(target){
-					state.changed(function(data){
+					const linkEndpoint = this.getAttribute("path")
+					state.keyChanged('active',(({endpoint})=>{
 						target.classList.remove('active')
-						if(target.getAttribute("path") == data.active){
+						if(linkEndpoint == data.active){
 							target.classList.toggle('active')
 						}
-					})
-					state.on('goTo',({endpoint})=>{
-						if( this.getAttribute("path") == endpoint ) this.classList.add("active")
-					})
+					}))
+					if( state.data.active == linkEndpoint ) target.classList.add('active')
 				}
 			}
 		}),
