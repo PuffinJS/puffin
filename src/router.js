@@ -128,6 +128,9 @@ function puffinRouter(configuration,additionalConfig){
 							target.classList.toggle('active')
 						}
 					})
+					state.on('goTo',({endpoint})=>{
+						if( this.getAttribute("path") == endpoint ) this.classList.add("active")
+					})
 				}
 			}
 		}),

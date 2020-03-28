@@ -83,7 +83,7 @@ const App = puffin.element(
   `
     <div>
       <button>
-        <routerLink ok="hello" text="go home " path="/home"/>
+        <routerLink text="go home " path="/home"/>
       </button>
       <button>
         <routerLink text="go to subrouting" path="/subrouting"/>
