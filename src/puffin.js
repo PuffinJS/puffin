@@ -138,7 +138,11 @@ function ObjectObserver(optionalOptions, node, PropsObjects) {
 	const observer = {
 		set: function(object, propName, propValue) {
 			PropsObjects.map(prop => {
-				if (prop.name === propName) {
+				let computedName = prop.name
+				if( typeof prop.name == "object"){
+					computedName = prop.name.name
+				}
+				if (computedName === propName) {
 					if(node.classList.contains(prop.class)){
 						var element = node;
 					}else {
@@ -169,25 +173,29 @@ function setProp({ object, options = {}, node, propValue = null,props=[] }) {
 	}else if( options[object.name] != null ){
 		computedValue = options[object.name]
 	}
+	let computedName = object.name
+	if( typeof object.name == "object"){
+		computedName = object.name.name
+	}
 	if (object.visible) {
 		if (object.attribute === "__text") {
 			if( computedValue == null) return;
 			node.textContent = object.value.replace(
-				new RegExp(`{{${object.name}}}`,'g'),
+				new RegExp(`{{${computedName}}}`,'g'),
 				computedValue
 			);
 		} else {
 			node.setAttribute(
 				object.attribute,
 				object.value.replace(
-					new RegExp(`{{${object.name}}}`,'g'),
+					new RegExp(`{{${computedName}}}`,'g'),
 					computedValue
 				)
 			);
 		}
 	} else {
 		if(!node.props) return
-		Object.defineProperty(node.props, object.name, {
+		Object.defineProperty(node.props,computedName, {
 			value: computedValue,
 			writable: true
 		});
