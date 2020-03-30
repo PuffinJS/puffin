@@ -23,7 +23,7 @@ function lang(state){
 
 function appendText(state,element){
 	const string = element.getAttribute('lang-string')
-	if(string!= undefined && state.data[string] ){
+	if(string!= undefined && state.data[string] && state.data[string] != "" ){
 		element.textContent = state.data[string]
 	} 
 }
