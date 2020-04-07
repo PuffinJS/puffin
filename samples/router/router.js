@@ -13,7 +13,7 @@ const SubRouting = puffin.element(
     <div>
       <p>This is SubRouting page </p>
       <button click="$goTo" to="/subrouting/subroute1">This is SubRouting page </button>
-      <button click="$goTo" to="/subrouting/subroute1/subroute2">This is SubRouting page </button>
+      <button click="$goTo" to="/subrouting/subroute2">This is SubRouting page </button>
     </div>
   `,{
     methods:{
@@ -43,40 +43,38 @@ const subroute2 = puffin.element(
 );
 
 const router = new puffin.router([
-  {
-    path:'/', //Fallback to home when no section is specified
-    component:Home,
-    title:'Home'
-  },
-  {
-    path:'/home',
-    component:Home,
-    title:'Home'
-  },
-  {
-    path:'/subrouting',
-    component:SubRouting,
-    title:'Subrouting 1',
-    paths:[
-      {
-        path:'/subroute1',
-        component:subroute1,
-        title:'Subroute 1',
-        paths:[
-          {
-            path:'/subroute2',
-            component:subroute2,
-            title:'Subroute 2'
-          }
-        ]
-      }
-    ]
-  }
+	{
+		path:'/', //Fallback to home when no section is specified
+		component:Home,
+		title:'Home'
+	},
+	{
+		path:'/home',
+		component:Home,
+		title:'Home'
+	},
+	{
+		path:'/subrouting',
+		component:SubRouting,
+		title:'Subrouting',
+		paths:[
+			{
+				path:'/subroute1',
+				component:subroute1,
+				title:'Subroute 1',
+			},
+			{
+				path:'/subroute2',
+				component:subroute2,
+				title:'Subroute 2'
+			}
+		]
+	}
 ],{
-  lost:{
-    component:Lost,
-    title:'You are lost'
-  }
+	lost:{
+		component:Lost,
+		title:'You are lost'
+	}
 })
 
 const App = puffin.element(

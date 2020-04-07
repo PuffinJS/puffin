@@ -81,33 +81,38 @@ function matchPath(objectURL,arrayPaths,additional){
 	return message;
 }
 
-function renderBox(configuration,boxNode,additionalConfig){
+function renderBox(configuration,boxNode,additionalConfig,data){
 	const currentURL = parseURL(window.location)
 	const result = matchPath(currentURL,configuration,additionalConfig)
 	if(result.status){
 		state.data.active = result.path
 		document.title = result.title
-		puffin.render(result.component,boxNode,{
+		const component = typeof result.component == 'function'?result.component(data):result.component 
+		puffin.render(component,boxNode,{
 			removeContent:true
 		})
 	}
 }
 
-function goToPath(configuration,boxNode,additionalConfig,path){
+function goToPath(configuration,boxNode,additionalConfig,path,data){
 	history.replaceState({}, "", path)
-	renderBox(configuration,boxNode,additionalConfig)
+	renderBox(configuration,boxNode,additionalConfig,data)
 }
 
 function puffinRouter(configuration,additionalConfig){
 	const id = Math.random()
+
 	const data = {
 		box:puffin.element(`
 			<div id="${id}"/>
 		`,{
 			events:{
+				fabricated(){
+					renderBox(configuration,this,additionalConfig)  
+				},
 				mounted(){
 					state.on('goTo',({endpoint})=>{
-						goToPath(configuration,this,additionalConfig,endpoint)
+						goToPath(configuration,this,additionalConfig,endpoint,data)
 					})
 				}
 			}
@@ -124,13 +129,13 @@ function puffinRouter(configuration,additionalConfig){
 			events:{
 				mounted(target){
 					const linkEndpoint = this.getAttribute("path")
-					state.keyChanged('active',(({endpoint})=>{
+					state.keyChanged('active',(()=>{
 						target.classList.remove('active')
-						if(linkEndpoint == data.active){
+						if( checkEndpoint( state.data.active,linkEndpoint) ){
 							target.classList.toggle('active')
 						}
 					}))
-					if( state.data.active == linkEndpoint ) target.classList.add('active')
+					if( checkEndpoint(state.data.active,linkEndpoint) || window.location.pathname == linkEndpoint ) target.classList.add('active')
 				}
 			}
 		}),
@@ -141,8 +146,14 @@ function puffinRouter(configuration,additionalConfig){
 	window.addEventListener("DOMContentLoaded",function(){
 		state.emit('goTo',{endpoint:null})      
 	})
-	renderBox(configuration,data.box.node,additionalConfig)  
+	
 	return data 
+}
+
+function checkEndpoint( complete, part){
+	if ( !complete ) return false
+	return ( (complete.startsWith(part) && part != '/' ) || ( part == '/' && part ==  complete ) )
+
 }
 
 module.exports = puffinRouter
