@@ -19,6 +19,11 @@ What does it have?
 * Basic centralized reactive state
 * Addon support (WIP)
 
+I am doing a remake, this is what's implemented:
+* element 
+* style
+* render
+
 
 ## ⚽ Usage
 
