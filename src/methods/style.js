@@ -8,7 +8,6 @@ function style( inputCss ){
     styleEle.rel = "stylesheet";
 	styleEle.textContent = output.replace(/&/gm,`.${randomClass}`)
 	styleEle.classList = randomClass
-	document.head.appendChild(styleEle)
 	return randomClass
 }
 
@@ -21,7 +20,6 @@ const parseBinds = ( input, methods ) => {
 		output = output.replace('to__BIND',`$BIND${i} `)
 		computedBinds.push(methods[i])
 	}
-	
 	return {
 		output,
 		binds:computedBinds

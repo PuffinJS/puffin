@@ -34,7 +34,7 @@ function parseHTML(in_HTML,binds,config){
 }
 
 function parseElement(tree,element,binds,config){
-	const _parts = element.split(" ")
+	const _parts = element.split(/( )|(\/>)/gm).filter(Boolean)
 	const _isElement = isElement(_parts[0])
 	const _type = _isElement && getTag(_parts[0]) || "__text"
 	const _value = !_isElement?element:null
@@ -45,10 +45,9 @@ function parseElement(tree,element,binds,config){
 	addComponents(_props, where )
 	if(  isExternalComponent(_type,config) ) {
 		if( _opened ){
-			addExternalComponent(_type, config, where ) 
+			addExternalComponent(_type, config, where,_closed ,_props) 
 			return
 		}
-		
 	}
 	if( isCompLinker(_props)) return
 	if ( _opened )  {
@@ -72,7 +71,7 @@ const isExternalComponent = (tag, config) => {
 	return config && config.components && config.components[tag]
 }
 
-const addExternalComponent = (tag, config, where) => {
+const addExternalComponent = (tag, config, where,_closed,_props) => {
 	if( config && config.components && config.components[tag]){
 		const componentExported = config.components[tag]()
 		if( Array.isArray(componentExported) ){
@@ -83,8 +82,9 @@ const addExternalComponent = (tag, config, where) => {
 			})
 		}else{
 			componentExported.children.forEach( (child,index) => {
-				if( index == 0 ){
+				if( index == 0 && !_closed){
 					child._opened = true
+					child._props = [...child._props,_props].flat()
 				}
 				where.children.push(child)
 			})
@@ -144,7 +144,7 @@ const isCompLinker = (props) => {
 
 
 const getBind = (str)=>{
-	const result = str.match(/(\$BIND)\w+/gm)
+	const result =str.match(/(\$BIND)\w+/gm)
 	if ( !result ) return ""
 	return result[0]
 }
@@ -157,6 +157,34 @@ function searchBind(str,binds){
 	const bindNumber = eval(purifyString(bind[1]))
 	return binds[bindNumber]
 }
+
+
+const getAttributeProp = (bind,prop,propKey,binds) =>{
+	const propValue = searchBind(bind,binds) || bind
+	let valueIdentifier = getBind(bind)
+	let attributeValue = removeCommas(prop[1])
+	let propIdentifier = bind
+	if( isFunctionEvent(propKey)){
+		var type = 'puffinEvent';
+	}else if( typeof propValue == 'function' && propKey.includes(":") ){
+		var type = 'event';
+	}else if( typeof propValue == 'object' ){
+		var type = 'object';
+	}else if( typeof propValue == 'function' ){
+		var type = 'attributeFunction';
+	}else{
+		var type = 'attribute';
+	}
+	return {
+		key:propKey,
+		type,
+		valueIdentifier,
+		attributeValue,
+		propIdentifier,
+		value:propValue
+	}
+}
+
 const getProps = ( element, binds, isElement ) => {
 	const props = element.split(/([:]?\w+\=\"+[\s\w$]+")|(\<\w+)/gm).filter(Boolean)
 	return props.map((p,index,total)=>{
@@ -168,48 +196,31 @@ const getProps = ( element, binds, isElement ) => {
 		}
 		if( p.includes("=") ){
 			const prop = p.split("=")
-			const propKey = prop[0]
-			return p.match(/(\$BIND)\w+/gm).map( bind => {
-				const propValue = searchBind(bind,binds) || bind
-				let valueIdentifier = getBind(bind)
-				let attributeValue = prop[1]
-				let propIdentifier = bind
-				if( isFunctionEvent(propKey)){
-					var type = 'puffinEvent'
-					}else if( typeof propValue == 'function' && propKey.includes(":") ){
-						var type = 'event'
-					}else if( typeof propValue == 'object' ){
-						var type = 'object'
-					}else if( typeof propValue == 'function' ){
-						var type = 'attributeFunction'
-					}else{
-						var type = 'attribute'
-					}
-				return {
-					key:propKey,
-					type,
-					valueIdentifier,
-					attributeValue,
-					propIdentifier,
-					value:propValue
-				}
-			})
-			
+			const propKey = prop[0].trim()
+			if ( p.match(/(\$BIND)\w+/gm) ){
+				return p.match(/(\$BIND)\w+/gm).map( bind => {
+					return getAttributeProp(bind,prop,propKey,binds)
+				})
+			}else{
+				return getAttributeProp(propKey,prop,propKey,binds)
+			}
+
+
 		}else if( p.includes('$BIND') ){
-				const propKey = getBind(p)
-				const propValue = searchBind(p,binds)
-				if( isComponent(propValue) ){
-					var type = 'comp'
-					}else if( typeof propValue == 'string' || typeof propValue == 'number' || typeof propValue == 'boolean'  ){
-						var type = 'text'
-						}else if(  typeof propValue == 'function'){
-							var type = 'textFunction'
-							}
-				return {
-					key:propKey,
-					type,
-					value:propValue
-				}
+			const propKey = getBind(p)
+			const propValue = searchBind(p,binds)
+			if( isComponent(propValue) ){
+				var type = 'comp';
+			}else if( typeof propValue == 'string' || typeof propValue == 'number' || typeof propValue == 'boolean'  ){
+				var type = 'text';
+			}else if(  typeof propValue == 'function'){
+				var type = 'textFunction';
+			}
+			return {
+				key:propKey,
+				type,
+				value:propValue
+			}
 		}
 		
 	}).flat().filter(Boolean)

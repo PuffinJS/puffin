@@ -7,10 +7,11 @@ const puffinLang = require("./languages.js")
 const element = require("./methods/element")
 const render = require("./methods/render")
 const style = require("./methods/style")
+const { routerBox, routerLink } = require("./methods/router")
 
 puffin.router = puffinRouter
 puffin.state = puffinState
 puffin.style = puffinStyle
 puffin.lang = puffinLang
 
-module.exports = { puffin, element, render, style };
+module.exports = { puffin, element, render, style, routerBox, routerLink };
