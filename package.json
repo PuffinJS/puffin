@@ -1,7 +1,7 @@
 {
 	"name": "@mkenzo_8/puffin",
-	"version": "0.5.7",
-	"description": "A reactive components library for web.",
+	"version": "0.6.0",
+	"description": "A reusable components library for web.",
 	"main": "src/main.js",
 	"scripts": {},
 	"repository": "https://github.com/PuffinJS/puffin",

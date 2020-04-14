@@ -1,14 +1,24 @@
-function element(in_HTML){
-	const computedArguments = [...arguments].slice(1,[...arguments].length)
-	const { output ,binds } = parseBinds(in_HTML,computedArguments)
-	return parseHTML(output,binds)
+function element(input){
+	if( Array.isArray(input) ){
+		return continueParsing(input,arguments)
+	}else{
+		return function(text){
+			return continueParsing(text,arguments,input)
+		}
+	}
+	function continueParsing(text,args,config){
+		const computedArguments = [...args].slice(1,[...args].length)
+		const { output ,binds } = parseBinds(text,computedArguments)
+		return parseHTML(output,binds,config)
+	}
+
 }
 
 function generateClass() {
   return `pfn_${(Math.random() + Math.random()).toString().slice(12)}`;
 }
 
-function parseHTML(in_HTML,binds){
+function parseHTML(in_HTML,binds,config){
 	const elements = in_HTML.match(/\<.*?\>|([^\>]+(?=\<))/gm).filter(Boolean).map(a=>{
 		return purifyString(a);
 	}).filter(Boolean)
@@ -18,12 +28,12 @@ function parseHTML(in_HTML,binds){
 		children:[]
 	}
 	elements.map((element)=>{
-		parseElement(tree,element,binds)
+		parseElement(tree,element,binds,config)
 	})
 	return tree
 }
 
-function parseElement(tree,element,binds){
+function parseElement(tree,element,binds,config){
 	const _parts = element.split(" ")
 	const _isElement = isElement(_parts[0])
 	const _type = _isElement && getTag(_parts[0]) || "__text"
@@ -32,7 +42,14 @@ function parseElement(tree,element,binds){
 	const _closed = isClosed(_parts) 
 	const _props = getProps(element,binds,_isElement)
 	const where =  getLastNodeOpened(tree)
-	addComponents(_props,where)
+	addComponents(_props, where )
+	if(  isExternalComponent(_type,config) ) {
+		if( _opened ){
+			addExternalComponent(_type, config, where ) 
+			return
+		}
+		
+	}
 	if( isCompLinker(_props)) return
 	if ( _opened )  {
 		const currentElement = {
@@ -49,6 +66,31 @@ function parseElement(tree,element,binds){
 	}else{
 		where._opened = false
 	}
+}
+
+const isExternalComponent = (tag, config) => {
+	return config && config.components && config.components[tag]
+}
+
+const addExternalComponent = (tag, config, where) => {
+	if( config && config.components && config.components[tag]){
+		const componentExported = config.components[tag]()
+		if( Array.isArray(componentExported) ){
+			componentExported.forEach(comp => {
+				comp.children.forEach( ( child, index) => {
+					where.children.push(child)
+				})
+			})
+		}else{
+			componentExported.children.forEach( (child,index) => {
+				if( index == 0 ){
+					child._opened = true
+				}
+				where.children.push(child)
+			})
+		
+		}
+	} 
 }
 
 const executeEvents = events => events.forEach( e => e() )
@@ -79,11 +121,11 @@ const addComponents = (props,where) => {
 	props.filter((prop)=>{
 		if( prop.type == "comp" ){
 			if( Array.isArray(prop.value) ){
-				prop.value.map( child => {
-					where.children.push(child.children[0])
+				prop.value.map( comp => {
+					comp.children.forEach( child => where.children.push(child))
 				})
 			}else{
-				where.children.push(prop.value.children[0])
+				prop.value.children.forEach( child => where.children.push(child))
 			}
 			
 		}
@@ -127,45 +169,50 @@ const getProps = ( element, binds, isElement ) => {
 		if( p.includes("=") ){
 			const prop = p.split("=")
 			const propKey = prop[0]
-			const propValue = searchBind(prop[1],binds) || prop[1]
-			let identifier = getBind(prop[1])
-			let attributeValue = prop[1]
-			if( isFunctionEvent(propKey)){
-				var type = 'puffinEvent'
-			}else if( typeof propValue == 'function' && propKey.includes(":") ){
-				var type = 'event'
-			}else if( typeof propValue == 'object' ){
-				var type = 'object'
-			}else if( typeof propValue == 'function' ){
-				var type = 'attributeFunction'
-			}else{
-				var type = 'attribute'
-			}
-			return {
-				key:propKey,
-				type,
-				identifier,
-				attributeValue,
-				value:propValue
-			}
+			return p.match(/(\$BIND)\w+/gm).map( bind => {
+				const propValue = searchBind(bind,binds) || bind
+				let valueIdentifier = getBind(bind)
+				let attributeValue = prop[1]
+				let propIdentifier = bind
+				if( isFunctionEvent(propKey)){
+					var type = 'puffinEvent'
+					}else if( typeof propValue == 'function' && propKey.includes(":") ){
+						var type = 'event'
+					}else if( typeof propValue == 'object' ){
+						var type = 'object'
+					}else if( typeof propValue == 'function' ){
+						var type = 'attributeFunction'
+					}else{
+						var type = 'attribute'
+					}
+				return {
+					key:propKey,
+					type,
+					valueIdentifier,
+					attributeValue,
+					propIdentifier,
+					value:propValue
+				}
+			})
+			
 		}else if( p.includes('$BIND') ){
-			const propKey = getBind(p)
-			const propValue = searchBind(p,binds)
-			if( isComponent(propValue) ){
-				var type = 'comp'
-			}else if( typeof propValue == 'string' || typeof propValue == 'number' || typeof propValue == 'boolean'  ){
-				var type = 'text'
-			}else if(  typeof propValue == 'function'){
-				var type = 'textFunction'
-			}
-			return {
-				key:propKey,
-				type,
-				value:propValue
-			}
+				const propKey = getBind(p)
+				const propValue = searchBind(p,binds)
+				if( isComponent(propValue) ){
+					var type = 'comp'
+					}else if( typeof propValue == 'string' || typeof propValue == 'number' || typeof propValue == 'boolean'  ){
+						var type = 'text'
+						}else if(  typeof propValue == 'function'){
+							var type = 'textFunction'
+							}
+				return {
+					key:propKey,
+					type,
+					value:propValue
+				}
 		}
 		
-	}).filter(Boolean)
+	}).flat().filter(Boolean)
 }
 
 function getLastNodeOpened(tree){

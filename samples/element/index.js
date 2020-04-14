@@ -4,34 +4,54 @@ const s1 = style`
 	& { color:red }
 `
 
-function myComponent( childs ){
+function myComponent( childs = "" ){
 	let count = 1
 	function click(){
 		count++
 		this.update()
 	}
 	return element`
-		<div class="${s1}">
+		<div class="${()=>"k"} ${()=>s1} ">
 			<button number="idk:  ${()=>Math.random()}" :click="${click}">
 				${()=>count}
 			</button>
 			<div>${childs}</div>
 		</div>
+		<p>hi</p>
 	`
 }
 
+
+function line(a){
+	function mounted(){
+		console.log(Math.random())
+	}
+	return element`
+		<div mounted="${mounted}">
+			<b>Test</b>
+		</div>
+	`
+}
+
+const t1= performance.now()
+
 const App = element`
 	<div>
-		<h1>App</h1>
-		<p>100 components: </p>
-		${[...Array(5).keys()].map( n => {
-			return myComponent(
-				element`
-					<p :click="${(e)=>console.log(e.target)}">${Math.random()}</p>
-				`
-			)
+		${[...Array(10).keys()].map( n => {
+			return element({
+				components:{
+					line
+				}
+			})`
+			<line>
+				<p>Message</p>
+			</line>`
 		})}
 	</div>
 `
+
+const t2= performance.now()
+
+console.log(t2-t1)
 
 render(App,document.body)

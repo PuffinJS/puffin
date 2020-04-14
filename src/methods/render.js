@@ -72,7 +72,7 @@ const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
 			case 'attribute':
 				prop.key = removeSpaces(prop.key)
 				prop.value = removeCommas(`${prop.value}`)
-				node.setAttribute( prop.key, prop.value )
+				node.setAttribute( prop.key, prop.attributeValue.replace( prop.propIdentifier,prop.value) )
 				break;
 			case 'object':
 				node[prop.key] = prop.value
@@ -81,9 +81,9 @@ const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
 				var newValue = prop.value()
 				prop.key = removeSpaces(prop.key)
 				if( !node.getAttribute(prop.key) ){
-					node.setAttribute( prop.key, removeCommas(prop.attributeValue.replace(prop.identifier,newValue)))
+					node.setAttribute( prop.key, removeCommas(prop.attributeValue.replace(prop.propIdentifier,newValue)))
 				}else{
-					node.setAttribute( prop.key, removeCommas(node.getAttribute(prop.key).replace(prop.identifier,newValue)))
+					node.setAttribute( prop.key, removeCommas(node.getAttribute(prop.key).replace(prop.propIdentifier,newValue)))
 				}
 				prop.identifier = newValue
 				break;
