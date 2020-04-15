@@ -87,7 +87,7 @@ function getCurrentLocation(){
 		protocol: currentLocation[0],
 		fulldomain:currentLocation.slice(-currentLocation.length,4).join(""),
 		domain:currentLocation[2],
-		endpoint:endpoints.join(""),
+		endpoint:window.location.pathname,
 		endpoints
 	}
 }
@@ -99,7 +99,13 @@ function routerLink(){
 		const routerBox = getBox(linkGroup)
 		routerBox.render(linkEndpoint)
 	}
-	return element`<a :click="${click}"></a>`
+	function mounted(){
+		const routeEndpoint = simulateLocation(this.getAttribute("to"))
+		if( window.location.toString().match(routeEndpoint) ){
+			this.classList.add("active")
+		}
+	}
+	return element`<a mounted="${mounted}" :click="${click}"></a>`
 }
 
 module.exports =  {

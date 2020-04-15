@@ -8,6 +8,7 @@ function style( inputCss ){
     styleEle.rel = "stylesheet";
 	styleEle.textContent = output.replace(/&/gm,`.${randomClass}`)
 	styleEle.classList = randomClass
+	document.head.appendChild(styleEle)
 	return randomClass
 }
 

@@ -54,4 +54,4 @@ const t2= performance.now()
 
 console.log(t2-t1)
 
-render(App,document.body)
+render(App,document.getElementById("app"))

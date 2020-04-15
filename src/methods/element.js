@@ -18,8 +18,18 @@ function generateClass() {
   return `pfn_${(Math.random() + Math.random()).toString().slice(12)}`;
 }
 
+const isFullSpaces = str => {
+	const matches = str.match(/\s/gm)
+	return matches && matches.length === str.length
+}
+
+const isFullTabs = str => {
+	const matches = str.match(/	/gm)
+	return matches && matches.length === str.length
+}
+
 function parseHTML(in_HTML,binds,config){
-	const elements = in_HTML.match(/\<.*?\>|([^\>]+(?=\<))/gm).filter(Boolean).map(a=>{
+	const elements = in_HTML.match(/\<.*?\>|([^\>]+(?=\<))/gm).filter(a=>Boolean(a) && !isFullTabs(a) && !isFullSpaces(a) ).map(a=>{
 		return purifyString(a);
 	}).filter(Boolean)
 	let tree = {
@@ -47,7 +57,7 @@ function parseElement(tree,element,binds,config){
 		if( _opened ){
 			addExternalComponent(_type, config, where,_closed ,_props) 
 			return
-		}
+		}		
 	}
 	if( isCompLinker(_props)) return
 	if ( _opened )  {
@@ -71,6 +81,19 @@ const isExternalComponent = (tag, config) => {
 	return config && config.components && config.components[tag]
 }
 
+function mixClasses(_props1,_props2){
+	_props1.forEach( prop1 => {
+		_props2.forEach( (prop2,index) => {
+			if( prop2.key === prop1.key ){
+				const newValue = prop2.attributeValue.replace(prop2.propIdentifier,prop2.value)
+				prop1.attributeValue = `${prop1.attributeValue} ${newValue}`
+				_props2.splice(index,1)
+			}
+		})
+	})
+	return _props2
+}
+
 const addExternalComponent = (tag, config, where,_closed,_props) => {
 	if( config && config.components && config.components[tag]){
 		const componentExported = config.components[tag]()
@@ -84,6 +107,7 @@ const addExternalComponent = (tag, config, where,_closed,_props) => {
 			componentExported.children.forEach( (child,index) => {
 				if( index == 0 && !_closed){
 					child._opened = true
+					_props = mixClasses(child._props,_props)
 					child._props = [...child._props,_props].flat()
 				}
 				where.children.push(child)
@@ -115,7 +139,7 @@ const isFunctionEvent = name => {
 
 const isOpened = _type => _type[1] !== "/" || _type[_type.length-2] == "/"
 
-const isClosed = parts => parts[parts.length-1] === '/>' || parts[0][parts[0].length-2] == "/"
+const isClosed = parts => parts[parts.length-1] === '/>' || parts[0][parts[0].length-2] == "/" || parts[0][1] == "/"
 
 const addComponents = (props,where) => {
 	props.filter((prop)=>{
@@ -151,18 +175,18 @@ const getBind = (str)=>{
 
 function searchBind(str,binds){
 	const result = getBind(str)
-	if( !result ) return
+	if( !result ) return ""
 	const bind = result.split("D")
-	if( !bind[1] ) return
+	if( !bind[1] ) return ""
 	const bindNumber = eval(purifyString(bind[1]))
 	return binds[bindNumber]
 }
 
 
 const getAttributeProp = (bind,prop,propKey,binds) =>{
-	const propValue = searchBind(bind,binds) || bind
+	let propValue = searchBind(bind,binds)
 	let valueIdentifier = getBind(bind)
-	let attributeValue = removeCommas(prop[1])
+	let attributeValue = removeCommas(prop[1]) 
 	let propIdentifier = bind
 	if( isFunctionEvent(propKey)){
 		var type = 'puffinEvent';
@@ -204,11 +228,9 @@ const getProps = ( element, binds, isElement ) => {
 			}else{
 				return getAttributeProp(propKey,prop,propKey,binds)
 			}
-
-
 		}else if( p.includes('$BIND') ){
 			const propKey = getBind(p)
-			const propValue = searchBind(p,binds)
+			const propValue = searchBind(p,binds) 
 			if( isComponent(propValue) ){
 				var type = 'comp';
 			}else if( typeof propValue == 'string' || typeof propValue == 'number' || typeof propValue == 'boolean'  ){
@@ -246,10 +268,9 @@ const parseBinds = ( input, methods ) => {
 	const bindsLength = bindsMatched && bindsMatched.length
 	const computedBinds = []
 	for( let i = 0; i<bindsLength;i++){
-		output = output.replace('to__BIND',`$BIND${i} `)
+		output = output.replace('to__BIND',`$BIND${i}`)
 		computedBinds.push(methods[i])
 	}
-	
 	return {
 		output,
 		binds:computedBinds

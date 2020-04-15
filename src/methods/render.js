@@ -71,8 +71,8 @@ const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
 				break;
 			case 'attribute':
 				prop.key = removeSpaces(prop.key)
-				prop.value = removeCommas(prop.value)
-				node.setAttribute( prop.key, prop.attributeValue.replace( prop.propIdentifier,prop.value) )
+				prop.value = removeCommas(`${prop.value}`)
+				node.setAttribute( prop.key, prop.attributeValue.replace(prop.valueIdentifier,prop.value))
 				break;
 			case 'object':
 				node[prop.key] = prop.value

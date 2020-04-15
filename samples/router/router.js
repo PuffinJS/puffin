@@ -30,19 +30,22 @@ function App(){
 		}
 	})`
 	<div>
-		<p>Home</p>
+		<routerLink group="home" to="/home">Home</routerLink>
 		<routerLink group="home" to="/page1">Page 1</routerLink>
 		<routerLink group="home" to="/page2">Page 2</routerLink>
 		<routerBox group="home" default="/page1">
+			<div from="/home">
+				<p>This is home</p>	
+			</div>
 			<page1 from="/page1"></page1>
 			<page2 from="/page2">
 				<b>Página 2</b>
 				<routerBox group="page2" default="/page2/1">
 					<div from="/page2/1">
-						First page
+						<p>First page</p>
 					</div>
 					<div from="/page2/2">
-						Second page
+						<p>Second page</p>
 					</div>
 				</routerBox>
 			</page2>
