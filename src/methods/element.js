@@ -193,11 +193,11 @@ const getAttributeProp = (bind,prop,propKey,binds) =>{
 	}else if( typeof propValue == 'function' && propKey.includes(":") ){
 		var type = 'event';
 	}else if( typeof propValue == 'object' ){
-		var type = 'object';
+		var type = 'attributeObject';
 	}else if( typeof propValue == 'function' ){
 		var type = 'attributeFunction';
 	}else{
-		var type = 'attribute';
+		var type = 'attributeText';
 	}
 	return {
 		key:propKey,

@@ -16,6 +16,9 @@ function myComponent( childs = "" ){
 				${()=>count}
 			</button>
 			<div>${childs}</div>
+			<svg width="12" height="13" viewBox="0 0 12 13" fill="red" xmlns="http://www.w3.org/2000/svg">
+				<path d="M12 6.5L0.75 12.9952V0.00480938L12 6.5Z"/>
+			</svg>
 		</div>
 		<p>hi</p>
 	`
@@ -24,12 +27,10 @@ function myComponent( childs = "" ){
 
 function line(a){
 	function mounted(){
-		console.log(Math.random())
+		console.log(this.props.data)
 	}
 	return element`
-		<div mounted="${mounted}">
-			<b>Test</b>
-		</div>
+		<b mounted="${mounted}" data="${{msg:Math.random()}}"/>
 	`
 }
 
@@ -40,12 +41,13 @@ const App = element`
 		${[...Array(10).keys()].map( n => {
 			return element({
 				components:{
+					myComponent,
 					line
 				}
 			})`
-			<line>
-				<p>Message</p>
-			</line>`
+			<myComponent>
+				<line>Message</line>
+			</myComponent>`
 		})}
 	</div>
 `

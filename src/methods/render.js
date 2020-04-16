@@ -4,12 +4,29 @@ function render( currentElement, parent ){
 	executeEvents(comp.events)
 }
 
-
 const executeEvents = events => events.forEach( e => e() )
 
-
-const createElement = type => document.createElement(type)
-
+const createElement = type => {
+	switch (type) {
+		case "g":
+		case "defs":
+		case "stop":
+		case "linearGradient":
+		case "feColorMatrix":
+		case "feBlend":
+		case "filter":
+		case "path":
+		case "group":
+		case "polyline":
+		case "line":
+		case "rect":
+		case "circle":
+		case "svg":
+			return document.createElementNS("http://www.w3.org/2000/svg", type);
+		default:
+			return document.createElement(type)
+	}
+}
 
 function createComponent( currentElement , componentNode, binds, puffinEvents){
 	const currentNode = createElement(currentElement._type)
@@ -69,13 +86,14 @@ const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
 			case 'event':
 				if( !updating ) node.addEventListener( prop.key.replace(':',''), (e)=> prop.value.bind(node)(e) )
 				break;
-			case 'attribute':
+			case 'attributeText':
 				prop.key = removeSpaces(prop.key)
 				prop.value = removeCommas(`${prop.value}`)
 				node.setAttribute( prop.key, prop.attributeValue.replace(prop.valueIdentifier,prop.value))
 				break;
-			case 'object':
-				node[prop.key] = prop.value
+			case 'attributeObject':
+				if( !node.props ) node.props = {}
+				node.props[prop.key] = prop.value
 				break;
 			case 'attributeFunction':
 				var newValue = prop.value()
