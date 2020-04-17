@@ -19,8 +19,11 @@ function generateClass() {
 }
 
 const isFullSpaces = str => {
-	const matches = str.match(/\s/gm)
-	return matches && matches.length === str.length
+	if( str ) {
+		const matches = str.match(/\s/gm)
+		return matches && matches.length === str.length
+	}
+	return true
 }
 
 const isFullTabs = str => {
@@ -28,10 +31,17 @@ const isFullTabs = str => {
 	return matches && matches.length === str.length
 }
 
+const parseArrow = input => input.match(/\<.*?\>|([^\>]+(?=\<))/gm)
+
 function parseHTML(in_HTML,binds,config){
-	const elements = in_HTML.match(/\<.*?\>|([^\>]+(?=\<))/gm).filter(a=>Boolean(a) && !isFullTabs(a) && !isFullSpaces(a) ).map(a=>{
-		return purifyString(a);
-	}).filter(Boolean)
+	let elements = parseArrow(in_HTML)
+	if( elements ) {
+		elements = elements.filter(a=>Boolean(a) && !isFullTabs(a) && !isFullSpaces(a) ).map(a=>{
+			return purifyString(a);
+		}).filter(Boolean)
+	}else{
+		elements = [in_HTML]
+	}
 	let tree = {
 		_opened:true,
 		_is:'puffin',
@@ -94,9 +104,21 @@ function mixClasses(_props1,_props2){
 	return _props2
 }
 
+function getAttributeObjectProps(arrayProps){
+	let objectProps = {}
+	arrayProps.map( prop =>{
+		objectProps[prop.key] = prop.value
+	})
+	return Object.assign({},objectProps)
+}
+
 const addExternalComponent = (tag, config, where,_closed,_props) => {
 	if( config && config.components && config.components[tag]){
-		const componentExported = config.components[tag]()
+		if( typeof config.components[tag] !== 'function' ){
+			return throwError(`${tag}() is not a function, so it cannot return an element.`)
+		}
+		const argumentProps = getAttributeObjectProps(_props)
+		const componentExported = config.components[tag](argumentProps)
 		if( Array.isArray(componentExported) ){
 			componentExported.forEach(comp => {
 				comp.children.forEach( ( child, index) => {
@@ -156,7 +178,7 @@ const addComponents = (props,where) => {
 	})
 }
 
-const isCompLinker = (props) => {
+const isCompLinker = props => {
 	let isLinker = false
 	props.filter((prop)=>{
 		if( prop.type == "comp" ){
@@ -167,7 +189,7 @@ const isCompLinker = (props) => {
 }
 
 
-const getBind = (str)=>{
+const getBind = str =>{
 	const result =str.match(/(\$BIND)\w+/gm)
 	if ( !result ) return ""
 	return result[0]
@@ -210,7 +232,7 @@ const getAttributeProp = (bind,prop,propKey,binds) =>{
 }
 
 const getProps = ( element, binds, isElement ) => {
-	const props = element.split(/([:]?\w+\=\"+[\s\w$]+")|(\<\w+)/gm).filter(Boolean)
+	const props = element.split(/([:]?[\w-]+\=\"+[\s\w.,()$%;:]+")|(\<\w+)/gm).filter(a=>Boolean(a) && !isFullSpaces(a))
 	return props.map((p,index,total)=>{
 		if(p[p.length-1] == ">" && total.length-1 == index) {
 			p = p.slice(0,-1)
@@ -277,7 +299,8 @@ const parseBinds = ( input, methods ) => {
 	}
 }
 
-
-
+function throwError(msg){
+	console.error(`Puffin:: ${msg}`)
+}
 
 module.exports = element

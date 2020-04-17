@@ -77,6 +77,7 @@ const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
 	const props = currentElement._props
 	props.map((prop)=>{
 		let textValue = currentElement._value
+		if( !node.props ) node.props = {}
 		switch(prop.type){
 			case 'puffinEvent':
 				if( prop.key == 'mounted' ) {
@@ -92,7 +93,6 @@ const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
 				node.setAttribute( prop.key, prop.attributeValue.replace(prop.valueIdentifier,prop.value))
 				break;
 			case 'attributeObject':
-				if( !node.props ) node.props = {}
 				node.props[prop.key] = prop.value
 				break;
 			case 'attributeFunction':
