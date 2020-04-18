@@ -90,7 +90,9 @@ const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
 			case 'attributeText':
 				prop.key = removeSpaces(prop.key)
 				prop.value = removeCommas(`${prop.value}`)
-				node.setAttribute( prop.key, prop.attributeValue.replace(prop.valueIdentifier,prop.value))
+				var newValue = prop.attributeValue.replace(prop.valueIdentifier,prop.value)
+				node.setAttribute( prop.key, newValue)
+				node.props[prop.key] = newValue
 				break;
 			case 'attributeObject':
 				node.props[prop.key] = prop.value
@@ -99,11 +101,14 @@ const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
 				var newValue = prop.value()
 				prop.key = removeSpaces(prop.key)
 				if( !node.getAttribute(prop.key) ){
-					node.setAttribute( prop.key, removeCommas(prop.attributeValue.replace(prop.propIdentifier,newValue)))
+					var newValue = removeCommas(prop.attributeValue.replace(prop.propIdentifier,newValue))
+					node.setAttribute( prop.key, newValue)
 				}else{
-					node.setAttribute( prop.key, removeCommas(node.getAttribute(prop.key).replace(prop.propIdentifier,newValue)))
+					var newValue = removeCommas(node.getAttribute(prop.key).replace(prop.propIdentifier,newValue))
+					node.setAttribute( prop.key, newValue)
 				}
-				prop.identifier = newValue
+				node.props[prop.key] = newValue
+				prop.propIdentifier = newValue
 				break;
 			case 'textFunction':
 				var newValue = prop.value()

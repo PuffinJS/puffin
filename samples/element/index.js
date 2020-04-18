@@ -4,19 +4,18 @@ const s1 = style`
 	& { color:blue }
 `
 
-function myComponent2(props){
+function myComponent(props){
 	return element`
 		<b>${props.data.message}</b>
 	`
 }
 
-let myComponent = 2
 const App = element({
 	components:{
 		myComponent
 	}
 })`
-	<div class="${s1}">
+	<div class="${s1}"  ok="${()=>Math.random()}" :click=${(e)=>e.target.update()}>
 		<myComponent data="${{message:"hi!!!!"}}"/>
 	</div>
 `
