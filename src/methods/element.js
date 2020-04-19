@@ -230,6 +230,23 @@ const getAttributeProp = (bind,prop,propKey,binds) =>{
 	}
 }
 
+function getTextProp(p,binds){
+	const propKey = getBind(p)
+	const propValue = searchBind(p,binds) 
+	if( isComponent(propValue) ){
+		var type = 'comp';
+	}else if( typeof propValue == 'string' || typeof propValue == 'number' || typeof propValue == 'boolean'  ){
+		var type = 'text';
+	}else if( typeof propValue == 'function'){
+		var type = 'textFunction';
+	}
+	return {
+		key:propKey,
+		type,
+		value:propValue
+	}
+}
+
 const getProps = ( element, binds, isElement ) => {
 	const props = element.split(/([:]?[\w-]+\=\"+[\s\w.,()$%;:]+")|(\<\w+)/gm).filter(a=>Boolean(a) && !isFullSpaces(a))
 	return props.map((p,index,total)=>{
@@ -252,18 +269,14 @@ const getProps = ( element, binds, isElement ) => {
 		}else if( p.includes('$BIND') ){
 			const propKey = getBind(p)
 			const propValue = searchBind(p,binds) 
-			if( isComponent(propValue) ){
-				var type = 'comp';
-			}else if( typeof propValue == 'string' || typeof propValue == 'number' || typeof propValue == 'boolean'  ){
-				var type = 'text';
-			}else if(  typeof propValue == 'function'){
-				var type = 'textFunction';
+			if ( p.match(/(\$BIND)[0-9]+\$/gm) ){
+				return p.match(/(\$BIND)[0-9]+\$/gm).map( bind => {
+					return getTextProp(bind,binds)
+				})
+			}else{
+				return getTextProp(propKey,binds)
 			}
-			return {
-				key:propKey,
-				type,
-				value:propValue
-			}
+			
 		}
 		
 	}).flat().filter(Boolean)
