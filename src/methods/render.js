@@ -2,6 +2,7 @@ function render( currentElement, parent ){
 	const comp = createComponent( currentElement.children[0], null,[],[] )
 	parent.appendChild(comp)
 	executeEvents(comp.events)
+	return comp
 }
 
 const executeEvents = events => events.forEach( e => e() )
