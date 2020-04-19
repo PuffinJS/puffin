@@ -198,7 +198,7 @@ const getBind = str =>{
 function searchBind(str,binds){
 	const result = getBind(str)
 	if( !result ) return ""
-	const bind = result.match(/[0-9]/gm)
+	const bind = result.match(/[0-9]+/gm)
 	if( !bind ) return ""
 	const bindNumber = eval(purifyString(bind[0]))
 	return binds[bindNumber]
