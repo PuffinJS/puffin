@@ -67,7 +67,7 @@ function parseElement(tree,element,binds,config){
 		if( _opened ){
 			addExternalComponent(_type, config, where,_closed ,_props) 
 			return
-		}		
+		}
 	}
 	if( isCompLinker(_props)) return
 	if ( _opened )  {
@@ -127,8 +127,8 @@ const addExternalComponent = (tag, config, where,_closed,_props) => {
 			})
 		}else{
 			componentExported.children.forEach( (child,index) => {
-				if( index == 0 && !_closed){
-					child._opened = true
+				if( index == 0 ){
+					if( !_closed ) child._opened = true
 					_props = mixClasses(child._props,_props)
 					child._props = [...child._props,_props].flat()
 				}
@@ -190,7 +190,7 @@ const isCompLinker = props => {
 
 
 const getBind = str =>{
-	const result =str.match(/(\$BIND)\w+/gm)
+	const result =str.match(/(\$BIND)[0-9]+\$/gm)
 	if ( !result ) return ""
 	return result[0]
 }
@@ -198,12 +198,11 @@ const getBind = str =>{
 function searchBind(str,binds){
 	const result = getBind(str)
 	if( !result ) return ""
-	const bind = result.split("D")
-	if( !bind[1] ) return ""
-	const bindNumber = eval(purifyString(bind[1]))
+	const bind = result.match(/[0-9]/gm)
+	if( !bind ) return ""
+	const bindNumber = eval(purifyString(bind[0]))
 	return binds[bindNumber]
 }
-
 
 const getAttributeProp = (bind,prop,propKey,binds) =>{
 	let propValue = searchBind(bind,binds)
@@ -243,8 +242,8 @@ const getProps = ( element, binds, isElement ) => {
 		if( p.includes("=") ){
 			const prop = p.split("=")
 			const propKey = prop[0].trim()
-			if ( p.match(/(\$BIND)\w+/gm) ){
-				return p.match(/(\$BIND)\w+/gm).map( bind => {
+			if ( p.match(/(\$BIND)[0-9]+\$/gm) ){
+				return p.match(/(\$BIND)[0-9]+\$/gm).map( bind => {
 					return getAttributeProp(bind,prop,propKey,binds)
 				})
 			}else{
@@ -290,7 +289,7 @@ const parseBinds = ( input, methods ) => {
 	const bindsLength = bindsMatched && bindsMatched.length
 	const computedBinds = []
 	for( let i = 0; i<bindsLength;i++){
-		output = output.replace('to__BIND',`$BIND${i}`)
+		output = output.replace('to__BIND',`$BIND${i}$`)
 		computedBinds.push(methods[i])
 	}
 	return {

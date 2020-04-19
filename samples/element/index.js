@@ -6,7 +6,7 @@ const s1 = style`
 
 function myComponent(props){
 	return element`
-		<b>${props.data.message}</b>
+		<b :click="${()=>console.log("test")}">${props.data.message}</b>
 	`
 }
 
@@ -16,7 +16,9 @@ const App = element({
 	}
 })`
 	<div class="${s1}"  ok="${()=>Math.random()}" :click=${(e)=>e.target.update()}>
-		<myComponent data="${{message:"hi!!!!"}}"/>
+		<myComponent data="${{message:"hi!!!!"}}" lol="testdata" a="test${()=>"-wow-"}data"></myComponent/>
+		<myComponent data="${{message:"hi!!!!"}}" a="HERE"/>
+		<p>hi</p>
 	</div>
 `
 
