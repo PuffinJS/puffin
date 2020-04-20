@@ -30,9 +30,7 @@ const createElement = type => {
 }
 
 function executeAddons(node, addons = []){
-	console.log(addons)
 	addons.forEach( addon => {
-		console.log(addon)
 		addon.iterateElement(node)
 	})
 }

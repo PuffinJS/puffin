@@ -51,7 +51,6 @@ function parseHTML(in_HTML,binds,config = {}){
 	elements.map((element)=>{
 		parseElement(tree,element,binds,config)
 	})
-	console.log(tree)
 	return tree
 }
 
