@@ -1,3 +1,5 @@
+import { generateClass } from '../utils'
+
 function element(input){
 	if( Array.isArray(input) ){
 		return continueParsing(input,arguments)
@@ -11,11 +13,6 @@ function element(input){
 		const { output ,binds } = parseBinds(text,computedArguments)
 		return parseHTML(output,binds,config)
 	}
-
-}
-
-function generateClass() {
-  return `pfn_${(Math.random() + Math.random()).toString().slice(12)}`;
 }
 
 const isFullSpaces = str => {

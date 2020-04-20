@@ -1,5 +1,5 @@
 function generateClass() {
-  return `pfn_${(Math.random() + Math.random()).toString().slice(12)}`;
+  return `pfn_${(Math.random() + Math.random()).toString().slice(Math.random())}`;
 }
 
 function throwWarn(message) {

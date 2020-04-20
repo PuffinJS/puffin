@@ -19,10 +19,12 @@ function lang(state){
 
 function appendText(state,element){
 	const string = element.getAttribute('lang-string')
-	const templateString = element.getAttribute('string')
+	const templateString = element.getAttribute('string') || `{{${string}}}`
 	if( string && state.data[string] && state.data[string] != "" ){
 		element.textContent = templateString.replace(`{{${string}}}`,state.data[string])
-	} 
+	}else if(string){
+		element.textContent = string
+	}
 }
 
 module.exports  = lang
