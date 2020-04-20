@@ -33,7 +33,7 @@ const isFullTabs = str => {
 
 const parseArrow = input => input.match(/\<.*?\>|([^\>]+(?=\<))/gm)
 
-function parseHTML(in_HTML,binds,config){
+function parseHTML(in_HTML,binds,config = {}){
 	let elements = parseArrow(in_HTML)
 	if( elements ) {
 		elements = elements.filter(a=>Boolean(a) && !isFullTabs(a) && !isFullSpaces(a) ).map(a=>{
@@ -47,9 +47,11 @@ function parseHTML(in_HTML,binds,config){
 		_is:'puffin',
 		children:[]
 	}
+	if( config.addons ) tree.addons = config.addons
 	elements.map((element)=>{
 		parseElement(tree,element,binds,config)
 	})
+	console.log(tree)
 	return tree
 }
 

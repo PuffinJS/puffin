@@ -1,5 +1,5 @@
-function render( currentElement, parent ){
-	const comp = createComponent( currentElement.children[0], null,[],[] )
+function render( currentElement, parent){
+	const comp = createComponent( currentElement.children[0], null,[],[], currentElement.addons)
 	parent.appendChild(comp)
 	executeEvents(comp.events)
 	return comp
@@ -29,7 +29,15 @@ const createElement = type => {
 	}
 }
 
-function createComponent( currentElement , componentNode, binds, puffinEvents){
+function executeAddons(node, addons = []){
+	console.log(addons)
+	addons.forEach( addon => {
+		console.log(addon)
+		addon.iterateElement(node)
+	})
+}
+
+function createComponent( currentElement , componentNode, binds, puffinEvents, addons){
 	const currentNode = createElement(currentElement._type)
 	if( currentElement._isElement ){
 		if( !componentNode ){
@@ -39,6 +47,7 @@ function createComponent( currentElement , componentNode, binds, puffinEvents){
 		}
 		createUpdateFunction(currentNode)
 		appendProps(currentNode,currentElement,puffinEvents)
+		executeAddons(currentNode,addons)
 		currentNode.updates.push(()=>{
 			appendProps(currentNode,currentElement,[],true)
 		})
@@ -54,7 +63,7 @@ function createComponent( currentElement , componentNode, binds, puffinEvents){
 		})
 		componentNode.innerText += currentElement._value
 	}
-	currentElement.children.map(child => createComponent( child, currentNode, binds, puffinEvents ))
+	currentElement.children.map(child => createComponent( child, currentNode, binds, puffinEvents,addons ))
 	componentNode.events = puffinEvents
 	return componentNode
 }

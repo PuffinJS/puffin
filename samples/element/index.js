@@ -1,4 +1,8 @@
-import { element, render, style } from '../../src/main.js'
+import { element, render, style, lang, state } from '../../src/main.js'
+
+const languageProvider = new state({
+	goodMorning:'Bon dia'
+})
 
 const s1 = style`
 	& { color:blue }
@@ -13,12 +17,15 @@ function myComponent(props){
 const App = element({
 	components:{
 		myComponent
-	}
+	},
+	addons:[
+		lang(languageProvider)
+	]
 })`
 	<div class="${s1}"  ok="${()=>Math.random()}" :click=${(e)=>e.target.update()}>
 		<myComponent data="${{message:"hi!!!!"}}" lol="testdata" a="test${()=>"-wow-"}data"></myComponent/>
 		<myComponent data="${{message:"hi!!!!"}}" a="HERE"/>
-		<p>hi</p>
+		<p lang-string="goodMorning" string="{{goodMorning}}"/>
 	</div>
 `
 
