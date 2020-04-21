@@ -92,7 +92,7 @@ const isExternalComponent = (tag, config) => {
 function mixClasses(_props1,_props2){
 	_props1.forEach( prop1 => {
 		_props2.forEach( (prop2,index) => {
-			if( prop2.key === prop1.key ){
+			if( prop2.key === prop1.key && prop2.type == "attributeText" && prop1.type == "attributeText" ){
 				const newValue = prop2.attributeValue.replace(prop2.propIdentifier,prop2.value)
 				prop1.attributeValue = `${prop1.attributeValue} ${newValue}`
 				_props2.splice(index,1)
