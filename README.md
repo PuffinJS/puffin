@@ -10,21 +10,11 @@ Pretty stable but, be careful when using on production. (WIP)
 
 What does it have?
 * Reusable components
-  * Reactive Props
-  * Methods
-  * Events
+* Components styling
+* State manager
+* Router
+* Addons
 * Language addon
-* Basic reactive styling
-* Basic router (with subroutes) 
-* Basic centralized reactive state
-* Addon support (WIP)
-
-**NOTE:**
-I am doing a remake, this is what's implemented:
-* element 
-* style
-* render
-
 
 ## ⚽ Usage
 
@@ -32,10 +22,9 @@ Installing:
 > npm install @mkenzo_8/puffin
 
 Importing:
-> const { element, router, style, render } = require("@mkenzo_8/puffin")
+> import { element, style, state, render, routerBox, routerLink, lang } from "@mkenzo_8/puffin"
 
 **Example projects are located under /samples.**
-
 
 ## 📜 License
 

@@ -20,8 +20,7 @@ function page2(){
 	</div>`
 }
 
-function App(){
-	return element({
+const App =  element({
 		components:{
 			page1,
 			page2,
@@ -51,6 +50,5 @@ function App(){
 			</page2>
 		</routerBox>
 	</div>`
-}
 
-render(App(),document.getElementById("app"))
+render(App,document.getElementById("app"))
