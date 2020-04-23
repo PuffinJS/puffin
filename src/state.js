@@ -1,5 +1,5 @@
-function exeCallbacks(list,currentData){
-	list.map(a=>a.callback(currentData))
+function exeCallbacks(list){
+	list.map(a=>a.callback(...Array.from(arguments).slice(1)))
 }
 
 function puffinState(initialData){
@@ -10,7 +10,7 @@ function puffinState(initialData){
 	const observer = {
 		set: function(object, name, value) {
 			object[name] = value;
-			exeCallbacks(meThis.changedCallbacks,object)
+			exeCallbacks(meThis.changedCallbacks,object,name)
 			exeCallbacks(meThis.keyChangedCallbacks.filter(a=> a.keyName == name),value)
 			return true;
 		}
