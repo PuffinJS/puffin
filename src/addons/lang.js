@@ -17,11 +17,24 @@ function lang(state){
 	}
 }
 
+function getValueIfProperty( strings, value,i){
+	if(  i < strings.length ){
+		return getValueIfProperty(strings,value[strings[i]],i+1)
+	}else{
+		return value
+	}
+}
+
 function appendText(state,element){
-	const string = element.getAttribute('lang-string')
+	let string = element.getAttribute('lang-string')
 	const templateString = element.getAttribute('string') || `{{${string}}}`
-	if( string && state.data[string] && state.data[string] != "" ){
-		element.textContent = templateString.replace(`{{${string}}}`,state.data[string])
+	if( string && string != '' ){
+		let stringComputed = getValueIfProperty(string.split('.'),state.data.translations,0)
+		if( stringComputed ) {
+			element.textContent = templateString.replace(`{{${string}}}`,stringComputed)
+		}else{
+			element.textContent = string
+		}
 	}else if(string){
 		element.textContent = string
 	}

@@ -1,7 +1,14 @@
 import { element, render, style, lang, state } from '../../src/main.js'
 
 const languageProvider = new state({
-	goodMorning:'Bon dia'
+	translations:{
+		goodMorning:'Bon dia',
+		test:{
+			something:{
+				good: true
+			}
+		}
+	}
 })
 
 const s1 = style`
@@ -25,7 +32,8 @@ const App = element({
 	<div class="${s1}"  ok="${()=>Math.random()}" :click=${(e)=>e.target.update()}>
 		<myComponent data="${{message:"hi!!!!"}}" lol="testdata" a="test${()=>"-wow-"}data"></myComponent/>
 		<myComponent data="${{message:"hi!!!!"}}" a="HERE"/>
-		<p lang-string="goodMorning" string="{{goodMorning}}"/>
+		<p lang-string="goodMorning" string="2 {{goodMorning}} 2"/>
+		<p lang-string="test.something.good"/>
 	</div>
 `
 
