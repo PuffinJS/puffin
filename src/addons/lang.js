@@ -18,7 +18,7 @@ function lang(state){
 }
 
 function getValueIfProperty( strings, value,i){
-	if(  i < strings.length ){
+	if(  i < strings.length && value){
 		return getValueIfProperty(strings,value[strings[i]],i+1)
 	}else{
 		return value
@@ -32,6 +32,8 @@ function appendText(state,element){
 		let stringComputed = getValueIfProperty(string.split('.'),state.data.translations,0)
 		if( stringComputed ) {
 			element.textContent = templateString.replace(`{{${string}}}`,stringComputed)
+		}else if( state.data.fallbackTranslations && getValueIfProperty(string.split('.'),state.data.fallbackTranslations,0) ){
+			element.textContent =  getValueIfProperty(string.split('.'),state.data.fallbackTranslations,0) 
 		}else{
 			element.textContent = string
 		}
