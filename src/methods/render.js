@@ -1,3 +1,5 @@
+const element = require("./element")
+
 function render( currentElement, parent){
 	const comp = createComponent( currentElement.children[0], null,[],[], currentElement.addons)
 	parent.appendChild(comp)
@@ -117,6 +119,12 @@ const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
 				}
 				node.props[prop.key] = newValue
 				prop.propIdentifier = newValue
+				break;
+			case 'textPromise':
+				prop.value.then( promiseComp => {
+					render(promiseComp,node)
+				})
+				currentElement._value = textValue.replace( prop.key, '' )
 				break;
 			case 'textFunction':
 				var newValue = prop.value()

@@ -21,21 +21,24 @@ function myComponent(props){
 	`
 }
 
-const App = element({
-	components:{
-		myComponent
-	},
-	addons:[
-		lang(languageProvider)
-	]
-})`
-	<div class="${s1}"  ok="${()=>Math.random()}" :click=${(e)=>e.target.update()}>
-		<myComponent data="${{message:"hi!!!!"}}" lol="testdata" a="test${()=>"-wow-"}data"></myComponent/>
-		<myComponent data="${{message:"hi!!!!"}}" a="HERE"/>
-		<p lang-string="goodMorning" string="2 {{goodMorning}} 2"/>
-		<p lang-string="test.something.good"/>
+
+const a = new state({})
+
+function onclick(){
+	a.emit('action',element`<p>Hello World</p>`)
+}
+
+const App = element`
+	<div>
+		<button :click="${onclick}">Show promise</button>
+		<div>
+			${a.on('action')} 
+			${a.on('action')} 
+			${a.on('action')} 
+		</div>
 	</div>
 `
 
 render(App,document.getElementById("app"))
+
 

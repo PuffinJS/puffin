@@ -157,6 +157,10 @@ const isFunctionEvent = name => {
 	}
 }
 
+const isPromise = func => {
+	 return !!func && typeof func.then === 'function';
+}
+
 const isOpened = _type => _type[1] !== "/" || _type[_type.length-2] == "/"
 
 const isClosed = parts => parts[parts.length-1] === '/>' || parts[0][parts[0].length-2] == "/" || parts[0][1] == "/"
@@ -233,6 +237,8 @@ function getTextProp(p,binds){
 	const propValue = searchBind(p,binds) 
 	if( isComponent(propValue) ){
 		var type = 'comp';
+	}else if( isPromise(propValue) ){
+		var type = 'textPromise';
 	}else if( typeof propValue == 'string' || typeof propValue == 'number' || typeof propValue == 'boolean'  ){
 		var type = 'text';
 	}else if( typeof propValue == 'function'){
