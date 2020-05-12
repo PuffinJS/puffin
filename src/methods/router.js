@@ -10,16 +10,22 @@ function renderBox(_box,_path){
 	showRoute(_box,_path)	
 }
 
-function showRoute(_box,route){
+function showRoute(_box,route,init = false){
 	Object.keys(_box.children).map( n => {
 		const routeNode = _box.children[n]
 		const routeEndpoint = simulateLocation(routeNode.getAttribute("from"))
+		const simulatedDefaultRouter = simulateLocation(_box.getAttribute("default"))
 		const simulatedCurrentRoute = simulateLocation(route)
 		if( simulatedCurrentRoute.match(routeEndpoint) ){
 			routeNode.style.display = "block"
 			const event = new CustomEvent('displayed', { });
 			routeNode.dispatchEvent(event);
 			history.replaceState({}, "", route)
+		}else if( init && routeEndpoint.match(simulatedCurrentRoute) && location.toString() === simulatedCurrentRoute && _box.getAttribute("default") === routeNode.getAttribute("from") ){
+			routeNode.style.display = "block"
+			const event = new CustomEvent('displayed', { });
+			routeNode.dispatchEvent(event);
+			history.replaceState({}, "",  _box.getAttribute("default"))
 		}
 	})
 }
@@ -67,7 +73,7 @@ function routerBox(){
 		}
 		const { endpoint } = getCurrentLocation()
 		hideRoutes(this)
-		showRoute(this,endpoint)
+		showRoute(this,endpoint, true)
 	}
 	function hidden(){
 		hideRoutes(this)

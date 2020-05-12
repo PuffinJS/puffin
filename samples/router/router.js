@@ -32,14 +32,14 @@ const App =  element({
 		<routerLink group="home" to="/home">Home</routerLink>
 		<routerLink group="home" to="/page1">Page 1</routerLink>
 		<routerLink group="home" to="/page2">Page 2</routerLink>
-		<routerBox group="home" default="/page1">
+		<routerBox group="home" default="/home">
 			<div from="/home">
-				<p>This is home</p>	
+				<p>This is home</p>
 			</div>
 			<page1 from="/page1"></page1>
 			<page2 from="/page2">
 				<b>Página 2</b>
-				<routerBox group="page2" default="/page2/1">
+				<routerBox group="page2" default="/page2/2">
 					<div from="/page2/1">
 						<p>First page</p>
 					</div>
