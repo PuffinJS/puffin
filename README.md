@@ -12,6 +12,7 @@ What does it have?
 * Reusable components
 * Components styling
 * State manager
+* Events emitter
 * Router
 * Addons
 * Language addon

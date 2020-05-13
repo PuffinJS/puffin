@@ -39,6 +39,21 @@ function hideRoutes(_box){
 	})
 }
 
+function activeLink(clickedLink,groupLink){
+	window.prouter.links.forEach( ({group, node}) => {
+		if( groupLink == group){
+			node.classList.remove('active')
+		}
+	})
+	clickedLink.classList.add('active')
+	
+}
+function addLink(group,node){
+	window.prouter.links.push({
+		group,
+		node
+	})
+}
 function addBox(group,node,pages){
 	window.prouter.boxes.push({
 		group,
@@ -104,8 +119,13 @@ function routerLink(){
 		const linkGroup = this.getAttribute("group")
 		const routerBox = getBox(linkGroup)
 		routerBox.render(linkEndpoint)
+		activeLink(this,linkGroup)
 	}
 	function mounted(){
+		addLink(
+			this.getAttribute("group"),
+			this
+		)
 		const routeEndpoint = simulateLocation(this.getAttribute("to"))
 		if( window.location.toString().match(routeEndpoint) ){
 			this.classList.add("active")
