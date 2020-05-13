@@ -20,11 +20,13 @@ function showRoute(_box,route,init = false){
 			routeNode.style.display = "block"
 			const event = new CustomEvent('displayed', { });
 			routeNode.dispatchEvent(event);
+			activeLink(_box.getAttribute("group"),simulatedCurrentRoute)
 			history.replaceState({}, "", route)
 		}else if( init && routeEndpoint.match(simulatedCurrentRoute) && location.toString() === simulatedCurrentRoute && _box.getAttribute("default") === routeNode.getAttribute("from") ){
 			routeNode.style.display = "block"
 			const event = new CustomEvent('displayed', { });
 			routeNode.dispatchEvent(event);
+			activeLink(_box.getAttribute("group"),simulatedDefaultRouter)
 			history.replaceState({}, "",  _box.getAttribute("default"))
 		}
 	})
@@ -39,21 +41,23 @@ function hideRoutes(_box){
 	})
 }
 
-function activeLink(clickedLink,groupLink){
+function activeLink(groupLink,routerBox){
 	window.prouter.links.forEach( ({group, node}) => {
-		if( groupLink == group){
-			node.classList.remove('active')
+		node.classList.remove('active')
+		const simulatedLinkRoute = simulateLocation(node.getAttribute("to"))
+		if(routerBox.match(simulatedLinkRoute)){
+			node.classList.add('active')
 		}
 	})
-	clickedLink.classList.add('active')
-	
 }
+
 function addLink(group,node){
 	window.prouter.links.push({
 		group,
 		node
 	})
 }
+
 function addBox(group,node,pages){
 	window.prouter.boxes.push({
 		group,
@@ -119,7 +123,6 @@ function routerLink(){
 		const linkGroup = this.getAttribute("group")
 		const routerBox = getBox(linkGroup)
 		routerBox.render(linkEndpoint)
-		activeLink(this,linkGroup)
 	}
 	function mounted(){
 		addLink(
