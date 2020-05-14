@@ -22,7 +22,7 @@ function showRoute(_box,route,init = false){
 			routeNode.dispatchEvent(event);
 			activeLink(_box.getAttribute("group"),simulatedCurrentRoute)
 			history.replaceState({}, "", route)
-		}else if( init && routeEndpoint.match(simulatedCurrentRoute) && location.toString() === simulatedCurrentRoute && _box.getAttribute("default") === routeNode.getAttribute("from") ){
+		}else if( simulatedCurrentRoute.match(routeEndpoint) && location.toString() === simulatedCurrentRoute){
 			routeNode.style.display = "block"
 			const event = new CustomEvent('displayed', { });
 			routeNode.dispatchEvent(event);
@@ -102,7 +102,7 @@ function routerBox(){
 
 const simulateLocation = (route="") => {
 	const { fulldomain } = getCurrentLocation()
-	return `${fulldomain}${route}`
+	return `${fulldomain}${route}`.trim()
 }
 
 function getCurrentLocation(){
