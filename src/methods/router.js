@@ -22,7 +22,7 @@ function showRoute(_box,route,init = false){
 			routeNode.dispatchEvent(event);
 			activeLink(_box.getAttribute("group"),simulatedCurrentRoute)
 			history.replaceState({}, "", route)
-		}else if( simulatedCurrentRoute.match(routeEndpoint) && location.toString() === simulatedCurrentRoute){
+		}else if( routeEndpoint.match(simulatedCurrentRoute) && location.toString() === simulatedCurrentRoute){
 			routeNode.style.display = "block"
 			const event = new CustomEvent('displayed', { });
 			routeNode.dispatchEvent(event);
