@@ -10,7 +10,7 @@ function renderBox(_box,_path){
 	showRoute(_box,_path)	
 }
 
-function showRoute(_box,route,init = false){
+function showRoute(_box,route,display){
 	Object.keys(_box.children).map( n => {
 		const routeNode = _box.children[n]
 		const routeEndpoint = simulateLocation(routeNode.getAttribute("from"))
@@ -32,6 +32,33 @@ function showRoute(_box,route,init = false){
 	})
 }
 
+function onlyDisplay(_box,route){
+	const simulatedDefaultRouter = simulateLocation(_box.getAttribute("default"))
+	const simulatedCurrentRoute = simulateLocation(route)
+	let anyMatch = false
+	Object.keys(_box.children).map( n => {
+		const routeNode = _box.children[n]
+		const routeEndpoint = simulateLocation(routeNode.getAttribute("from"))
+		if( simulatedCurrentRoute.match(routeEndpoint) ){
+			routeNode.style.display = "block"
+			activeLink(_box.getAttribute("group"),routeEndpoint)
+			anyMatch = true
+		}
+	})
+	if( !anyMatch ){
+		Object.keys(_box.children).map( n => {
+			const routeNode = _box.children[n]
+			const routeEndpoint = simulateLocation(routeNode.getAttribute("from"))
+			if( simulatedDefaultRouter.match(routeEndpoint)){
+				routeNode.style.display = "block"
+				activeLink(_box.getAttribute("group"),routeEndpoint)
+			}
+		})
+	}
+
+}
+
+
 function hideRoutes(_box){
 	Object.keys(_box.children).map( n => {
 		const routeNode = _box.children[n]
@@ -41,12 +68,14 @@ function hideRoutes(_box){
 	})
 }
 
-function activeLink(groupLink,routerBox){
+function activeLink(groupLink,routerLink){
 	window.prouter.links.forEach( ({group, node}) => {
-		node.classList.remove('active')
-		const simulatedLinkRoute = simulateLocation(node.getAttribute("to"))
-		if(routerBox.match(simulatedLinkRoute)){
-			node.classList.add('active')
+		if(group == groupLink ){
+			node.classList.remove('active')
+			const simulatedLinkRoute = simulateLocation(node.getAttribute("to"))
+			if(  routerLink.match(simulatedLinkRoute) ){
+				node.classList.add('active')
+			}
 		}
 	})
 }
@@ -92,7 +121,9 @@ function routerBox(){
 		}
 		const { endpoint } = getCurrentLocation()
 		hideRoutes(this)
-		showRoute(this,endpoint, true)
+		showRoute(this,endpoint)
+		onlyDisplay(this,endpoint)
+
 	}
 	function hidden(){
 		hideRoutes(this)
