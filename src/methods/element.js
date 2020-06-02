@@ -1,4 +1,4 @@
-import { generateClass } from '../utils'
+import { generateClass, throwError } from '../utils'
 
 function element(input){
 	if( Array.isArray(input) ){
@@ -315,8 +315,4 @@ const parseBinds = ( input, methods ) => {
 	}
 }
 
-function throwError(msg){
-	console.error(`Puffin:: ${msg}`)
-}
-
-module.exports = element
+export default element

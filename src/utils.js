@@ -1,13 +1,13 @@
 function generateClass() {
-  return `pfn_${(Math.random() + Math.random()).toString().slice(Math.random())}`;
+	return `p_${(Math.random() + Math.random()).toString().slice(Math.random())}`;
 }
 
 function throwWarn(message) {
-  console.warn("puffin warn -->", message);
+	console.warn("Puffin Warn:: ", message);
 }
 
 function throwError(message) {
-  console.error("puffin error -->", message);
+	console.error("Puffin Err:: ", message);
 }
 
-module.exports = {generateClass,throwWarn,throwError}
+export { generateClass, throwWarn, throwError }

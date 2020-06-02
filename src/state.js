@@ -1,5 +1,5 @@
 function exeCallbacks(list){
-	list.map(a=>a.callback(...Array.from(arguments).slice(1)))
+	list.map(a => a.callback(...Array.from(arguments).slice(1)))
 }
 
 function puffinState(initialData){
@@ -8,10 +8,10 @@ function puffinState(initialData){
 	meThis.keyChangedCallbacks = []
 	meThis.eventCallbacks = []
 	const observer = {
-		set: function(object, name, value) {
+		set(object, name, value) {
 			object[name] = value;
 			exeCallbacks(meThis.changedCallbacks,object,name)
-			exeCallbacks(meThis.keyChangedCallbacks.filter(a=> a.keyName == name),value)
+			exeCallbacks(meThis.keyChangedCallbacks.filter(a => a.keyName === name),value)
 			return true;
 		}
 	};
@@ -27,32 +27,32 @@ function puffinState(initialData){
 			callback
 		})
 		return {
-			cancel:()=>cancelEvent(meThis.keyChangedCallbacks,callback)
+			cancel: () => cancelEvent(meThis.keyChangedCallbacks, callback)
 		}
 	}
 	function cancelEvent(list,callback){
-		list.map((event,index)=>{
+		list.map((event, index) => {
 			if( callback == event.callback ){
 				list = list.splice(index,1)
 			}
 		})
 	}
-	function on(eventName,callback){
+	function on(eventName, callback){
 		let events = []
-		let gottaReturn = null;
+		let gottaReturn
 		if(typeof eventName == "object"){
 			events = eventName
 		}else{
 			events.push(eventName)
 		}
-		events.map((eventToRegister)=>{
-			if(callback != null){
+		events.map( eventToRegister => {
+			if( callback ){
 				meThis.eventCallbacks.push({
 					eventName :eventToRegister,
 					callback: callback
 				})
 				gottaReturn = {
-					cancel:()=>cancelEvent(meThis.eventCallbacks,callback)
+					cancel: () => cancelEvent(meThis.eventCallbacks,callback)
 				}
 			}else{
 				gottaReturn = new Promise((resolve,reject)=>{
@@ -75,10 +75,10 @@ function puffinState(initialData){
 		triggerChange,
 		changed,
 		keyChanged,
-		on:on,
-		emit:emit,
-		data:new Proxy(initialData, observer),
-		info:'state'
+		on: on,
+		emit: emit,
+		data: new Proxy(initialData, observer),
+		info: 'state'
 	}
 }
 

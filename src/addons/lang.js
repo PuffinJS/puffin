@@ -10,34 +10,34 @@ function lang(state){
 	return {
 		iterateElement(element){
 			appendText(state,element)
-			state.changed(()=> {
+			state.changed(() => {
 				appendText(state,element)
 			})
 		}
 	}
 }
 
-lang.getTranslation = (string,state)=>{
-	return getValueIfProperty(string.split('.'),state.data.translations,0) || string
+lang.getTranslation = (string,state) => {
+	return getValueIfProperty(string.split('.'), state.data.translations, 0) || string
 }
 
-function getValueIfProperty( strings, value,i){
+function getValueIfProperty(strings, value, i){
 	if(  i < strings.length && value){
-		return getValueIfProperty(strings,value[strings[i]],i+1)
+		return getValueIfProperty(strings, value[strings[i]], i + 1)
 	}else{
 		return value
 	}
 }
 
-function appendText(state,element){
+function appendText(state, element){
 	let string = element.getAttribute('lang-string')
 	const templateString = element.getAttribute('string') || `{{${string}}}`
 	if( string && string != '' ){
-		let stringComputed = getValueIfProperty(string.split('.'),state.data.translations,0)
+		let stringComputed = getValueIfProperty(string.split('.'), state.data.translations, 0)
 		if( stringComputed ) {
-			element.textContent = templateString.replace(`{{${string}}}`,stringComputed)
-		}else if( state.data.fallbackTranslations && getValueIfProperty(string.split('.'),state.data.fallbackTranslations,0) ){
-			element.textContent =  getValueIfProperty(string.split('.'),state.data.fallbackTranslations,0) 
+			element.textContent = templateString.replace(`{{${string}}}`, stringComputed)
+		}else if( state.data.fallbackTranslations && getValueIfProperty(string.split('.'), state.data.fallbackTranslations, 0) ){
+			element.textContent =  getValueIfProperty(string.split('.'), state.data.fallbackTranslations, 0) 
 		}else{
 			element.textContent = string
 		}

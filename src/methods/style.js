@@ -5,7 +5,7 @@ function style( inputCss ){
 	const randomClass = generateClass()
 	const styleEle = document.createElement('style')
 	styleEle.type = "text/css";
-    styleEle.rel = "stylesheet";
+	styleEle.rel = "stylesheet";
 	styleEle.textContent = output.replace(/&/gm,`.${randomClass}`)
 	styleEle.classList = randomClass
 	document.head.appendChild(styleEle)
@@ -28,7 +28,7 @@ const parseBinds = ( input, methods ) => {
 }
 
 function generateClass() {
-  return `pfn_${(Math.random() + Math.random()).toString().slice(12)}`;
+	return `pfn_${(Math.random() + Math.random()).toString().slice(12)}`;
 }
 
-module.exports = style
+export default style

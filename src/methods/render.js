@@ -48,14 +48,11 @@ function createComponent( currentElement , componentNode, binds, puffinEvents, a
 		createUpdateFunction(currentNode)
 		appendProps(currentNode,currentElement,puffinEvents)
 		executeAddons(currentNode,addons)
-		currentNode.updates.push(()=>{
+		currentNode.updates.push(() => {
 			appendProps(currentNode,currentElement,[],true)
 		})
-		currentNode.e=currentElement
-		
-	}else if( !currentElement._isElement 
-			 && currentElement._type === '__text' 
-	){
+		currentNode.e = currentElement
+	}else if( !currentElement._isElement && currentElement._type === '__text' ){
 		appendProps(componentNode,currentElement,puffinEvents)
 		componentNode.updates.push(()=>{
 			appendProps(currentNode,currentElement,[],true)
@@ -140,4 +137,5 @@ const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
 const removeSpaces = str => str.replace(" ","")
 
 const removeCommas = str => str.replace(/"/gm,"")
-module.exports = render
+
+export default render

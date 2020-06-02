@@ -168,7 +168,7 @@ function routerLink(){
 	return element`<a mounted="${mounted}" :click="${click}"></a>`
 }
 
-module.exports =  {
+export {
 	routerBox,
 	routerLink
 }

@@ -1,16 +1,5 @@
 import { element, render, style, lang, state } from '../../src/main.js'
 
-const languageProvider = new state({
-	translations:{
-		goodMorning:'Bon dia',
-		test:{
-			something:{
-				good: true
-			}
-		}
-	}
-})
-
 const s1 = style`
 	& { color:blue }
 `
@@ -21,20 +10,19 @@ function myComponent(props){
 	`
 }
 
-
-const a = new state({})
+const myState = new state({})
 
 function onclick(){
-	a.emit('action',element`<p>Hello World</p>`)
+	myState.emit('action',element`<p>Hello World</p>`)
 }
 
 const App = element`
 	<div>
 		<button :click="${onclick}">Show promise</button>
 		<div>
-			${a.on('action')} 
-			${a.on('action')} 
-			${a.on('action')} 
+			${myState.on('action')} 
+			${myState.on('action')} 
+			${myState.on('action')} 
 		</div>
 	</div>
 `
