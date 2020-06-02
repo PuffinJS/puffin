@@ -252,7 +252,7 @@ function getTextProp(p,binds){
 }
 
 const getProps = ( element, binds, isElement ) => {
-	const props = element.split(/([:]?[\w-]+\=\"+[\s\w.,()$%;:]+")|(\<\w+)/gm).filter(a=>Boolean(a) && !isFullSpaces(a))
+	const props = element.split(/([:]?[\w-]+\=\"+[\s\w.,()\-/\\|&$%;:]+")|(\<\w+)/gm).filter(a=>Boolean(a) && !isFullSpaces(a))
 	return props.map((p,index,total)=>{
 		if(p[p.length-1] == ">" && total.length-1 == index) {
 			p = p.slice(0,-1)
