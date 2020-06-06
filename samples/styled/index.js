@@ -5,6 +5,10 @@ const styleWrapper = style`
 		background: lightgray;
 		padding:30px;
 	}
+	&:hover {
+		background: green;
+		padding:30px;
+	}
 `
 
 const App = element`

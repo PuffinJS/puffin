@@ -2,7 +2,9 @@ const element = require("./element")
 
 function render( currentElement, parent){
 	const comp = createComponent( currentElement.children[0], null,[],[], currentElement.addons)
-	parent.appendChild(comp)
+	setTimeout(()=>{
+		parent.appendChild(comp)
+	},1)
 	executeEvents(comp.events)
 	return comp
 }
@@ -55,7 +57,7 @@ function createComponent( currentElement , componentNode, binds, puffinEvents, a
 	}else if( !currentElement._isElement && currentElement._type === '__text' ){
 		appendProps(componentNode,currentElement,puffinEvents)
 		componentNode.updates.push(()=>{
-			appendProps(currentNode,currentElement,[],true)
+			appendProps(componentNode,currentElement,[],true)
 			componentNode.innerText = currentElement._value
 		})
 		componentNode.innerText += currentElement._value
@@ -125,8 +127,19 @@ const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
 				break;
 			case 'textFunction':
 				var newValue = prop.value()
-				currentElement._value = textValue.replace( prop.key, newValue )
-				prop.key = newValue
+				if( typeof newValue == 'object' ){
+					if(Array.isArray(newValue)){
+						newValue.forEach( item => {
+							render(item,node)
+						})
+					}else{
+						render(newValue,node)
+					}
+					currentElement._value = textValue.replace( prop.key, '' )
+				}else{
+					currentElement._value = textValue.replace( prop.key, newValue )
+					prop.key = newValue
+				}
 				break;
 			case 'text':
 				currentElement._value = textValue.replace( prop.key, prop.value )
