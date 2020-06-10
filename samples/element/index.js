@@ -16,32 +16,7 @@ function onclick(){
 	myState.emit('action',element`<p>Hello World</p>`)
 }
 
-const Todo = () => {
-	let things = []
-	
-	function add(){
-		const { update } = this
-		const { children } = this.parentElement
-		things.splice(0,0,children[0].value)
-		children[2].update()
-	}
-	
-	return element`
-		<div>
-			<input/>
-			<button :click="${add}">add</button>
-			<div>
-			${() => things.map(thing => element`<p>${thing}</p>`)}
-			</div>
-		</div>
-	`
-}
-
-const App = element({
-	components:{
-		Todo
-	}
-})`
+const App = element`
 	<div>
 		<button :click="${onclick}">Show promise</button>
 		<div>
@@ -49,7 +24,6 @@ const App = element({
 			${myState.on('action')} 
 			${myState.on('action')} 
 		</div>
-		<Todo/>
 	</div>
 `
 
