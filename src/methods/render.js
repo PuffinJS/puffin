@@ -1,10 +1,16 @@
 const element = require("./element")
 
-function render( currentElement, parent){
+function render( currentElement, parent, { position } = { position : null}){
 	const comp = createComponent( currentElement.children[0], null,[],[], currentElement.addons)
-	setTimeout(()=>{
-		parent.appendChild(comp)
-	},1)
+	if( position ){
+		setTimeout(()=>{
+			parent.insertBefore(comp,parent.children[position])
+		},1)
+	}else{
+		setTimeout(()=>{
+			parent.appendChild(comp)
+		},1)
+	}
 	executeEvents(comp.events)
 	return comp
 }
