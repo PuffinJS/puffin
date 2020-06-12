@@ -1,28 +1,17 @@
 import { element, render, style, lang, state } from '../../src/main.js'
 
-const s1 = style`
-	& { color:blue }
-`
-
-function myComponent(props){
-	return element`
-		<b :click="${()=>console.log("test")}">${props.data.message}</b>
-	`
-}
-
-const myState = new state({})
-
 function onclick(){
-	myState.emit('action',element`<p>Hello World</p>`)
+	this.parentElement.children[1].update()
 }
 
 const App = element`
 	<div>
-		<button :click="${onclick}">Show promise</button>
+		<button :click="${onclick}">Randomize</button>
 		<div>
-			${myState.on('action')} 
-			${myState.on('action')} 
-			${myState.on('action')} 
+			Random numbers:
+			${()=> [0,0,0].map(a=>{
+				return element`<p>${Math.random()}</p>`
+			})}
 		</div>
 	</div>
 `

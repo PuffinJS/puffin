@@ -131,8 +131,10 @@ const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
 				var newValue = prop.value()
 				if( typeof newValue == 'object' ){
 					if(Array.isArray(newValue)){
-						newValue.forEach( item => {
-							render(item,node)
+						newValue.map( item => {
+							setTimeout(()=>{
+								render(item,node)
+							},1)
 						})
 					}else{
 						render(newValue,node)
