@@ -3,41 +3,40 @@ function exeCallbacks(list){
 }
 
 function puffinState(initialData){
-	const meThis = this
-	meThis.changedCallbacks = []
-	meThis.keyChangedCallbacks = []
-	meThis.eventCallbacks = []
+	this.changedCallbacks = []
+	this.keyChangedCallbacks = {}
+	this.eventCallbacks = []
 	const observer = {
-		set(object, name, value) {
+		set: (object, name, value) => {
 			object[name] = value;
-			exeCallbacks(meThis.changedCallbacks,object,name)
-			exeCallbacks(meThis.keyChangedCallbacks.filter(a => a.keyName === name),value)
+			exeCallbacks(this.changedCallbacks,object,name)
+			exeCallbacks(this.keyChangedCallbacks[name],value)
 			return true;
 		}
 	};
-	function changed(callback){
-		meThis.changedCallbacks.push({callback})
+	const changed = (callback) => {
+		this.changedCallbacks.push({callback})
 		return {
-			cancel:()=>cancelEvent(meThis.changedCallbacks,callback)
+			cancel:()=>cancelEvent(this.changedCallbacks,callback)
 		}
 	}
-	function keyChanged(keyName,callback){
-		meThis.keyChangedCallbacks.push({
-			keyName,
+	const keyChanged = (keyName,callback) => {
+		if( !this.keyChangedCallbacks[keyName] ) this.keyChangedCallbacks[keyName] = []
+		this.keyChangedCallbacks[keyName].push({
 			callback
 		})
 		return {
-			cancel: () => cancelEvent(meThis.keyChangedCallbacks, callback)
+			cancel: () => cancelEvent(this.keyChangedCallbacks[keyName], callback)
 		}
 	}
-	function cancelEvent(list,callback){
+	const cancelEvent = (list,callback) => {
 		list.map((event, index) => {
 			if( callback == event.callback ){
 				list = list.splice(index,1)
 			}
 		})
 	}
-	function on(eventName, callback){
+	const on = (eventName, callback) => {
 		let events = []
 		let gottaReturn
 		if(typeof eventName == "object"){
@@ -47,16 +46,16 @@ function puffinState(initialData){
 		}
 		events.map( eventToRegister => {
 			if( callback ){
-				meThis.eventCallbacks.push({
+				this.eventCallbacks.push({
 					eventName :eventToRegister,
 					callback: callback
 				})
 				gottaReturn = {
-					cancel: () => cancelEvent(meThis.eventCallbacks,callback)
+					cancel: () => cancelEvent(this.eventCallbacks,callback)
 				}
 			}else{
 				gottaReturn = new Promise((resolve,reject)=>{
-					meThis.eventCallbacks.push({
+					this.eventCallbacks.push({
 						eventName :eventToRegister,
 						callback:resolve
 					})
@@ -65,11 +64,11 @@ function puffinState(initialData){
 		})
 		return gottaReturn
 	}
-	function emit(eventName,data){
-		exeCallbacks(meThis.eventCallbacks.filter(a=> a.eventName == eventName),data)
+	const emit = (eventName,data) => {
+		exeCallbacks(this.eventCallbacks.filter(a=> a.eventName == eventName),data)
 	}
-	function triggerChange(object){
-		exeCallbacks(meThis.changedCallbacks,object)
+	const triggerChange = (object) => {
+		exeCallbacks(this.changedCallbacks,object)
 	}
 	return {
 		triggerChange,
@@ -82,4 +81,4 @@ function puffinState(initialData){
 	}
 }
 
-module.exports = puffinState
+export default puffinState
