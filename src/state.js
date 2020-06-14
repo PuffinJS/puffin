@@ -10,7 +10,7 @@ function puffinState(initialData){
 		set: (object, name, value) => {
 			object[name] = value;
 			exeCallbacks(this.changedCallbacks,object,name)
-			exeCallbacks(this.keyChangedCallbacks[name],value)
+			exeCallbacks(this.keyChangedCallbacks[name] || [],value)
 			return true;
 		}
 	};
