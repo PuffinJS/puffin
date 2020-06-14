@@ -5,7 +5,7 @@ function exeCallbacks(list){
 function puffinState(initialData){
 	this.changedCallbacks = []
 	this.keyChangedCallbacks = {}
-	this.eventCallbacks = []
+	this.eventCallbacks = {}
 	const observer = {
 		set: (object, name, value) => {
 			object[name] = value;
@@ -17,10 +17,10 @@ function puffinState(initialData){
 	const changed = (callback) => {
 		this.changedCallbacks.push({callback})
 		return {
-			cancel:()=>cancelEvent(this.changedCallbacks,callback)
+			cancel:() => cancelEvent(this.changedCallbacks,callback)
 		}
 	}
-	const keyChanged = (keyName,callback) => {
+	const keyChanged = (keyName, callback) => {
 		if( !this.keyChangedCallbacks[keyName] ) this.keyChangedCallbacks[keyName] = []
 		this.keyChangedCallbacks[keyName].push({
 			callback
@@ -29,7 +29,7 @@ function puffinState(initialData){
 			cancel: () => cancelEvent(this.keyChangedCallbacks[keyName], callback)
 		}
 	}
-	const cancelEvent = (list,callback) => {
+	const cancelEvent = (list, callback) => {
 		list.map((event, index) => {
 			if( callback == event.callback ){
 				list = list.splice(index,1)
@@ -44,20 +44,19 @@ function puffinState(initialData){
 		}else{
 			events.push(eventName)
 		}
+		if(!this.eventCallbacks[eventName]) this.eventCallbacks[eventName] = []
 		events.map( eventToRegister => {
-			if( callback ){
-				this.eventCallbacks.push({
-					eventName :eventToRegister,
-					callback: callback
+			if( callback ){	
+				this.eventCallbacks[eventName].push({
+					callback
 				})
 				gottaReturn = {
-					cancel: () => cancelEvent(this.eventCallbacks,callback)
+					cancel: () => cancelEvent(this.eventCallbacks[eventName],callback)
 				}
 			}else{
-				gottaReturn = new Promise((resolve,reject)=>{
-					this.eventCallbacks.push({
-						eventName :eventToRegister,
-						callback:resolve
+				gottaReturn = new Promise(()=>{
+					this.eventCallbacks[eventName].push({
+						callback
 					})
 				})
 			}
@@ -65,7 +64,7 @@ function puffinState(initialData){
 		return gottaReturn
 	}
 	const emit = (eventName,data) => {
-		exeCallbacks(this.eventCallbacks.filter(a=> a.eventName == eventName),data)
+		exeCallbacks(this.eventCallbacks[eventName],data)
 	}
 	const triggerChange = (object) => {
 		exeCallbacks(this.changedCallbacks,object)
