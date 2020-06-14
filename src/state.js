@@ -64,7 +64,7 @@ function puffinState(initialData){
 		return gottaReturn
 	}
 	const emit = (eventName,data) => {
-		exeCallbacks(this.eventCallbacks[eventName],data)
+		exeCallbacks(this.eventCallbacks[eventName] || [],data)
 	}
 	const triggerChange = (object) => {
 		exeCallbacks(this.changedCallbacks,object)
