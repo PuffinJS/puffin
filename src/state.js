@@ -44,18 +44,18 @@ function puffinState(initialData){
 		}else{
 			events.push(eventName)
 		}
-		if(!this.eventCallbacks[eventName]) this.eventCallbacks[eventName] = []
 		events.map( eventToRegister => {
+			if(!this.eventCallbacks[eventToRegister]) this.eventCallbacks[eventToRegister] = []
 			if( callback ){	
-				this.eventCallbacks[eventName].push({
+				this.eventCallbacks[eventToRegister].push({
 					callback
 				})
 				gottaReturn = {
-					cancel: () => cancelEvent(this.eventCallbacks[eventName],callback)
+					cancel: () => cancelEvent(this.eventCallbacks[eventToRegister],callback)
 				}
 			}else{
 				gottaReturn = new Promise(()=>{
-					this.eventCallbacks[eventName].push({
+					this.eventCallbacks[eventToRegister].push({
 						callback
 					})
 				})
