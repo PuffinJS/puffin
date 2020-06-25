@@ -1,7 +1,8 @@
 
+const createElement = component => createComponent(component.children[0], null, [], [], component.addons)
 
-function render( currentElement, parent, { position } = { position : null}){
-	const comp = createComponent( currentElement.children[0], null,[],[], currentElement.addons)
+function render( component, parent, { position } = { position : null}){
+	const comp = createElement(component)
 	if( position ){
 		parent.insertBefore(comp,parent.children[position])
 	}else{
@@ -13,7 +14,7 @@ function render( currentElement, parent, { position } = { position : null}){
 
 const executeEvents = events => events.forEach( e => e() )
 
-const createElement = type => {
+const createDOMElement = type => {
 	switch (type) {
 		case "g":
 		case "defs":
@@ -42,7 +43,7 @@ function executeAddons(node, addons = []){
 }
 
 function createComponent( currentElement , componentNode, binds, puffinEvents, addons){
-	const currentNode = createElement(currentElement._type)
+	const currentNode = createDOMElement(currentElement._type)
 	if( currentElement._isElement ){
 		if( !componentNode ){
 			componentNode = currentNode	
@@ -155,4 +156,7 @@ const removeSpaces = str => str.replace(" ","")
 
 const removeCommas = str => str.replace(/"/gm,"")
 
-export default render
+export {
+	render,
+	createElement
+}

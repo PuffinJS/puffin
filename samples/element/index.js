@@ -1,4 +1,4 @@
-import { element, render, style, lang, state } from '../../src/main.js'
+import { element, render, style, lang, state, createElement } from '../../src/main.js'
 
 function onclick(){
 	this.parentElement.children[1].update()
