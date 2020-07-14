@@ -46,4 +46,4 @@ function appendText(state, element){
 	}
 }
 
-module.exports  = lang
+export default lang
