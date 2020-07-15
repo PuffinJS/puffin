@@ -1,8 +1,12 @@
 
-const createElement = component => createComponent(component.children[0], null, [], [], component.addons)
+const createElement = component => {
+	const comp = createComponent(component.children[0], null, [], [], component.addons)
+	executeEvents(comp.events)
+	return comp
+}
 
 function render( component, parent, { position } = { position : null}){
-	const comp = createElement(component)
+	const comp = createComponent(component.children[0], null, [], [], component.addons)
 	if( position ){
 		parent.insertBefore(comp,parent.children[position])
 	}else{
