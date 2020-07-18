@@ -11,5 +11,8 @@
 		"babel-core": "^6.26.3",
 		"babel-polyfill": "^6.26.0",
 		"parcel": "^1.12.4"
+	},
+	"dependencies": {
+		"lodash": "^4.17.19"
 	}
 }
