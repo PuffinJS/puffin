@@ -104,27 +104,32 @@ const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
 				if( !updating ) node.addEventListener( prop.key.replace(':',''), (e)=> prop.value.bind(node)(e) )
 				break;
 			case 'attributeText':
+				const attrExists = node.getAttribute(prop.key)
 				prop.key = removeSpaces(prop.key)
 				prop.value = removeCommas(`${prop.value}`)
-				var newValue = prop.attributeValue.replace(prop.valueIdentifier,prop.value)
+				if(attrExists){
+					var newValue = node.getAttribute(prop.key).replace(prop.valueIdentifier,prop.value)
+				}else{
+					var newValue = prop.attributeValue.replace(prop.valueIdentifier,prop.value)
+				}
 				node.setAttribute( prop.key, newValue)
-				node.props[prop.key] = newValue
+				node.props[prop.key] = prop.value
 				break;
 			case 'attributeObject':
 				node.props[prop.key] = prop.value
 				break;
 			case 'attributeFunction':
-				var newValue = prop.value()
+				var propValue = prop.value()
 				prop.key = removeSpaces(prop.key)
 				if( !node.getAttribute(prop.key) ){
-					var newValue = removeCommas(prop.attributeValue.replace(prop.propIdentifier,newValue))
+					var newValue = removeCommas(prop.attributeValue.replace(prop.propIdentifier,propValue))
 					node.setAttribute( prop.key, newValue)
 				}else{
-					var newValue = removeCommas(node.getAttribute(prop.key).replace(prop.propIdentifier,prop.attributeValue.replace(prop.valueIdentifier,newValue)))
+					var newValue = removeCommas(node.getAttribute(prop.key).replace(prop.propIdentifier,propValue))
 					node.setAttribute( prop.key, newValue)
 				}
 				node.props[prop.key] = newValue
-				prop.propIdentifier = newValue
+				prop.propIdentifier = propValue
 				break;
 			case 'textPromise':
 				prop.value.then( promiseComp => {
