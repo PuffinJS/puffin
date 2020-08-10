@@ -46,7 +46,7 @@ function puffinState(initialData){
 		}
 		events.map( eventToRegister => {
 			if(!this.eventCallbacks[eventToRegister]) this.eventCallbacks[eventToRegister] = []
-			if( callback ){	
+			if( callback ){
 				this.eventCallbacks[eventToRegister].push({
 					callback
 				})
@@ -58,7 +58,7 @@ function puffinState(initialData){
 					this.eventCallbacks[eventToRegister].push({
 						callback
 					})
-				})
+				}).resolve
 			}
 		})
 		return gottaReturn
