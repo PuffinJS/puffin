@@ -2,7 +2,8 @@ function exeCallbacks(list){
 	list.map(a => a.callback(...Array.from(arguments).slice(1)))
 }
 
-function puffinState(initialData){
+function puffinState(initialData = {}){
+	const self = this
 	this.changedCallbacks = []
 	this.keyChangedCallbacks = {}
 	this.eventCallbacks = {}
@@ -51,7 +52,7 @@ function puffinState(initialData){
 					callback
 				})
 				gottaReturn = {
-					cancel: () => cancelEvent(this.eventCallbacks[eventToRegister],callback)
+					cancel: () => cancelEvent(this.eventCallbacks[eventToRegister], callback)
 				}
 			}else{
 				gottaReturn = new Promise(()=>{
@@ -69,12 +70,23 @@ function puffinState(initialData){
 	const triggerChange = (object) => {
 		exeCallbacks(this.changedCallbacks,object)
 	}
+	const once = (eventName, callback) => {
+		if(!this.eventCallbacks[eventName]) this.eventCallbacks[eventName] = []
+		const customCallback = function() {
+			callback(...arguments)
+			cancelEvent(self.eventCallbacks[eventName], customCallback)
+		}
+		this.eventCallbacks[eventName].push({
+			callback: customCallback
+		})
+	}
 	return {
 		triggerChange,
 		changed,
 		keyChanged,
-		on: on,
-		emit: emit,
+		on,
+		once,
+		emit,
 		data: new Proxy(initialData, observer),
 		info: 'state'
 	}
