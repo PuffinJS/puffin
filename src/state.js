@@ -1,5 +1,7 @@
 function exeCallbacks(list){
-	list.map(a => a.callback(...Array.from(arguments).slice(1)))
+	[...list].map(a => {
+		 a.callback(...Array.from(arguments).slice(1))
+	})
 }
 
 function puffinState(initialData = {}){
@@ -18,7 +20,7 @@ function puffinState(initialData = {}){
 	const changed = (callback) => {
 		this.changedCallbacks.push({callback})
 		return {
-			cancel:() => cancelEvent(this.changedCallbacks,callback)
+			cancel: () => cancelEvent(this.changedCallbacks,callback)
 		}
 	}
 	const keyChanged = (keyName, callback) => {
@@ -32,37 +34,50 @@ function puffinState(initialData = {}){
 	}
 	const cancelEvent = (list, callback) => {
 		list.map((event, index) => {
-			if( callback == event.callback ){
-				list = list.splice(index,1)
+			if( callback === event.callback ){
+				list.splice(index,1)
 			}
 		})
 	}
 	const on = (eventName, callback) => {
 		let events = []
-		let gottaReturn
 		if(typeof eventName == "object"){
 			events = eventName
 		}else{
 			events.push(eventName)
 		}
+		let eventsToReturn = []
+		let final
 		events.map( eventToRegister => {
 			if(!this.eventCallbacks[eventToRegister]) this.eventCallbacks[eventToRegister] = []
 			if( callback ){
 				this.eventCallbacks[eventToRegister].push({
 					callback
 				})
-				gottaReturn = {
-					cancel: () => cancelEvent(this.eventCallbacks[eventToRegister], callback)
-				}
+				eventsToReturn.push(eventToRegister)
 			}else{
-				gottaReturn = new Promise(()=>{
-					this.eventCallbacks[eventToRegister].push({
-						callback
-					})
-				}).resolve
+				this.eventCallbacks[eventToRegister].push({
+					callback() {
+						final(...arguments)
+					}
+				})
+				eventsToReturn.push(eventToRegister)
 			}
 		})
-		return gottaReturn
+		if(callback){
+			return {
+				cancel: () => {
+					eventsToReturn.map(eventName => {
+						cancelEvent(this.eventCallbacks[eventName], callback)
+					})
+				}
+			}
+		}else{
+			return new Promise((resolve)=>{
+				final = resolve
+			})
+		}
+		
 	}
 	const emit = (eventName,data) => {
 		exeCallbacks(this.eventCallbacks[eventName] || [],data)
@@ -72,7 +87,7 @@ function puffinState(initialData = {}){
 	}
 	const once = (eventName, callback) => {
 		if(!this.eventCallbacks[eventName]) this.eventCallbacks[eventName] = []
-		const customCallback = function() {
+		function customCallback() {
 			callback(...arguments)
 			cancelEvent(self.eventCallbacks[eventName], customCallback)
 		}
