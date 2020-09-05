@@ -9,7 +9,7 @@ const App = element`
 		<button :click="${onclick}">Randomize</button>
 		<div>
 			Random numbers:
-			${()=> [0,0,0].map(a=>{
+			${()=> [0,0,0].map(()=>{
 				return element`<p>${Math.random()}</p>`
 			})}
 		</div>
