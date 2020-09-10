@@ -1,7 +1,21 @@
 import { element, render, style, lang, state, createElement } from '../../src/main.js'
 
+const a = new state({
+	
+})
+
+a.on('e', () => {
+	test.nice +8
+	console.log('1')
+})
+
+a.on('e', () => {
+	console.log('2')
+})
+
 function onclick(){
 	this.parentElement.children[1].update()
+	a.emit('e')
 }
 
 const App = element`

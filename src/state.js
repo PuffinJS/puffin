@@ -1,6 +1,10 @@
 function exeCallbacks(list){
 	[...list].map(a => {
-		 a.callback(...Array.from(arguments).slice(1))
+		 try {
+			 a.callback(...Array.from(arguments).slice(1))
+		 }catch(err){
+			 console.error('Unhandled error in a puffin state: ', err)
+		 }
 	})
 }
 
