@@ -1,26 +1,33 @@
 import { element, render, style, lang, state, createElement } from '../../src/main.js'
 
-const a = new state({
+const memory = new state({
 	
 })
 
-a.on('e', () => {
-	test.nice +8
+memory.on('e', () => {
 	console.log('1')
 })
 
-a.on('e', () => {
+memory.on('e', () => {
 	console.log('2')
 })
 
 function onclick(){
 	this.parentElement.children[1].update()
-	a.emit('e')
+	memory.emit('e')
 }
 
-const App = element`
+function SupperButton(){
+	return element`<button/>`
+}
+
+const App = element({
+	components:{
+		SupperButton
+	}
+})`
 	<div>
-		<button :click="${onclick}">Randomize</button>
+		<SupperButton nice="no" test="${{hello: true}}" :click="${onclick}">Randomize</SupperButton>
 		<div>
 			Random numbers:
 			${()=> [0,0,0].map(()=>{

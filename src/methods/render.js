@@ -144,7 +144,7 @@ const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
 						newValue.map( item => {
 							setTimeout(()=>{
 								render(item,node)
-							},1)
+							},0)
 						})
 					}else{
 						render(newValue,node)
