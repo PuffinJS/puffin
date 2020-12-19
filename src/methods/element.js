@@ -253,12 +253,13 @@ function getTextProp(prop, binds){
 }
 
 const getProps = (element, binds, isElement) => {
-	const props = element.split(/([:]?[\w-]+\=\"+[\s\w.,()\-\|&{}$%;:]+")|(\<\w+)/gm).map((token, index, total) => {
+	const tokens =  element.split(/([:]?[\w-]+\=\"+[\s\w.,()\-\|&$%;{}:]+")|(\<\w+)/gm)
+	const props = tokens.map((token, index, total) => {
 		if(Boolean(token) && !isFullSpaces(token)){
-			if(token[token.length-1] == ">" && token.length-1 == index) {
+			if(token[token.length-1] == ">") {
 				token = token.slice(0,-1)
 			}
-			if(token[token.length-1] == "/" && total.length-1 == index) {
+			if(token[token.length-1] == "/") {
 				token = token.slice(0,-1)
 			}
 			const bindsFound = token.match(/(\$BIND)[0-9]+\$/gm) || []
