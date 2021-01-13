@@ -147,7 +147,9 @@ const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
 							},0)
 						})
 					}else{
-						render(newValue,node)
+						setTimeout(()=>{
+							render(newValue,node)
+						},0)
 					}
 					currentElement._value = textValue.replace( prop.key, '' )
 				}else{
