@@ -105,7 +105,11 @@ function mixClasses(_props1, _props2){
 function getAttributeObjectProps(arrayProps){
 	let objectProps = {}
 	arrayProps.map(prop => {
-		objectProps[prop.key] = prop.value
+		if(prop.type === 'attributeText' && !prop.attributeValue.includes('$BIND')){
+			objectProps[prop.key] = prop.attributeValue
+		}else{
+			objectProps[prop.key] = prop.value
+		}
 	})
 	return Object.assign({}, objectProps)
 }
@@ -196,7 +200,7 @@ const getBind = str => {
 	return result[0]
 }
 
-function searchBind(str,binds){
+function searchBind(str, binds){
 	const result = getBind(str)
 	if( !result ) return ''
 	const bind = result.match(/[0-9]+/gm)
@@ -205,13 +209,12 @@ function searchBind(str,binds){
 	return binds[bindNumber]
 }
 
-const getAttributeProp = (bind, propKey, propValue, binds) =>{
-	const propInternalValue = searchBind(bind,binds)
+const getAttributeProp = (bind, propKey, propValue, binds) => {
+	let attributeValue = removeCommas(propValue) 
+	const propInternalValue = searchBind(bind, binds)
 	const valueIdentifier = getBind(bind)
-	const attributeValue = removeCommas(propValue) 
 	const propIdentifier = bind
 	let propType
-	
 	if( isFunctionEvent(propKey)){
 		propType = 'puffinEvent';
 	}else if( typeof propInternalValue == 'function' && propKey.includes(':') ){
@@ -223,6 +226,7 @@ const getAttributeProp = (bind, propKey, propValue, binds) =>{
 	}else{
 		propType = 'attributeText';
 	}
+
 	return {
 		key: propKey,
 		type: propType,
