@@ -17,7 +17,7 @@ function lang(state){
 	}
 }
 
-lang.getTranslation = (string,state) => {
+lang.getTranslation = (string, state) => {
 	return getValueIfProperty(string.split('.'), state.data.translations, 0) || getValueIfProperty(string.split('.'), state.data.fallbackTranslations, 0) || string
 }
 

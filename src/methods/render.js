@@ -50,21 +50,21 @@ function createComponent( currentElement , componentNode, binds, puffinEvents, a
 	const currentNode = createDOMElement(currentElement._type)
 	if( currentElement._isElement ){
 		if( !componentNode ){
-			componentNode = currentNode	
+			componentNode = currentNode
 		}else{
 			componentNode.appendChild( currentNode )
 		}
 		createUpdateFunction(currentNode)
-		appendProps(currentNode,currentElement,puffinEvents)
+		appendProps(currentNode,currentElement,puffinEvents,false,addons)
 		executeAddons(currentNode,addons)
 		currentNode.updates.push(() => {
-			appendProps(currentNode,currentElement,[],true)
+			appendProps(currentNode,currentElement,[],true,addons)
 		})
 		currentNode.e = currentElement
 	}else if( !currentElement._isElement && currentElement._type === '__text' ){
-		appendProps(componentNode,currentElement,puffinEvents)
+		appendProps(componentNode,currentElement,puffinEvents,false, addons)
 		componentNode.updates.push(()=>{
-			appendProps(componentNode,currentElement,[],true)
+			appendProps(componentNode,currentElement,[],true, addons)
 			componentNode.innerText = currentElement._value
 		})
 		componentNode.innerText += currentElement._value
@@ -80,14 +80,14 @@ const createUpdateFunction = node => {
 		node.updates = []
 	}
 	if( !node.update ){
-		node.update = ()=>{
-			node.updates.map(a=>a())
+		node.update = () => {
+			node.updates.map(update => update())
 		}
 	}
 }
 
 
-const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
+const appendProps = (node, currentElement, puffinEvents, updating = false, addons) =>{
 	//Comp props are added on construction
 	//textValue is only for __text elements
 	const props = currentElement._props
@@ -141,13 +141,15 @@ const appendProps = ( node, currentElement, puffinEvents, updating = false) =>{
 				var newValue = prop.value()
 				if( typeof newValue == 'object' ){
 					if(Array.isArray(newValue)){
-						newValue.map( item => {
-							setTimeout(()=>{
+						newValue.map(item => {
+							setTimeout(() => {
+								item.addons  = [...item.addons, ...addons]
 								render(item,node)
 							},0)
 						})
 					}else{
-						setTimeout(()=>{
+						setTimeout(() => {
+							newValue.addons  = [...newValue.addons, ...addons]
 							render(newValue,node)
 						},0)
 					}

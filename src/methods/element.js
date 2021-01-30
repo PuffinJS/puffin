@@ -42,9 +42,9 @@ function parseHTML(in_HTML, binds, config = {}){
 	const tree = {
 		_opened: true,
 		_is: 'puffin',
-		children:[]
+		children:[],
+		addons: config.addons || []
 	}
-	if( config.addons ) tree.addons = config.addons
 	elements.map((element)=>{
 		parseElement(tree,element,binds,config)
 	})
