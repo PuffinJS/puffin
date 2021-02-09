@@ -34,7 +34,7 @@ const App = element({
 		SupperButton
 	}
 })`
-	<div ${true ? "test_2=ok" : ""} ${'aaa="8"'} whatever2="${"ok"}" test="ok">
+	<div ${true ? "test_2=" : ""} ${'aaa="8"'} whatever2="${"ok"}" test="ok">
 		<SupperButton wow="aaa" nice="${"test"}" test="${{hello: true}}" :click="${onclick}"/>
 		<p lang-string="test"/>
 		<div>
