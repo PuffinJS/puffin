@@ -257,7 +257,7 @@ function getTextProp(prop, binds){
 }
 
 const getProps = (element, binds, isElement) => {
-	const tokens =  element.split(/([:]?[\w-]+\=\"+[\s\w.,()\-\|&$%;{}:]+")|(\<\w+)/gm)
+	const tokens = element.split(/(\$BIND\w+.)|([:]?[\w-]+\=\"+[\s\w.,()\-\|&$%;{}:]+")|(\<\w+)/gm)
 	const props = tokens.map((token, index, total) => {
 		if(Boolean(token) && !isFullSpaces(token)){
 			if(token[token.length-1] == ">") {
@@ -267,6 +267,9 @@ const getProps = (element, binds, isElement) => {
 				token = token.slice(0,-1)
 			}
 			const bindsFound = token.match(/(\$BIND)[0-9]+\$/gm) || []
+
+			const propBind = searchBind(token, binds)
+			if(typeof propBind === 'string' && propBind.includes('=')) token = propBind
 			if( token.includes("=") ){
 				const prop = token.split("=")
 				const propKey = prop[0].trim()
@@ -278,7 +281,7 @@ const getProps = (element, binds, isElement) => {
 				}else{
 					return getAttributeProp(propKey, propKey, propValue, binds)
 				}
-			}else if( token.includes('$BIND') ){
+			}else if( token.includes('$BIND') && propBind != '' ){
 				if ( bindsFound.length > 0 ){
 					return bindsFound.map( bind => {
 						return getTextProp(bind,binds)
